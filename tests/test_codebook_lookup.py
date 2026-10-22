@@ -1,7 +1,5 @@
 """Codebook lookup API: dimension / namespace / value id → label (soft miss)."""
 
-from pathlib import Path
-
 import pytest
 
 from open_research_tagging.codebook import (
@@ -11,96 +9,11 @@ from open_research_tagging.codebook import (
     validate_codebook,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-REAL_CODEBOOK = REPO_ROOT / "codebook" / "codebook.yaml"
-
-
-def _minimal_codebook(**overrides):
-    data = {
-        "version": "test-0.1",
-        "dimensions": {
-            "stance": {
-                "select": "single",
-                "values": [
-                    {"id": "ban", "label": "Ban"},
-                    {"id": "allow", "label": "Allow"},
-                ],
-            },
-            "stated_rationale": {
-                "select": "multi",
-                "values": [{"id": "security", "label": "Security"}],
-            },
-            "scope": {
-                "select": "multi",
-                "contribution_types": [{"id": "code", "label": "Code"}],
-                "positions": ["allowed", "banned"],
-            },
-            "guidance_on_use": {
-                "level": {
-                    "select": "single",
-                    "values": [{"id": "none", "label": "None"}],
-                },
-                "types": {
-                    "select": "multi",
-                    "values": [{"id": "design", "label": "Design"}],
-                },
-            },
-            "accountability": {
-                "disclosure": {
-                    "select": "single",
-                    "values": [{"id": "required", "label": "Required"}],
-                },
-            },
-            "context": {
-                "fields": [{"id": "domain", "label": "Domain"}],
-            },
-        },
-        "comment_tags": {
-            "stance": "#stance/<value-id>",
-            "rationale": "#rationale/<value-id>",
-        },
-        "namespaces": {
-            "stance": {
-                "dimension": "stance",
-                "kind": "value",
-                "label": "Stance",
-            },
-            "rationale": {
-                "dimension": "stated_rationale",
-                "kind": "value",
-                "label": "Stated rationale",
-            },
-            "guidance-level": {
-                "dimension": "guidance_level",
-                "path": "guidance_on_use.level",
-                "kind": "value",
-                "label": "Guidance level",
-            },
-            "guidance": {
-                "dimension": "guidance_type",
-                "path": "guidance_on_use.types",
-                "kind": "value",
-                "label": "Guidance type",
-            },
-            "disclosure": {
-                "dimension": "disclosure",
-                "path": "accountability.disclosure",
-                "kind": "value",
-                "label": "Disclosure",
-            },
-            "scope": {
-                "dimension": "scope",
-                "kind": "scope",
-                "label": "Scope",
-            },
-        },
-    }
-    data.update(overrides)
-    return data
+from codebook_fixtures import REAL_CODEBOOK_PATH, minimal_codebook
 
 
 def _codebook(**overrides) -> Codebook:
-    return Codebook.from_validated(validate_codebook(_minimal_codebook(**overrides)))
+    return Codebook.from_validated(validate_codebook(minimal_codebook(**overrides)))
 
 
 def test_label_for_known_value():
@@ -145,7 +58,7 @@ def test_scope_membership():
 
 
 def test_load_codebook_real_draft():
-    codebook = load_codebook(REAL_CODEBOOK)
+    codebook = load_codebook(REAL_CODEBOOK_PATH)
     assert codebook.version == "draft-0.1"
     assert codebook.label_for("stance", "ban") == "Ban"
     assert codebook.dimension_for_namespace("rationale") == "stated_rationale"
@@ -153,14 +66,14 @@ def test_load_codebook_real_draft():
 
 
 def test_missing_namespaces_raises():
-    data = _minimal_codebook()
+    data = minimal_codebook()
     del data["namespaces"]
     with pytest.raises(CodebookValidationError, match="namespaces"):
         validate_codebook(data)
 
 
 def test_namespace_missing_dimension_raises():
-    data = _minimal_codebook()
+    data = minimal_codebook()
     data["namespaces"]["stance"] = {"kind": "value", "label": "Stance"}
     with pytest.raises(CodebookValidationError, match="dimension"):
         validate_codebook(data)
