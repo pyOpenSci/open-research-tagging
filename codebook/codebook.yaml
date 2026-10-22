@@ -180,3 +180,43 @@ comment_tags:
   disclosure: "#disclosure/<value-id>"
   human_responsibility: "#human-responsibility/<value-id>"
   enforcement: "#enforcement/<value-id>"
+
+# Hashtag namespace → lookup dimension id. Optional path = where values live under dimensions.
+namespaces:
+  stance:
+    dimension: stance
+    kind: value
+    label: Stance
+  rationale:
+    dimension: stated_rationale
+    kind: value
+    label: Stated rationale
+  guidance-level:
+    dimension: guidance_level
+    path: guidance_on_use.level
+    kind: value
+    label: Guidance level
+  guidance:
+    dimension: guidance_type
+    path: guidance_on_use.types
+    kind: value
+    label: Guidance type
+  disclosure:
+    dimension: disclosure
+    path: accountability.disclosure
+    kind: value
+    label: Disclosure
+  human-responsibility:
+    dimension: human_responsibility
+    path: accountability.human_responsibility
+    kind: value
+    label: Human responsibility
+  enforcement:
+    dimension: enforcement
+    path: accountability.enforcement
+    kind: value
+    label: Enforcement
+  scope:
+    dimension: scope
+    kind: scope
+    label: Scope

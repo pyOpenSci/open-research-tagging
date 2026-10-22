@@ -47,6 +47,18 @@ def _minimal_codebook(**overrides):
         "comment_tags": {
             "stance": "#stance/<value-id>",
         },
+        "namespaces": {
+            "stance": {
+                "dimension": "stance",
+                "kind": "value",
+                "label": "Stance",
+            },
+            "scope": {
+                "dimension": "scope",
+                "kind": "scope",
+                "label": "Scope",
+            },
+        },
     }
     data.update(overrides)
     return data

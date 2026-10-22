@@ -1,7 +1,8 @@
-"""Load and structurally validate codebook YAML (shape + id uniqueness per list)."""
+"""Load, structurally validate, and index codebook YAML for lookups."""
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, MutableMapping
 
@@ -10,6 +11,70 @@ import yaml
 
 class CodebookValidationError(ValueError):
     """Codebook YAML is missing required structure or has invalid ids."""
+
+
+@dataclass(frozen=True)
+class Codebook:
+    """Indexed codebook: lookups by dimension / namespace / value id."""
+
+    version: str
+    _values: Mapping[str, Mapping[str, str]]
+    _namespaces: Mapping[str, str]
+    _scope_types: Mapping[str, str]
+    _scope_positions: Mapping[str, str]
+
+    @classmethod
+    def from_validated(cls, data: Mapping[str, Any]) -> Codebook:
+        """Build indexes from an already-validated codebook mapping."""
+        values: dict[str, dict[str, str]] = {}
+        namespaces: dict[str, str] = {}
+        scope_types: dict[str, str] = {}
+        scope_positions: dict[str, str] = {}
+        dimensions = data["dimensions"]
+        for namespace, info in data["namespaces"].items():
+            dimension = str(info["dimension"])
+            namespaces[str(namespace)] = dimension
+            kind = str(info["kind"])
+            if kind == "scope":
+                scope_body = _resolve_path(dimensions, dimension)
+                scope_types, scope_positions = _index_scope(scope_body)
+                continue
+            path = str(info.get("path") or dimension)
+            leaf = _resolve_path(dimensions, path)
+            values[dimension] = _index_values(leaf.get("values", []))
+        return cls(
+            version=str(data["version"]),
+            _values=values,
+            _namespaces=namespaces,
+            _scope_types=scope_types,
+            _scope_positions=scope_positions,
+        )
+
+    def label_for(self, dimension: str, value_id: str) -> str | None:
+        return self._values.get(dimension, {}).get(value_id)
+
+    def has_value(self, dimension: str, value_id: str) -> bool:
+        return value_id in self._values.get(dimension, {})
+
+    def dimension_for_namespace(self, namespace: str) -> str | None:
+        return self._namespaces.get(namespace)
+
+    def has_scope_type(self, type_id: str) -> bool:
+        return type_id in self._scope_types
+
+    def has_scope_position(self, position_id: str) -> bool:
+        return position_id in self._scope_positions
+
+    def scope_type_label(self, type_id: str) -> str | None:
+        return self._scope_types.get(type_id)
+
+    def scope_position_label(self, position_id: str) -> str | None:
+        return self._scope_positions.get(position_id)
+
+
+def load_codebook(path: str | Path) -> Codebook:
+    """Load, validate, and index a codebook YAML file."""
+    return Codebook.from_validated(load_codebook_file(path))
 
 
 def load_codebook_file(path: str | Path) -> dict[str, Any]:
@@ -32,7 +97,96 @@ def validate_codebook(data: Any) -> dict[str, Any]:
     comment_tags = data.get("comment_tags")
     if not isinstance(comment_tags, Mapping):
         raise CodebookValidationError("codebook must include a comment_tags mapping")
+    _validate_namespaces(data.get("namespaces"), dimensions)
     return dict(data)
+
+
+def _validate_namespaces(namespaces: Any, dimensions: Mapping[str, Any]) -> None:
+    if not isinstance(namespaces, Mapping) or len(namespaces) == 0:
+        raise CodebookValidationError("codebook must include a namespaces mapping")
+    for name, info in namespaces.items():
+        _validate_namespace_entry(str(name), info, dimensions)
+
+
+def _validate_namespace_entry(
+    name: str, info: Any, dimensions: Mapping[str, Any]
+) -> None:
+    if not isinstance(info, Mapping):
+        raise CodebookValidationError(f"namespace {name!r} must be a mapping")
+    dimension = info.get("dimension")
+    if not isinstance(dimension, str) or dimension.strip() == "":
+        raise CodebookValidationError(
+            f"namespace {name!r} must include a non-empty string dimension"
+        )
+    kind = info.get("kind")
+    if kind not in {"value", "scope"}:
+        raise CodebookValidationError(
+            f"namespace {name!r} kind must be 'value' or 'scope'"
+        )
+    path = info.get("path", dimension)
+    if not isinstance(path, str) or path.strip() == "":
+        raise CodebookValidationError(
+            f"namespace {name!r} path must be a non-empty string when set"
+        )
+    try:
+        leaf = _resolve_path(dimensions, path)
+    except KeyError as exc:
+        raise CodebookValidationError(
+            f"namespace {name!r} path {path!r} not found under dimensions"
+        ) from exc
+    if kind == "scope":
+        if "contribution_types" not in leaf or "positions" not in leaf:
+            raise CodebookValidationError(
+                f"namespace {name!r} path {path!r} must be a scope dimension"
+            )
+        return
+    if "values" not in leaf:
+        raise CodebookValidationError(
+            f"namespace {name!r} path {path!r} must have a values list"
+        )
+
+
+def _resolve_path(dimensions: Mapping[str, Any], path: str) -> Mapping[str, Any]:
+    node: Any = dimensions
+    for part in path.split("."):
+        if not isinstance(node, Mapping) or part not in node:
+            raise KeyError(path)
+        node = node[part]
+    if not isinstance(node, Mapping):
+        raise KeyError(path)
+    return node
+
+
+def _index_values(values: list[Any]) -> dict[str, str]:
+    indexed: dict[str, str] = {}
+    for entry in values:
+        entry_id = str(entry["id"])
+        label = entry.get("label")
+        if not isinstance(label, str) or label.strip() == "":
+            label = entry_id
+        indexed[entry_id] = label
+    return indexed
+
+
+def _index_scope(
+    body: Mapping[str, Any],
+) -> tuple[dict[str, str], dict[str, str]]:
+    types = _index_values(list(body["contribution_types"]))
+    positions: dict[str, str] = {}
+    for item in body["positions"]:
+        if isinstance(item, str):
+            positions[item] = _titleize_id(item)
+        else:
+            entry_id = str(item["id"])
+            label = item.get("label")
+            positions[entry_id] = (
+                label if isinstance(label, str) and label.strip() else entry_id
+            )
+    return types, positions
+
+
+def _titleize_id(entry_id: str) -> str:
+    return entry_id.replace("_", " ").replace("-", " ").title()
 
 
 def _require_nonempty_string(data: Mapping[str, Any], key: str) -> None:
@@ -53,7 +207,6 @@ def _validate_dimension(name: str, body: Any) -> None:
     if "fields" in body:
         _validate_context_fields(name, body["fields"])
         return
-    # Nested group (e.g. guidance_on_use, accountability): each subkey is a leaf or nested.
     for sub_name, sub_body in body.items():
         if sub_name in {"description", "select"}:
             continue
@@ -125,8 +278,7 @@ def _validate_id_string_list(path: str, items: Any) -> None:
 
 
 def _require_entry_id(path: str, entry: Mapping[str, Any]) -> str:
-    entry_id = _coerce_id(path, entry.get("id"))
-    return entry_id
+    return _coerce_id(path, entry.get("id"))
 
 
 def _coerce_id(path: str, entry_id: Any) -> str:
