@@ -220,3 +220,14 @@ namespaces:
     dimension: scope
     kind: scope
     label: Scope
+
+# UI chip / filter column order (dimension ids)
+filter_order:
+  - stance
+  - stated_rationale
+  - scope
+  - guidance_level
+  - guidance_type
+  - disclosure
+  - human_responsibility
+  - enforcement

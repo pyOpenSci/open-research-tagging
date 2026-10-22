@@ -97,7 +97,9 @@ def validate_codebook(data: Any) -> dict[str, Any]:
     comment_tags = data.get("comment_tags")
     if not isinstance(comment_tags, Mapping):
         raise CodebookValidationError("codebook must include a comment_tags mapping")
-    _validate_namespaces(data.get("namespaces"), dimensions)
+    namespaces = data.get("namespaces")
+    _validate_namespaces(namespaces, dimensions)
+    _validate_filter_order(data.get("filter_order"), namespaces)
     return dict(data)
 
 
@@ -106,6 +108,25 @@ def _validate_namespaces(namespaces: Any, dimensions: Mapping[str, Any]) -> None
         raise CodebookValidationError("codebook must include a namespaces mapping")
     for name, info in namespaces.items():
         _validate_namespace_entry(str(name), info, dimensions)
+
+
+def _validate_filter_order(filter_order: Any, namespaces: Mapping[str, Any]) -> None:
+    if filter_order is None:
+        return
+    if not isinstance(filter_order, list) or len(filter_order) == 0:
+        raise CodebookValidationError("filter_order must be a non-empty list when set")
+    known_dimensions = {
+        str(info["dimension"]) for info in namespaces.values() if isinstance(info, Mapping)
+    }
+    for item in filter_order:
+        if not isinstance(item, str) or item.strip() == "":
+            raise CodebookValidationError(
+                "filter_order entries must be non-empty dimension id strings"
+            )
+        if item not in known_dimensions:
+            raise CodebookValidationError(
+                f"filter_order contains unknown dimension id {item!r}"
+            )
 
 
 def _validate_namespace_entry(
