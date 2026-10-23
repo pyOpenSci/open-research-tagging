@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the tag-check Actions CLI (plan tasks through 7b). Draft-codebook hard-fail policy polish, the static site UI, and CI workflows are not built yet.
+**Status:** describes what exists through draft-codebook tag-check policy (plan tasks through 7c). The static site UI and CI workflows are not built yet.
 
 ## What this system is
 
@@ -132,7 +132,9 @@ python -m open_research_tagging.check_tags --pr N                # scan a PR
 python -m open_research_tagging.check_tags --body '#Design'      # debug only
 ```
 
-`--reply` posts on the review comment (skips `*[bot]`). `--soft` prints issues but exits 0. Until the draft-codebook policy task, any warning fails the check (exit 1) unless `--soft`.
+`--reply` posts on the review comment (skips `*[bot]`). `--soft` prints issues but exits 0.
+
+**Draft-codebook CI policy:** the Actions status check **fails only on malformed tags** (bare `#Word`, `#…` that does not parse as `#namespace/value`). Well-formed tags with unknown namespace/value/scope ids are still printed (and may get a reply); they keep `needs_tag_review` on the site after refresh, but they do **not** fail the PR check until we tighten the policy later.
 
 ## How we keep this document current
 
@@ -144,6 +146,5 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Draft-codebook CI policy (hard-fail malformed only; unknown ids soft)
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)

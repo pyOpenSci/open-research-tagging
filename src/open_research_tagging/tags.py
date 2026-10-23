@@ -3,9 +3,20 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Mapping
+from dataclasses import dataclass
+from typing import Any, Literal, Mapping
 
 from open_research_tagging.codebook import Codebook
+
+WarningKind = Literal["malformed", "unknown"]
+
+
+@dataclass(frozen=True)
+class TagWarning:
+    """One hashtag issue; kind drives draft-codebook CI hard-fail policy."""
+
+    message: str
+    kind: WarningKind
 
 # #namespace/value or #namespace:value; optional :qualifier (scope type:position)
 TAG_RE = re.compile(
@@ -109,44 +120,64 @@ def codes_by_dimension(tags: list[Mapping[str, Any]]) -> dict[str, list[dict[str
     return out
 
 
+def collect_tag_warnings(
+    body: str | None,
+    tags: list[dict[str, Any]],
+    codebook: Codebook,
+) -> list[TagWarning]:
+    """
+    Flag malformed or unknown codebook hashtags.
+
+    malformed — shape problems (bare #Word, unparseable #…).
+    unknown — well-formed tags not in the current codebook.
+    """
+    text = body or ""
+    warnings: list[TagWarning] = []
+    warnings.extend(_bare_token_warnings(text))
+    if not tags and not warnings and text.strip().startswith("#"):
+        warnings.append(
+            TagWarning(
+                "Comment starts with # but no tags parsed. "
+                "Use #namespace/value — see codebook/COMMENTING.md",
+                "malformed",
+            )
+        )
+    warnings.extend(_codebook_tag_warnings(tags, codebook))
+    return warnings
+
+
 def tag_warnings(
     body: str | None,
     tags: list[dict[str, Any]],
     codebook: Codebook,
 ) -> list[str]:
     """Flag malformed or unknown codebook hashtags (for needs_tag_review)."""
-    text = body or ""
-    warnings: list[str] = []
-    warnings.extend(_bare_token_warnings(text))
-    if not tags and not warnings and text.strip().startswith("#"):
-        warnings.append(
-            "Comment starts with # but no tags parsed. "
-            "Use #namespace/value — see codebook/COMMENTING.md"
-        )
-    warnings.extend(_codebook_tag_warnings(tags, codebook))
-    return warnings
+    return [w.message for w in collect_tag_warnings(body, tags, codebook)]
 
 
-def _bare_token_warnings(text: str) -> list[str]:
+def _bare_token_warnings(text: str) -> list[TagWarning]:
     covered: set[int] = set()
     for match in TAG_RE.finditer(text):
         covered.update(range(match.start(), match.end()))
-    warnings: list[str] = []
+    warnings: list[TagWarning] = []
     for match in HASH_TOKEN_RE.finditer(text):
         if any(index in covered for index in range(match.start(), match.end())):
             continue
         token = match.group(0)
         warnings.append(
-            f"{token} looks like a tag but needs #namespace/value "
-            f"(e.g. #disclosure/required). See codebook/COMMENTING.md"
+            TagWarning(
+                f"{token} looks like a tag but needs #namespace/value "
+                f"(e.g. #disclosure/required). See codebook/COMMENTING.md",
+                "malformed",
+            )
         )
     return warnings
 
 
 def _codebook_tag_warnings(
     tags: list[dict[str, Any]], codebook: Codebook
-) -> list[str]:
-    warnings: list[str] = []
+) -> list[TagWarning]:
+    warnings: list[TagWarning] = []
     known_ns = codebook.known_namespaces()
     for tag in tags:
         ns = tag.get("namespace") or ""
@@ -154,7 +185,11 @@ def _codebook_tag_warnings(
         if ns not in known_ns:
             known = ", ".join(sorted(known_ns))
             warnings.append(
-                f"{raw} uses unknown namespace '{ns}'. Known namespaces: {known}"
+                TagWarning(
+                    f"{raw} uses unknown namespace '{ns}'. "
+                    f"Known namespaces: {known}",
+                    "unknown",
+                )
             )
             continue
         if tag.get("kind") == "scope":
@@ -166,26 +201,32 @@ def _codebook_tag_warnings(
 
 def _scope_warnings(
     raw: str, tag: Mapping[str, Any], codebook: Codebook
-) -> list[str]:
-    warnings: list[str] = []
+) -> list[TagWarning]:
+    warnings: list[TagWarning] = []
     ctype = tag.get("contribution_type") or tag.get("value")
     pos = tag.get("position") or tag.get("qualifier")
     if ctype and not codebook.has_scope_type(str(ctype)):
         warnings.append(
-            f"{raw} has unknown scope type '{ctype}'. "
-            f"Example: #scope/code:restricted"
+            TagWarning(
+                f"{raw} has unknown scope type '{ctype}'. "
+                f"Example: #scope/code:restricted",
+                "unknown",
+            )
         )
     if pos and not codebook.has_scope_position(str(pos)):
         known = ", ".join(sorted(codebook.known_scope_positions()))
         warnings.append(
-            f"{raw} has unknown scope position '{pos}'. Use one of: {known}"
+            TagWarning(
+                f"{raw} has unknown scope position '{pos}'. Use one of: {known}",
+                "unknown",
+            )
         )
     return warnings
 
 
 def _value_warnings(
     raw: str, tag: Mapping[str, Any], codebook: Codebook
-) -> list[str]:
+) -> list[TagWarning]:
     dim = str(tag.get("dimension") or "")
     val = str(tag.get("value") or "")
     ns = str(tag.get("namespace") or "")
@@ -193,5 +234,8 @@ def _value_warnings(
         return []
     sample = codebook.sample_value_id(dim) or "…"
     return [
-        f"{raw} has unknown value '{val}' for {dim}. Example: #{ns}/{sample}"
+        TagWarning(
+            f"{raw} has unknown value '{val}' for {dim}. Example: #{ns}/{sample}",
+            "unknown",
+        )
     ]

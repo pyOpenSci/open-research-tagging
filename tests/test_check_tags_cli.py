@@ -26,8 +26,28 @@ def test_cli_body_clean_exits_0(codebook_path: Path):
     assert code == 0
 
 
-def test_cli_body_dirty_exits_1(codebook_path: Path):
+def test_cli_body_malformed_exits_1(codebook_path: Path):
     code = main(["--body", "#Design", "--codebook", str(codebook_path)])
+    assert code == 1
+
+
+def test_cli_body_unknown_id_exits_0(codebook_path: Path):
+    """Draft policy: well-formed but unknown ids do not fail the check."""
+    code = main(
+        ["--body", "#stance/nope", "--codebook", str(codebook_path)]
+    )
+    assert code == 0
+
+
+def test_cli_body_mix_malformed_and_unknown_exits_1(codebook_path: Path):
+    code = main(
+        [
+            "--body",
+            "#Design\n#stance/nope",
+            "--codebook",
+            str(codebook_path),
+        ]
+    )
     assert code == 1
 
 

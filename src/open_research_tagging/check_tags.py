@@ -19,7 +19,7 @@ from typing import Any
 from open_research_tagging.codebook import Codebook, load_codebook
 from open_research_tagging.fetch_comments import FetchConfigError, resolve_owner_repo
 from open_research_tagging.github_client import Getter, Poster, github_post, paginate
-from open_research_tagging.tags import parse_and_enrich, tag_warnings
+from open_research_tagging.tags import TagWarning, collect_tag_warnings, parse_and_enrich
 
 API = "https://api.github.com"
 GUIDE_PATH = "codebook/COMMENTING.md"
@@ -27,11 +27,21 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CODEBOOK = REPO_ROOT / "codebook" / "codebook.yaml"
 
 
-def check_body(body: str | None, codebook: Codebook) -> list[str]:
-    """Return tag warnings for a comment body (empty list if clean)."""
+def check_body_records(body: str | None, codebook: Codebook) -> list[TagWarning]:
+    """Return structured tag warnings (malformed vs unknown)."""
     text = body or ""
     tags = parse_and_enrich(text, codebook)
-    return tag_warnings(text, tags, codebook)
+    return collect_tag_warnings(text, tags, codebook)
+
+
+def check_body(body: str | None, codebook: Codebook) -> list[str]:
+    """Return tag warning messages for a comment body (empty list if clean)."""
+    return [w.message for w in check_body_records(body, codebook)]
+
+
+def has_malformed(warnings: list[TagWarning]) -> bool:
+    """True if any warning should hard-fail the PR check under draft policy."""
+    return any(w.kind == "malformed" for w in warnings)
 
 
 def format_reply(
@@ -145,10 +155,10 @@ def main(
     args = parse_args(argv)
     codebook = load_codebook(args.codebook)
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
-    problems: list[tuple[str, list[str], dict[str, Any] | None]] = []
+    problems: list[tuple[str, list[TagWarning], dict[str, Any] | None]] = []
 
     if args.body is not None:
-        warns = check_body(args.body, codebook)
+        warns = check_body_records(args.body, codebook)
         if warns:
             problems.append(("stdin", warns, None))
     elif args.from_event:
@@ -161,7 +171,7 @@ def main(
         if not isinstance(comment, dict):
             comment = {}
         body = comment.get("body") or ""
-        warns = check_body(str(body), codebook)
+        warns = check_body_records(str(body), codebook)
         if warns:
             loc = str(comment.get("html_url") or "event-comment")
             problems.append((loc, warns, comment))
@@ -183,7 +193,7 @@ def main(
                         owner,
                         repo,
                         int(comment["id"]),
-                        format_reply(warns),
+                        format_reply([w.message for w in warns]),
                         token,
                         poster=poster,
                     )
@@ -205,7 +215,7 @@ def main(
             user = (comment.get("user") or {}).get("login")
             if is_bot_login(user if isinstance(user, str) else None):
                 continue
-            warns = check_body(comment.get("body") or "", codebook)
+            warns = check_body_records(comment.get("body") or "", codebook)
             if warns:
                 loc = str(comment.get("html_url") or comment.get("id"))
                 problems.append((loc, warns, comment))
@@ -214,20 +224,28 @@ def main(
         return 2
 
     if not problems:
-        print("OK — no malformed codebook tags found.")
+        print("OK — no tag issues found.")
         return 0
 
     print(f"Found {len(problems)} comment(s) with tag issues:\n")
     for loc, warns, _ in problems:
         print(f"• {loc}")
         for warning in warns:
-            print(f"  - {warning}")
+            print(f"  - [{warning.kind}] {warning.message}")
         print()
 
     if args.soft:
         print("(soft mode: exiting 0)")
         return 0
-    return 1
+
+    # Draft-codebook policy: hard-fail the PR check only on malformed tags.
+    if any(has_malformed(warns) for _, warns, _ in problems):
+        return 1
+    print(
+        "(draft codebook policy: unknown-but-well-formed ids "
+        "do not fail the check)"
+    )
+    return 0
 
 
 if __name__ == "__main__":
