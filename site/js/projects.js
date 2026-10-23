@@ -200,6 +200,8 @@
     const sub = [gov, domain].filter(Boolean).join(" · ");
     const href =
       row.comments_href || "index.html?project=" + encodeURIComponent(row.slug);
+    const codingHref =
+      "coding.html?project=" + encodeURIComponent(row.slug || "");
     return (
       '<div class="project-name"><a href="' +
       escapeAttr(href) +
@@ -207,6 +209,9 @@
       escapeHtml(row.display_name) +
       "</a>" +
       (sub ? '<span class="sub">' + escapeHtml(sub) + "</span>" : "") +
+      '<span class="sub"><a href="' +
+      escapeAttr(codingHref) +
+      '">Coding view</a></span>' +
       "</div>"
     );
   }

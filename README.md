@@ -24,4 +24,4 @@ While the codebook is still changing, `python -m open_research_tagging.check_tag
 cd site && python3 -m http.server 8000
 ```
 
-Open http://localhost:8000/ for the comment browser, http://localhost:8000/projects.html for overall codes, or http://localhost:8000/tags.html for the **tag picker** (stage/copy exact hashtags for GitHub review comments). See [`codebook/COMMENTING.md`](codebook/COMMENTING.md) for the coder workflow.
+Open http://localhost:8000/ for the comment browser, http://localhost:8000/projects.html for overall codes, http://localhost:8000/tags.html for the **tag picker** (stage/copy hashtags for GitHub review comments), or http://localhost:8000/coding.html?project=pyopensci for the **coding view** (overall codes + evidence → Copy YAML). See [`codebook/COMMENTING.md`](codebook/COMMENTING.md) for when to use each.

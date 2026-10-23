@@ -39,7 +39,12 @@ One or two sentences on what this passage shows.
 | `#scope/code` | `#scope/code:restricted` (type **and** position) |
 | Conversation comment on the PR | Review comment on the **Files** tab (needs a line) |
 
-## Project-level vs passage tags
+## Which tool when
 
-- **PR line comments** — evidence on specific passages (this workflow + tag picker).
-- **`projects/<slug>/project.yaml`** — overall codes for the whole policy (coding view helper comes later). Do not invent overall YAML by pasting random hashtags into `project.yaml`.
+| Need | Where |
+|------|--------|
+| Tag a **passage** (line evidence) | **Tag picker** (`tags.html`) → Copy hashtags → paste into a **Files-tab** review comment (this doc). |
+| Browse tagged passages | Comment browser (`index.html`) after maintainers refresh site data. |
+| Set **overall** codes for the policy | **Coding view** (`coding.html?project=<slug>`) → walk evidence → **Copy YAML** → paste over the `coding:` block in `projects/<slug>/project.yaml`. |
+
+Do **not** invent overall YAML by pasting random hashtags into `project.yaml`. Passage hashtags stay on PR comments; overall codes stay in `project.yaml`.

@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the coding view shell (plan tasks through 10a). Evidence pane, coding form, Copy YAML, and CI workflows are not built yet.
+**Status:** describes the pipeline, browse site, tag picker, and coding view (through plan **10e**). CI/Actions and seed walkthrough polish are still ahead (Phases 11–12).
 
 ## What this system is
 
@@ -186,5 +186,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Coding view entry notes + walkthrough polish (10e–10f)
+- Coding view walkthrough polish (10f); CI/Actions (Phase 11)
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)
