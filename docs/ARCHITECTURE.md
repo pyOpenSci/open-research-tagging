@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through project template + discovery (plan tasks through 5a). Comment→project join, fetch, the static site UI, and CI are not built yet.
+**Status:** describes what exists through the comment index for evidence links (plan tasks through 5b). Overall join into `projects.json`, fetch, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -69,7 +69,9 @@ Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixtur
 
 ### Projects on disk
 
-Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips any slug whose folder name starts with `_`, so `_template` never becomes a `projects.json` row. Load helpers live in `projects.py` (join/build comes next).
+Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips any slug whose folder name starts with `_`, so `_template` never becomes a `projects.json` row.
+
+**Comment index:** from normalized `comments.json` rows, `comment_index` groups comment ids per project (`all_ids`, `by_dimension`, `by_filter_key`) so overall codes can link to matching passage evidence. `normalize_scope_key` maps YAML underscore keys (`docs_and_text`) to hashtag hyphen form (`docs-and-text`) until the template and codebook spellings are unified.
 
 ## Module map
 
@@ -81,7 +83,7 @@ Each studied policy lives under `projects/<slug>/` with a `project.yaml` (proven
 | `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
 | `quotes.py` | Local file or diff_hunk quote resolution |
 | `process_comments.py` | Maintainer/Actions CLI for normalize + write |
-| `projects.py` | Discover/load `project.yaml` (skip `_` slugs) |
+| `projects.py` | Discover/load `project.yaml`; comment index + scope-key shim |
 
 Package root: `src/open_research_tagging/`.
 

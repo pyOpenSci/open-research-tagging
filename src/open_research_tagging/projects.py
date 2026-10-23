@@ -1,9 +1,9 @@
-"""Discover and load projects/<slug>/project.yaml files."""
+"""Discover/load project.yaml and index comments for evidence links."""
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Iterator, Mapping
 
 import yaml
 
@@ -39,3 +39,49 @@ def load_project_yaml(path: str | Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ProjectYamlError(f"Expected mapping in {path}")
     return data
+
+
+def normalize_scope_key(key: str) -> str:
+    """Map project.yaml scope keys to hashtag form (docs_and_text → docs-and-text)."""
+    return key.replace("_", "-")
+
+
+def comment_index(
+    comments: list[Mapping[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    """
+    Build per-project comment buckets for evidence links.
+
+    Each project maps to:
+      all_ids, by_dimension, by_filter_key
+    (ids deduped, first-seen order preserved).
+    """
+    idx: dict[str, dict[str, Any]] = {}
+    for row in comments:
+        project = row.get("project")
+        if not project:
+            continue
+        project_key = str(project)
+        bucket = idx.setdefault(
+            project_key,
+            {"by_dimension": {}, "by_filter_key": {}, "all_ids": []},
+        )
+        cid = row.get("id")
+        bucket["all_ids"].append(cid)
+        for tag in row.get("tags") or []:
+            if not isinstance(tag, Mapping):
+                continue
+            dim = tag.get("dimension")
+            key = tag.get("filter_key")
+            if dim:
+                bucket["by_dimension"].setdefault(str(dim), []).append(cid)
+            if key:
+                bucket["by_filter_key"].setdefault(str(key), []).append(cid)
+
+    for bucket in idx.values():
+        bucket["all_ids"] = list(dict.fromkeys(bucket["all_ids"]))
+        for dim, ids in bucket["by_dimension"].items():
+            bucket["by_dimension"][dim] = list(dict.fromkeys(ids))
+        for key, ids in bucket["by_filter_key"].items():
+            bucket["by_filter_key"][key] = list(dict.fromkeys(ids))
+    return idx
