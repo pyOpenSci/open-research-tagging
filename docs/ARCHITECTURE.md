@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the pyOpenSci seed and regenerated site JSON (plan tasks through 5e). Fetch, the static site UI, and CI are not built yet.
+**Status:** describes what exists through the shared GitHub HTTP client (plan tasks through 6a). Fetch entrypoint, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -103,8 +103,13 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 | `process_comments.py` | Maintainer/Actions CLI for normalize + write |
 | `projects.py` | Discover/load YAML; comment index; build rows; write payload |
 | `process_projects.py` | Maintainer/Actions CLI for `projects.json` |
+| `github_client.py` | Shared GET + Link pagination (injectable for tests) |
 
 Package root: `src/open_research_tagging/`.
+
+### GitHub HTTP (shared)
+
+`github_client` builds auth headers and GETs JSON from the GitHub API, following `Link: rel="next"` for pagination. Fetch and tag-check will share this module. Tests inject a `getter` (or stub `urlopen`) so CI never calls the live API. Stdlib only for v1; a fuller client (e.g. PyGithub) can replace this later if the thin wrapper stops being enough.
 
 ## How we keep this document current
 
@@ -116,6 +121,6 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Fetching review comments from the GitHub API
+- Fetch entrypoint writing `raw_comments.json`
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)
