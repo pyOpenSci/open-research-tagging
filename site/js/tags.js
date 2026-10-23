@@ -1,11 +1,12 @@
 /**
- * Passage tag picker shell (9a): render codebook.tag_catalog.
- * Search/stage/copy land in later tasks.
+ * Passage tag picker: catalog, search, stage list (copy in 9c).
+ * Depends on: Alpine, OrtCodebook, OrtTagsStage.
  */
 (function (global) {
   "use strict";
 
   const Codebook = global.OrtCodebook;
+  const Stage = global.OrtTagsStage;
 
   document.addEventListener("alpine:init", function () {
     global.Alpine.data("tagPicker", tagPicker);
@@ -17,7 +18,8 @@
       error: "",
       version: "",
       catalog: [],
-      grouped: [],
+      query: "",
+      staged: [],
 
       async init() {
         try {
@@ -29,33 +31,42 @@
               });
           this.version = codebook.version || "";
           this.catalog = codebook.tag_catalog || [];
-          this.grouped = groupByDimension(this.catalog);
           this.loading = false;
         } catch (err) {
           this.loading = false;
           this.error = String(err);
         }
       },
-    };
-  }
 
-  function groupByDimension(catalog) {
-    const order = [];
-    const byDim = {};
-    (catalog || []).forEach(function (entry) {
-      const key = entry.dimension;
-      if (!byDim[key]) {
-        byDim[key] = {
-          dimension: key,
-          label: entry.dimension_label || key,
-          tags: [],
-        };
-        order.push(key);
-      }
-      byDim[key].tags.push(entry);
-    });
-    return order.map(function (key) {
-      return byDim[key];
-    });
+      get filteredCatalog() {
+        return Stage.filterCatalog(this.catalog, this.query);
+      },
+
+      get grouped() {
+        return Stage.groupByDimension(this.filteredCatalog);
+      },
+
+      get visibleCount() {
+        return this.filteredCatalog.length;
+      },
+
+      isStaged(hashtag) {
+        return this.staged.some(function (t) {
+          return t.hashtag === hashtag;
+        });
+      },
+
+      addTag(tag) {
+        this.staged = Stage.stageTag(this.staged, tag);
+      },
+
+      removeTag(hashtag) {
+        this.staged = Stage.removeStaged(this.staged, hashtag);
+      },
+
+      clearStaged() {
+        this.staged = Stage.clearStaged(this.staged);
+      },
+    };
   }
 })(typeof window !== "undefined" ? window : globalThis);

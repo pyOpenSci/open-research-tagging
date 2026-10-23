@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="css/site.css" />
   <style>[x-cloak] { display: none !important; }</style>
 </head>
-<body>
-  <div class="page" x-data="tagPicker" x-cloak>
+<body class="tags-page">
+  <div class="page tag-picker" x-data="tagPicker" x-cloak>
     <nav class="top" aria-label="Primary">
       <a href="projects.html">Projects</a>
       <a href="index.html">Comments</a>
@@ -16,36 +16,92 @@
       <a class="stub" href="coding.html">Coding view</a>
     </nav>
     <header class="page-header">
-      <h1>Passage tag picker</h1>
+      <h1>Tag picker</h1>
       <p class="lede">
-        Full codebook catalog with exact hashtag strings for pasting into GitHub
-        review comments. Search, staging, and copy come next.
+        Click a tag to stage it. Copy into a GitHub review comment next.
       </p>
       <p class="meta-row" x-show="version" x-text="'Codebook ' + version"></p>
       <p class="meta-row" x-show="error" x-text="error"></p>
-      <p class="meta-row" x-show="loading">Loading catalog…</p>
-      <p class="meta-row" x-show="!loading && !error"
-         x-text="catalog.length + ' tags'"></p>
+      <p class="meta-row" x-show="loading">Loading…</p>
     </header>
 
-    <div class="tag-catalog" x-show="!loading && !error">
-      <template x-for="group in grouped" :key="group.dimension">
-        <section class="tag-group">
-          <h2 x-text="group.label"></h2>
-          <ul class="tag-list">
-            <template x-for="tag in group.tags" :key="tag.hashtag">
-              <li>
-                <span class="tag-label" x-text="tag.label"></span>
-                <code class="tag-hashtag" x-text="tag.hashtag"></code>
-              </li>
-            </template>
-          </ul>
-        </section>
-      </template>
+    <div class="picker-layout" x-show="!loading && !error">
+      <aside class="staged-panel" aria-label="Staged tags">
+        <div class="sidebar-head">
+          <h2>Staged</h2>
+          <button
+            type="button"
+            class="clear-filters"
+            id="clear-staged"
+            @click="clearStaged()"
+            :disabled="staged.length === 0"
+          >Clear</button>
+        </div>
+        <p class="meta-row" x-text="staged.length + ' staged'"></p>
+        <ul class="staged-list" id="staged-list">
+          <template x-for="tag in staged" :key="tag.hashtag">
+            <li>
+              <code class="tag-hashtag" x-text="tag.hashtag"></code>
+              <button
+                type="button"
+                class="chip"
+                @click="removeTag(tag.hashtag)"
+              >Remove</button>
+            </li>
+          </template>
+        </ul>
+        <p class="meta-row" x-show="staged.length === 0">
+          Click tags below to stage them.
+        </p>
+      </aside>
+
+      <section class="catalog-pane">
+        <div class="controls">
+          <label class="search">Search
+            <input
+              type="search"
+              id="tag-search"
+              placeholder="label, hashtag…"
+              x-model="query"
+            />
+          </label>
+        </div>
+        <p
+          class="meta-row"
+          x-text="visibleCount + ' of ' + catalog.length + ' tags'"
+        ></p>
+
+        <div class="tag-catalog">
+          <template x-for="group in grouped" :key="group.dimension">
+            <section class="tag-group">
+              <h2 x-text="group.label"></h2>
+              <ul class="tag-list">
+                <template x-for="tag in group.tags" :key="tag.hashtag">
+                  <li>
+                    <button
+                      type="button"
+                      class="tag-row"
+                      :class="{ staged: isStaged(tag.hashtag) }"
+                      :aria-pressed="isStaged(tag.hashtag) ? 'true' : 'false'"
+                      :disabled="isStaged(tag.hashtag)"
+                      @click="addTag(tag)"
+                    >
+                      <span class="tag-label" x-text="tag.label"></span>
+                      <code class="tag-hashtag" x-text="tag.hashtag"></code>
+                    </button>
+                  </li>
+                </template>
+              </ul>
+            </section>
+          </template>
+          <p class="meta-row" x-show="visibleCount === 0">No tags match.</p>
+        </div>
+      </section>
     </div>
   </div>
 
   <script src="js/codebook.js"></script>
+  <script src="js/tags_stage.js"></script>
   <script src="js/tags.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </body>

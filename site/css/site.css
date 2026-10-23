@@ -404,15 +404,59 @@ a { color: var(--accent); }
 }
 .empty { color: var(--muted); font-size: 0.8rem; }
 
+/* Tag picker: narrow column for use beside GitHub (≤25vw) */
+body.tags-page {
+  background: var(--bg);
+}
+body.tags-page .page.tag-picker {
+  max-width: min(25vw, 22rem);
+  min-width: 16rem;
+  margin: 0;
+  padding: 0.75rem 0.65rem 1.5rem;
+}
+body.tags-page .page-header h1 {
+  font-size: 1.15rem;
+}
+body.tags-page .lede {
+  font-size: 0.8rem;
+  max-width: none;
+}
+.picker-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.staged-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 0.5rem 0.55rem 0.65rem;
+}
+.staged-list {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 8rem;
+  overflow: auto;
+}
+.staged-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.35rem;
+  font-size: 0.78rem;
+}
+.catalog-pane { min-width: 0; }
 .tag-catalog {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  max-width: 48rem;
+  gap: 0.85rem;
 }
 .tag-group h2 {
-  margin: 0 0 0.45rem;
-  font-size: 0.85rem;
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--muted);
@@ -424,27 +468,48 @@ a { color: var(--accent); }
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.25rem;
 }
 .tag-list li {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.tag-row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem 0.85rem;
-  padding: 0.35rem 0.55rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.35rem 0.45rem;
   background: var(--card);
   border: 1px solid var(--line);
+  color: var(--ink);
+}
+.tag-row:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.tag-row.staged,
+.tag-row:disabled {
+  opacity: 0.65;
+  cursor: default;
+  border-color: var(--accent);
+  background: var(--chip);
 }
 .tag-label {
-  flex: 1;
-  min-width: 8rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  line-height: 1.25;
 }
 .tag-hashtag {
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   color: var(--accent);
-  background: var(--chip);
-  padding: 0.1rem 0.4rem;
+  background: transparent;
+  padding: 0;
+  word-break: break-all;
 }
 
 @media (max-width: 860px) {
