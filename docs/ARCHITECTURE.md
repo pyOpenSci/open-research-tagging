@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through fetching raw review comments (plan tasks through 6b). Tag-check CLI, the static site UI, and CI workflows are not built yet.
+**Status:** describes what exists through tag-check library helpers (plan tasks through 7a). Tag-check Actions CLI, the static site UI, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -105,6 +105,7 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 | `process_projects.py` | Maintainer/Actions CLI for `projects.json` |
 | `github_client.py` | Shared GET + Link pagination (injectable for tests) |
 | `fetch_comments.py` | Maintainer/Actions CLI → `raw_comments.json` |
+| `check_tags.py` | `check_body` / `format_reply` for Actions tag-check |
 
 Package root: `src/open_research_tagging/`.
 
@@ -121,6 +122,10 @@ python -m open_research_tagging.fetch_comments --owner ORG --repo NAME
 
 Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, comments }`). Offline work keeps using `raw_comments.fixture.json` instead.
 
+### Tag-check (library)
+
+`check_body` runs the same parse/enrich/warn path as comment normalize, so CI and the site agree on what is wrong. `format_reply` builds the markdown note posted on a bad review comment (points at `codebook/COMMENTING.md`). The Actions CLI that calls these lands next.
+
 ## How we keep this document current
 
 - When a plan task changes how pieces fit together, update the matching section here in the same handoff (small diffs).
@@ -131,6 +136,6 @@ Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, com
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Tag-check entrypoint for Actions (reply / PR scan)
+- Tag-check Actions CLI (`--from-event` / `--pr` / draft-codebook hard-fail policy)
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)
