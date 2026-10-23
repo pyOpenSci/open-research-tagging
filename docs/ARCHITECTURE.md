@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through shared site assets (plan tasks through 8a). Full comment/projects browsers, tag picker, coding view, and CI workflows are not built yet.
+**Status:** describes what exists through the comment browser (plan tasks through 8b). Projects overview tables, tag picker, coding view, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -136,12 +136,27 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 
 **Draft-codebook CI policy:** the Actions status check **fails only on malformed tags** (bare `#Word`, or `#…` that does not parse as `#namespace/value`). Well-formed tags with unknown namespace/value/scope ids are still printed (and may get a reply). They keep `needs_tag_review` on the site after refresh, but they do **not** fail the PR check until we tighten the policy later.
 
-### Static site (shared assets)
+### Static site (shared assets + comment browser)
 
-- `site/css/site.css` — shared chrome (nav, sidebar, chips, tables)
+- `site/css/site.css` — shared chrome (nav, sidebar, chips, tables, quote UI)
 - `site/js/codebook.js` — loads `data/codebook.json`; builds filter dimensions from `filter_order` + namespace labels (**no** hardcoded filter-dimension list)
-- `site/js/chips.js` — chip/details helpers for later pages
-- `index.html` and `projects.html` — thin shells that prove the shared path; full browse UX is next
+- `site/js/chips.js` — chip/details helpers
+- `site/js/comments_filters.js` — pure URL parse + row matching + chip/scope option helpers (OR within a dimension, AND across; scope full/partial keys)
+- `site/js/comments.js` — Alpine `commentBrowser` component + DataTables cell renderers
+- `index.html` — comment browser (Alpine templates for sidebar/controls; DataTables for the table); `projects.html` — shell until the projects overview task
+- UI library: **Alpine.js** (CDN) for declarative filter chrome; jQuery + DataTables for the sortable table
+
+**Comment browser URL params** (same deep-link shapes the projects join emits):
+
+| Param | Effect |
+| --- | --- |
+| `project` | Restrict to that project slug |
+| `dimension` | Any comment tagged on that dimension (`dimension-any:…`, or scope partial `*:*`) |
+| `filter` | Exact `filter_key` (e.g. `stance:allow` or `scope:code:restricted`) |
+| `scope_type` / `scope_position` | Scope match (full pair or partial) |
+| `needs_tag_review=1` | Only rows flagged for tag review |
+
+Also filters in-page: text search, project/PR selects, dimension chips, Clear. Fixture banner when `comments.json` `meta.is_fixture` is true.
 
 Local preview: `cd site && python3 -m http.server 8000` then open http://localhost:8000/
 
@@ -155,6 +170,6 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Full comment browser and projects overview tables
+- Projects overview tables (overall codes + evidence deep links)
 - Tag picker and coding view pages
 - GitHub Actions (tests, tag check, Pages refresh)

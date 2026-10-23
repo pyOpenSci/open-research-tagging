@@ -4,10 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Open research tagging — comments</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
   <link rel="stylesheet" href="css/site.css" />
+  <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body>
-  <div class="page">
+  <div class="page" x-data="commentBrowser" x-cloak>
     <nav class="top" aria-label="Primary">
       <a href="projects.html">Projects</a>
       <a href="index.html" aria-current="page">Comments</a>
@@ -17,54 +19,183 @@
     <header class="page-header">
       <h1>Research comment browser</h1>
       <p class="lede">
-        Shared site chrome and codebook-driven filters are in place.
-        Full comment table, URL filters, and quote UI land in the next task.
+        PR review comments pooled across every pull request. Use the left panel
+        to filter by codebook dimension — sections stay collapsed until you open them.
       </p>
+      <p class="help-link">
+        Tag format: <code>#namespace/value</code>
+        (e.g. <code>#disclosure/required</code>)
+      </p>
+      <div id="fixture-banner" class="banner" x-show="isFixture" x-cloak>
+        <strong>Sample data.</strong> Showing fixture comments until you fetch
+        live PR review comments from GitHub. Links may be placeholders.
+      </div>
+      <div
+        id="url-filter-banner"
+        class="banner"
+        x-show="urlBannerBits.length"
+        x-cloak
+      >
+        <strong>Filtered view.</strong>
+        <span x-text="urlBannerBits.join(' · ')"></span>
+        · <a href="index.html">clear URL filters</a>
+        · <a href="projects.html">back to projects</a>
+      </div>
     </header>
 
     <div class="layout">
       <aside class="sidebar" aria-label="Code filters">
         <div class="sidebar-head">
           <h2>Code filters</h2>
+          <button
+            type="button"
+            class="clear-filters"
+            id="clear-filters"
+            @click="clearFilters()"
+          >Clear</button>
         </div>
-        <p class="meta-row" id="filter-meta">Loading codebook…</p>
-        <ul class="dim-list" id="dim-preview" aria-live="polite"></ul>
+        <div class="review-filter" x-show="reviewCount > 0">
+          <button
+            type="button"
+            class="chip"
+            id="filter-tag-review"
+            :aria-pressed="onlyTagReview ? 'true' : 'false'"
+            :class="{ on: onlyTagReview }"
+            @click="toggleTagReview()"
+          >
+            Needs tag review
+            <span class="count" x-text="'(' + reviewCount + ')'"></span>
+          </button>
+        </div>
+        <div class="dim-filters" id="dim-filters">
+          <template x-for="block in filterBlocks" :key="block.key">
+            <details
+              class="dim-block"
+              :class="{ 'has-active': dimActiveCount(block.key) > 0 }"
+              :open="openDims[block.key] || dimActiveCount(block.key) > 0"
+              @toggle="openDims[block.key] = $event.target.open"
+            >
+              <summary>
+                <span class="summary-label" x-text="block.label"></span>
+                <span class="summary-meta"
+                  x-text="block.kind === 'scope'
+                    ? (dimActiveCount('scope') ? 'filtered' : 'type + position')
+                    : (dimActiveCount(block.key)
+                        ? dimActiveCount(block.key) + ' on'
+                        : block.chips.length + ' opts')"
+                ></span>
+              </summary>
+              <div class="dim-body">
+                <template x-if="block.kind === 'value'">
+                  <div class="chips">
+                    <template x-for="chip in block.chips" :key="chip.key">
+                      <button
+                        type="button"
+                        class="chip"
+                        :aria-pressed="isChipOn(block.key, chip.key) ? 'true' : 'false'"
+                        :class="{ on: isChipOn(block.key, chip.key) }"
+                        @click="toggleChip(block.key, chip.key)"
+                      >
+                        <span x-text="chip.label"></span>
+                        <span class="count" x-text="'(' + chip.count + ')'"></span>
+                      </button>
+                    </template>
+                  </div>
+                </template>
+                <template x-if="block.kind === 'scope'">
+                  <div class="scope-row">
+                    <label>Contribution type
+                      <select
+                        id="scope-type"
+                        :value="scopeType"
+                        @change="onScopeTypeChange($event)"
+                      >
+                        <option value="">Any type</option>
+                        <template x-for="opt in scopeTypeOptions" :key="opt.id">
+                          <option
+                            :value="opt.id"
+                            x-text="opt.label"
+                            :selected="scopeType === opt.id"
+                          ></option>
+                        </template>
+                      </select>
+                    </label>
+                    <label>Position
+                      <select
+                        id="scope-position"
+                        :value="scopePosition"
+                        @change="onScopePositionChange($event)"
+                      >
+                        <option value="">Any position</option>
+                        <template x-for="opt in scopePositionOptions" :key="opt.id">
+                          <option
+                            :value="opt.id"
+                            x-text="opt.label"
+                            :selected="scopePosition === opt.id"
+                          ></option>
+                        </template>
+                      </select>
+                    </label>
+                  </div>
+                </template>
+              </div>
+            </details>
+          </template>
+        </div>
       </aside>
+
       <section class="main-pane">
-        <p class="stub-note" id="status">
-          Shell page for shared assets (<code>css/site.css</code>,
-          <code>js/codebook.js</code>, <code>js/chips.js</code>).
-        </p>
+        <p class="meta-row" id="meta" x-text="metaText || (loading ? 'Loading comments…' : '')"></p>
+        <div class="controls">
+          <label class="search">Search
+            <input
+              type="search"
+              id="q"
+              placeholder="text, path, author…"
+              x-model="q"
+              @input="onSearchInput()"
+            />
+          </label>
+          <label>Project
+            <select id="project" x-model="project" @change="onProjectOrPrChange()">
+              <option value="">All</option>
+              <template x-for="p in projectOptions" :key="p">
+                <option :value="p" x-text="p"></option>
+              </template>
+            </select>
+          </label>
+          <label>PR
+            <select id="pr" x-model="pr" @change="onProjectOrPrChange()">
+              <option value="">All</option>
+              <template x-for="n in prOptions" :key="n">
+                <option :value="n" x-text="n"></option>
+              </template>
+            </select>
+          </label>
+        </div>
+        <table id="commentstable" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>Codes</th>
+              <th>Comment</th>
+              <th>Project</th>
+              <th>Path</th>
+              <th>Author</th>
+              <th>PR</th>
+              <th>Link</th>
+            </tr>
+          </thead>
+        </table>
       </section>
     </div>
   </div>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
   <script src="js/codebook.js"></script>
-  <script src="js/chips.js"></script>
-  <script>
-    (function () {
-      OrtCodebook.loadCodebook("data/codebook.json")
-        .then(function (codebook) {
-          const dims = OrtCodebook.filterDimensionsFromCodebook(codebook);
-          const meta = document.getElementById("filter-meta");
-          const list = document.getElementById("dim-preview");
-          meta.textContent =
-            dims.length +
-            " filter dimensions from codebook.json (version " +
-            (codebook.version || "?") +
-            ")";
-          list.innerHTML = "";
-          dims.forEach(function (d) {
-            const li = document.createElement("li");
-            li.textContent = d.label + " (" + d.key + ")";
-            li.dataset.dim = d.key;
-            list.appendChild(li);
-          });
-        })
-        .catch(function (err) {
-          document.getElementById("filter-meta").textContent = String(err);
-        });
-    })();
-  </script>
+  <script src="js/comments_filters.js"></script>
+  <script src="js/comments.js"></script>
+  <!-- Alpine after commentBrowser registration; filterDimensionsFromCodebook via OrtCodebook -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </body>
 </html>

@@ -26,7 +26,12 @@ def test_pages_link_shared_assets_not_inline_filter_dims():
         assert 'href="css/site.css"' in html
         assert 'src="js/codebook.js"' in html
         assert "FILTER_DIMS" not in html
-        assert "filterDimensionsFromCodebook" in html
+    # Comments page: Alpine + OrtCodebook (filterDimensionsFromCodebook in codebook.js)
+    assert "alpinejs" in index_html.lower()
+    assert "filterDimensionsFromCodebook" in index_html or "OrtCodebook" in (
+        SITE / "js" / "comments.js"
+    ).read_text(encoding="utf-8")
+    assert "filterDimensionsFromCodebook" in projects_html
 
 
 def test_codebook_js_exports_filter_helper():

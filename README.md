@@ -23,4 +23,4 @@ While the codebook is still changing, `python -m open_research_tagging.check_tag
 cd site && python3 -m http.server 8000
 ```
 
-Open http://localhost:8000/ (comments) or http://localhost:8000/projects.html. Shared CSS/JS live under `site/css/` and `site/js/`; filter dimensions come from `data/codebook.json`.
+Open http://localhost:8000/ for the comment browser (Alpine filter chrome, DataTables table, deep links like `?project=…&filter=…`) or http://localhost:8000/projects.html (overview shell until that page lands). Shared CSS/JS under `site/css/` and `site/js/`; filter dimensions come from `data/codebook.json`.
