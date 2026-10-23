@@ -10,6 +10,7 @@ from typing import Any, Iterator, Mapping
 import yaml
 
 from open_research_tagging.codebook import Codebook
+from open_research_tagging.coding_yaml import normalize_coding
 from open_research_tagging.tags import humanize
 
 
@@ -405,8 +406,9 @@ def build_project(
             "domain": context.get("domain"),
         },
         # Nested project.yaml coding for coding-view form pre-fill (not the
-        # processed overall block used by the projects table).
-        "coding": jsonable(dict(coding)),
+        # processed overall block used by the projects table). Normalize so
+        # YAML 1.1 bare yes/no become string ids ("yes"/"no"), not JSON bools.
+        "coding": normalize_coding(coding),
         "overall": overall,
         "comment_count": len(pb.get("all_ids") or []),
         "comments_href": f"index.html?project={slug}",

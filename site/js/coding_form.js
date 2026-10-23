@@ -95,7 +95,7 @@
     const acct = raw.accountability;
     if (acct && typeof acct === "object") {
       if (acct.human_responsibility != null && acct.human_responsibility !== "") {
-        base.accountability.human_responsibility = String(
+        base.accountability.human_responsibility = boolishId(
           acct.human_responsibility
         );
       }
@@ -133,6 +133,13 @@
         .map(String);
     }
     return [String(value)];
+  }
+
+  /** YAML 1.1 may load bare yes/no as booleans; map to codebook ids. */
+  function boolishId(value) {
+    if (value === true) return "yes";
+    if (value === false) return "no";
+    return String(value);
   }
 
   function toggleMulti(list, id, on) {

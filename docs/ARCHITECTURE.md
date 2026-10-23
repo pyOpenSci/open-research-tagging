@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes the pipeline, browse site, tag picker, and coding view (through plan **10e**). CI/Actions and seed walkthrough polish are still ahead (Phases 11–12).
+**Status:** describes the pipeline, browse site, tag picker, and coding view (through plan **10f** walkthrough). CI/Actions are still ahead (Phase 11).
 
 ## What this system is
 
@@ -158,7 +158,8 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `site/coding.html` + `js/coding.js` / `coding_resolve.js` / `coding_form.js` — coding view: `?project=` resolve, evidence pane, nested form, and **Copy YAML** (`coding:` block only). Prefills from each projects.json row’s raw `coding` passthrough.
 - `coding_yaml.py` — Python contract for the paste-ready `coding:` fragment; browser `emitCodingYaml` must match (emit-drift).
 - Evidence filter: empty select = all project comments; a dimension key keeps comments that have ≥1 tag on that dimension (dims with no passage tags show an empty list until you switch to All). Click a section title (or focus into the section) to set that evidence filter; Context resets to all comments (no passage dimension).
-- `projects.json` rows include both processed `overall` (projects table) and raw nested `coding` (coding-view pre-fill).
+- `projects.json` rows include both processed `overall` (projects table) and normalized nested `coding` (coding-view pre-fill). Normalization maps YAML 1.1 bare `yes`/`no` to string ids so JSON does not store booleans.
+- Coding walkthrough tests: `tests/test_coding_walkthrough.py` (Playwright) — projects → coding view, prefill, section evidence filter, preview ≡ Python `emit_coding_block`.
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
 
@@ -186,5 +187,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Coding view walkthrough polish (10f); CI/Actions (Phase 11)
+- CI/Actions (Phase 11); seed/parity sign-off (Phase 12)
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)

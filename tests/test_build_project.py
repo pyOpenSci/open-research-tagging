@@ -118,6 +118,20 @@ def test_build_project_row(tmp_path: Path):
     assert row["coding"]["context"]["domain"] == "test"
 
 
+def test_build_project_coerces_yaml_yes_bool_in_coding(tmp_path: Path):
+    """Bare YAML yes becomes bool True on load; coding passthrough must store 'yes'."""
+    proj = tmp_path / "projects" / "demo"
+    proj.mkdir(parents=True)
+    yaml_path = proj / "project.yaml"
+    yaml_path.write_text(
+        "slug: demo\ncoding:\n  accountability:\n    human_responsibility: yes\n",
+        encoding="utf-8",
+    )
+    row = build_project(yaml_path, _codebook(), {}, repo_root=tmp_path)
+    assert row is not None
+    assert row["coding"]["accountability"]["human_responsibility"] == "yes"
+
+
 def test_build_project_skips_underscore_slug(tmp_path: Path):
     proj = tmp_path / "projects" / "_template"
     proj.mkdir(parents=True)

@@ -45,7 +45,7 @@
           ]
         },
         "accountability": {
-          "human_responsibility": true,
+          "human_responsibility": "yes",
           "disclosure": "required",
           "disclosure_format": [
             "free-text"
