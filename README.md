@@ -24,4 +24,4 @@ While the codebook is still changing, `python -m open_research_tagging.check_tag
 cd site && python3 -m http.server 8000
 ```
 
-Open http://localhost:8000/ for the comment browser or http://localhost:8000/projects.html for overall codes (hover a code for evidence links into comments). Both use Alpine filter chrome + DataTables; filter dimensions come from `data/codebook.json`.
+Open http://localhost:8000/ for the comment browser, http://localhost:8000/projects.html for overall codes, or http://localhost:8000/tags.html for the **tag picker** (stage/copy exact hashtags for GitHub review comments). See [`codebook/COMMENTING.md`](codebook/COMMENTING.md) for the coder workflow.

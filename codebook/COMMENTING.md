@@ -1,10 +1,18 @@
 # How to tag on a pull request
 
-Use **PR review comments** on the Files tab (line or multi-line). Put codebook tags on their own lines at the top of the comment, then a short free-text note.
+Use **PR review comments** on the Files tab (line or multi-line). Put codebook hashtags on their own lines at the top of the comment, then a short free-text note.
 
-Full codebook: [codebook.yaml](codebook.yaml) (draft — not final).
+**Exact hashtag strings come from the tag picker** — not from a hand-maintained list in this file. The codebook source is [codebook.yaml](codebook.yaml) (draft); the picker shows every valid tag the site and tag-check accept.
 
-## Copy-paste starter
+## Workflow
+
+1. Open the **tag picker** on the site (`tags.html`). Locally: `cd site && python3 -m http.server 8000`, then http://localhost:8000/tags.html (GitHub Pages URL later).
+2. Search if needed; **click a tag** to stage it. Stage several if the passage needs more than one code.
+3. **Copy** — multiline hashtags only, one per line.
+4. On the PR **Files** tab, start a review comment on the relevant line(s), paste the hashtags at the top, then add one or two sentences under them.
+5. After comments land, maintainers refresh site data (`fetch_comments` → `process_comments` / Actions). Malformed tags (e.g. `#Disclosure` with no `/value`) get a bot reply and can fail the PR check; unknown-but-well-formed ids are soft while the codebook is draft.
+
+## Shape of a comment
 
 ```text
 #stance/permissive-with-conditions
@@ -13,98 +21,25 @@ Full codebook: [codebook.yaml](codebook.yaml) (draft — not final).
 One or two sentences on what this passage shows.
 ```
 
-More starters below. After you comment, someone runs `scripts/fetch_pr_comments.py` so tags show up on the site.
-
-A GitHub Action watches review comments: if a tag looks malformed (e.g. `#Disclosure` with no `/value`), the bot replies on that comment. The same check runs on the PR as a status check before merge.
+(Those example hashtags are illustrative — prefer Copy from the picker so spelling matches the codebook.)
 
 ## Rules (short)
 
 1. **Lowercase** hashtags.
 2. Always **`#namespace/value`** — a slash is required.
-3. **Scope** is special: `#scope/<type>:<position>` (colon between type and position).
-4. Unknown values still show on the site (codebook is draft); bare `#Disclosure` with no `/value` will **not** parse.
+3. **Scope** is special: `#scope/<type>:<position>` (colon between type and position). The picker lists every valid pair.
+4. Unknown values can still show on the site while the codebook is draft; bare `#Disclosure` with no `/value` will **not** parse.
 
 ## Common mistakes
 
 | Don’t write | Write instead |
 |-------------|----------------|
-| `#Disclosure` | `#disclosure/required` |
-| `#stance` or `#stance permissive` | `#stance/permissive-with-conditions` |
-| `#scope/code` | `#scope/code:restricted` |
+| `#Disclosure` | a picker tag such as `#disclosure/required` |
+| `#stance` or `#stance permissive` | `#stance/…` with a value from the picker |
+| `#scope/code` | `#scope/code:restricted` (type **and** position) |
 | Conversation comment on the PR | Review comment on the **Files** tab (needs a line) |
-
-## Tag reference
-
-| Dimension | Pattern | Examples |
-|-----------|---------|----------|
-| Stance | `#stance/<id>` | `#stance/gate-restrict` |
-| Scope | `#scope/<type>:<position>` | `#scope/docs-and-text:allowed` |
-| Rationale | `#rationale/<id>` | `#rationale/code-quality` |
-| Guidance level | `#guidance-level/<id>` | `#guidance-level/some-guidance` |
-| Guidance type | `#guidance/<id>` | `#guidance/evaluation` |
-| Disclosure | `#disclosure/<id>` | `#disclosure/required` |
-| Human responsibility | `#human-responsibility/<id>` | `#human-responsibility/yes` |
-| Enforcement | `#enforcement/<id>` | `#enforcement/contributor-blocked` |
-
-**Stance ids:** `ban`, `discouraged`, `gate-restrict`, `permissive-with-conditions`, `permissive`, `no-policy`
-
-**Disclosure ids:** `none`, `recommended`, `required`
-
-**Scope types:** `code`, `tests`, `docs-and-text`, `issues-and-pr-descriptions`, `review`, `autonomous-agents`, `contribution-types-not-defined`
-
-**Scope positions:** `allowed`, `restricted`, `banned`, `not_addressed`
-
-**Rationale ids:** `code-quality`, `maintainer-and-reviewer-burden`, `security`, `licensing-and-copyright`, `environmental`, `social-and-ethical`, `contributor-learning-and-skill-development`, `other`
 
 ## Project-level vs passage tags
 
-- **`projects/<slug>/project.yaml`** — overall Stance, Accountability, Context, etc. for the whole policy.
-- **PR line comments** — evidence on specific passages.
-
-## Sample comments (pyOpenSci)
-
-Leave on `projects/pyopensci/generative-ai-policy.md` (or checklist) while a PR is open:
-
-1. Disclosure / human-review paragraph:
-   ```text
-   #stance/permissive-with-conditions
-   #disclosure/required
-   #human-responsibility/yes
-   #guidance/evaluation
-
-   Disclosure required; meaningful human review expected before submission.
-   ```
-
-2. Protect volunteer reviewers:
-   ```text
-   #rationale/maintainer-and-reviewer-burden
-   #guidance-level/substantive-guidance
-
-   Explicit goal: reviewers are not first-line QA for generated code.
-   ```
-
-3. Communication in review issues:
-   ```text
-   #scope/issues-and-pr-descriptions:restricted
-   #enforcement/contributor-blocked
-
-   Review communication should be human-written; spam/automated burden can lead to blocks.
-   ```
-
-4. Development history timeline:
-   ```text
-   #scope/code:restricted
-   #guidance/scoping
-   #guidance/iteration
-   #rationale/code-quality
-
-   Short-lived / rapid generation timelines face higher scrutiny; iterative public history required.
-   ```
-
-5. Package scope & design:
-   ```text
-   #guidance/design
-   #guidance-level/substantive-guidance
-
-   Asks for design tradeoffs and ecosystem situating — guidance beyond restriction.
-   ```
+- **PR line comments** — evidence on specific passages (this workflow + tag picker).
+- **`projects/<slug>/project.yaml`** — overall codes for the whole policy (coding view helper comes later). Do not invent overall YAML by pasting random hashtags into `project.yaml`.
