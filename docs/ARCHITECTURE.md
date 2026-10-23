@@ -154,7 +154,8 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
 - `codebook/COMMENTING.md` — coder workflow (picker → stage/copy → Files-tab paste). Exact strings come from the picker / `tag_catalog`, not a second markdown table
 - Paste-shape check: `tests/test_tag_picker_paste.py` (Playwright stage → comment body → `parse_tags` clean)
-- `site/coding.html` + `js/coding.js` / `coding_resolve.js` — coding view **shell**: `?project=` resolve, missing/unknown empty states, project header + comment count. Evidence + form next.
+- `site/coding.html` + `js/coding.js` / `coding_resolve.js` — coding view: `?project=` resolve, missing/unknown empty states, project header + comment count, **evidence pane** (dimension select → `commentsForDimension`; quote/excerpt, tags, GitHub + browser links). Form + Copy YAML next.
+- Evidence filter: empty select = all project comments; a dimension key keeps comments that have ≥1 tag on that dimension (dims with no passage tags show an empty list until you switch to All).
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
 
@@ -182,5 +183,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Coding view evidence pane + form + Copy YAML
+- Coding view form + Copy YAML (evidence pane shipped)
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)

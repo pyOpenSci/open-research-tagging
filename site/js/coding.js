@@ -1,6 +1,5 @@
 /**
- * Coding view shell (10a): load JSON, resolve ?project=, empty states.
- * Evidence + form land in later tasks.
+ * Coding view: resolve ?project= + evidence pane (form in 10c).
  */
 (function (global) {
   "use strict";
@@ -22,6 +21,8 @@
       slug: null,
       project: null,
       comments: [],
+      /** "" = all comments; else codebook dimension key */
+      evidenceDim: "",
 
       async init() {
         try {
@@ -49,6 +50,39 @@
           this.loading = false;
           this.error = String(err);
         }
+      },
+
+      get evidenceDimensions() {
+        if (!this.codebook || !Codebook) return [];
+        return Codebook.filterDimensionsFromCodebook(this.codebook);
+      },
+
+      get evidenceComments() {
+        return Resolve.commentsForDimension(this.comments, this.evidenceDim);
+      },
+
+      excerpt(comment) {
+        return Resolve.evidenceExcerpt(comment);
+      },
+
+      tagDisplays(comment) {
+        return (comment.tags || [])
+          .map(function (t) {
+            return t.display || t.raw || "";
+          })
+          .filter(Boolean);
+      },
+
+      browserHref(comment) {
+        if (!this.project) return "index.html";
+        const base =
+          this.project.comments_href ||
+          "index.html?project=" + encodeURIComponent(this.project.slug);
+        if (this.evidenceDim) {
+          const join = base.indexOf("?") >= 0 ? "&" : "?";
+          return base + join + "dimension=" + encodeURIComponent(this.evidenceDim);
+        }
+        return base;
       },
     };
   }

@@ -20,7 +20,7 @@
       <p class="lede">
         Walk overall codes for a project with passage evidence, then copy a
         <code>coding:</code> YAML block into <code>project.yaml</code>.
-        Evidence and form controls come next — this shell loads the project.
+        Form controls come next; evidence is available now.
       </p>
       <p class="meta-row" x-show="loading">Loading…</p>
       <p class="meta-row" x-show="error" x-text="error"></p>
@@ -73,14 +73,50 @@
       </p>
 
       <div class="layout coding-shell">
-        <aside class="sidebar" aria-label="Evidence (placeholder)">
+        <aside class="sidebar" aria-label="Passage evidence">
           <div class="sidebar-head"><h2>Evidence</h2></div>
-          <p class="meta-row">Passage evidence for each dimension lands in the next task.</p>
+          <label class="search">Dimension
+            <select id="evidence-dim" x-model="evidenceDim">
+              <option value="">All comments</option>
+              <template x-for="d in evidenceDimensions" :key="d.key">
+                <option :value="d.key" x-text="d.label"></option>
+              </template>
+            </select>
+          </label>
+          <p
+            class="meta-row"
+            x-text="evidenceComments.length + ' shown'"
+          ></p>
+          <ul class="evidence-list" id="evidence-list">
+            <template x-for="c in evidenceComments" :key="c.id">
+              <li class="evidence-card">
+                <p class="evidence-quote" x-text="excerpt(c)"></p>
+                <div class="evidence-tags">
+                  <template x-for="disp in tagDisplays(c)" :key="disp">
+                    <span class="tag" x-text="disp"></span>
+                  </template>
+                </div>
+                <p class="meta-row">
+                  <a
+                    x-show="c.html_url"
+                    :href="c.html_url"
+                    target="_blank"
+                    rel="noopener"
+                  >GitHub</a>
+                  <span x-show="c.html_url"> · </span>
+                  <a :href="browserHref(c)">Browser</a>
+                </p>
+              </li>
+            </template>
+          </ul>
+          <p class="meta-row" x-show="evidenceComments.length === 0">
+            No passage comments for this filter. Try All comments, or tag
+            passages with the tag picker and refresh site data.
+          </p>
         </aside>
         <section class="main-pane">
           <p class="stub-note">
-            Coding form (stance, scope, rationale, …) and Copy YAML land in later tasks.
-            Project data and comments are loaded and ready.
+            Coding form (stance, scope, rationale, …) and Copy YAML land in the next tasks.
           </p>
         </section>
       </div>

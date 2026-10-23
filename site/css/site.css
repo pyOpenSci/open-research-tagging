@@ -547,6 +547,41 @@ body.tags-page .lede {
   border-color: var(--accent);
 }
 
+/* Coding view evidence pane (10b) */
+.coding-shell .sidebar {
+  --sidebar: min(22rem, 100%);
+}
+.evidence-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.evidence-card {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 0.5rem 0.55rem 0.45rem;
+}
+.evidence-quote {
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.evidence-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+.evidence-tags .tag {
+  font-size: 0.7rem;
+  background: var(--chip);
+  padding: 0.1rem 0.35rem;
+}
+
 @media (max-width: 860px) {
   .layout {
     grid-template-columns: 1fr;

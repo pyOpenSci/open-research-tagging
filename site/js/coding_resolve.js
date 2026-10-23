@@ -39,7 +39,46 @@
     };
   }
 
+  /**
+   * Comments that have at least one tag on dimension.
+   * Pass null/"" for all comments (no dimension filter).
+   * @param {object[]} comments
+   * @param {string|null} dimension
+   * @returns {object[]}
+   */
+  function commentsForDimension(comments, dimension) {
+    const rows = comments || [];
+    if (!dimension) return rows.slice();
+    return rows.filter(function (c) {
+      return (c.tags || []).some(function (t) {
+        return t && t.dimension === dimension;
+      });
+    });
+  }
+
+  /**
+   * Short excerpt for evidence cards when quote is missing.
+   * @param {object} comment
+   * @param {number} [max]
+   * @returns {string}
+   */
+  function evidenceExcerpt(comment, max) {
+    const limit = max || 160;
+    if (comment && comment.quote) {
+      const q = String(comment.quote).replace(/\s+/g, " ").trim();
+      return q.length > limit ? q.slice(0, limit - 1) + "…" : q;
+    }
+    const body = String((comment && comment.body) || "");
+    const lines = body.split("\n").filter(function (l) {
+      return !l.trim().startsWith("#");
+    });
+    const text = lines.join(" ").replace(/\s+/g, " ").trim() || body.trim();
+    return text.length > limit ? text.slice(0, limit - 1) + "…" : text;
+  }
+
   global.OrtCodingResolve = {
     resolveCodingView: resolveCodingView,
+    commentsForDimension: commentsForDimension,
+    evidenceExcerpt: evidenceExcerpt,
   };
 })(typeof window !== "undefined" ? window : globalThis);
