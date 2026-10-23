@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through tag-check library helpers (plan tasks through 7a). Tag-check Actions CLI, the static site UI, and CI workflows are not built yet.
+**Status:** describes what exists through the tag-check Actions CLI (plan tasks through 7b). Draft-codebook hard-fail policy polish, the static site UI, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -103,9 +103,9 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 | `process_comments.py` | Maintainer/Actions CLI for normalize + write |
 | `projects.py` | Discover/load YAML; comment index; build rows; write payload |
 | `process_projects.py` | Maintainer/Actions CLI for `projects.json` |
-| `github_client.py` | Shared GET + Link pagination (injectable for tests) |
+| `github_client.py` | Shared GET/POST + Link pagination (injectable for tests) |
 | `fetch_comments.py` | Maintainer/Actions CLI → `raw_comments.json` |
-| `check_tags.py` | `check_body` / `format_reply` for Actions tag-check |
+| `check_tags.py` | Tag-check library + Actions CLI |
 
 Package root: `src/open_research_tagging/`.
 
@@ -122,9 +122,17 @@ python -m open_research_tagging.fetch_comments --owner ORG --repo NAME
 
 Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, comments }`). Offline work keeps using `raw_comments.fixture.json` instead.
 
-### Tag-check (library)
+### Tag-check (Actions)
 
-`check_body` runs the same parse/enrich/warn path as comment normalize, so CI and the site agree on what is wrong. `format_reply` builds the markdown note posted on a bad review comment (points at `codebook/COMMENTING.md`). The Actions CLI that calls these lands next.
+`check_body` / `format_reply` share normalize’s warning rules. Maintainers / Actions run:
+
+```bash
+python -m open_research_tagging.check_tags --from-event --reply   # review-comment event
+python -m open_research_tagging.check_tags --pr N                # scan a PR
+python -m open_research_tagging.check_tags --body '#Design'      # debug only
+```
+
+`--reply` posts on the review comment (skips `*[bot]`). `--soft` prints issues but exits 0. Until the draft-codebook policy task, any warning fails the check (exit 1) unless `--soft`.
 
 ## How we keep this document current
 
@@ -136,6 +144,6 @@ Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, com
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Tag-check Actions CLI (`--from-event` / `--pr` / draft-codebook hard-fail policy)
+- Draft-codebook CI policy (hard-fail malformed only; unknown ids soft)
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)

@@ -11,6 +11,7 @@ from open_research_tagging.github_client import (
     GitHubHTTPError,
     auth_headers,
     github_get,
+    github_post,
     next_link,
     paginate,
 )
@@ -121,3 +122,20 @@ def test_default_getter_parses_json_bytes():
     )
     assert body == [{"ok": True}]
     assert next_link(headers.get("link")) == "https://api.github.com/next"
+
+
+def test_github_post_uses_injected_poster():
+    def fake_poster(url: str, headers: dict[str, str], data: bytes | None):
+        assert url.endswith("/replies")
+        assert headers["Authorization"] == "Bearer secret"
+        assert headers["Content-Type"] == "application/json"
+        assert json.loads(data or b"{}") == {"body": "hi"}
+        return {"ok": True}, {}
+
+    body, _headers = github_post(
+        "https://api.github.com/repos/o/r/pulls/comments/1/replies",
+        "secret",
+        {"body": "hi"},
+        poster=fake_poster,
+    )
+    assert body == {"ok": True}

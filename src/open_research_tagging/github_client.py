@@ -9,12 +9,16 @@ from __future__ import annotations
 import json
 import urllib.error
 import urllib.request
-from typing import Any, Callable
+from typing import Any, Callable, Mapping
 
 API_VERSION = "2022-11-28"
 USER_AGENT = "open-research-tagging"
 
 Getter = Callable[[str, dict[str, str]], tuple[Any, dict[str, str]]]
+Poster = Callable[
+    [str, dict[str, str], bytes | None],
+    tuple[Any, dict[str, str]],
+]
 UrlOpen = Callable[[urllib.request.Request], Any]
 
 
@@ -118,3 +122,50 @@ def paginate(
         items.extend(page)
         current = next_link(headers.get("link"))
     return items
+
+
+def _default_poster(
+    url: str,
+    headers: dict[str, str],
+    data: bytes | None,
+    *,
+    urlopen: UrlOpen | None = None,
+) -> tuple[Any, dict[str, str]]:
+    open_fn = urlopen or urllib.request.urlopen
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+    try:
+        with open_fn(req) as resp:
+            raw = resp.read()
+            if isinstance(raw, bytes):
+                text = raw.decode("utf-8")
+            else:
+                text = str(raw)
+            body = json.loads(text) if text else {}
+            resp_headers = {k.lower(): v for k, v in resp.headers.items()}
+            return body, resp_headers
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise GitHubHTTPError(exc.code, url, detail) from exc
+
+
+def github_post(
+    url: str,
+    token: str | None,
+    payload: Mapping[str, Any] | None = None,
+    *,
+    poster: Poster | None = None,
+    urlopen: UrlOpen | None = None,
+) -> tuple[Any, dict[str, str]]:
+    """
+    POST JSON to a GitHub API URL; return (parsed JSON, lowercase headers).
+
+    Prefer `poster` for tests.
+    """
+    headers = auth_headers(token)
+    data: bytes | None = None
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        headers = {**headers, "Content-Type": "application/json"}
+    if poster is not None:
+        return poster(url, headers, data)
+    return _default_poster(url, headers, data, urlopen=urlopen)
