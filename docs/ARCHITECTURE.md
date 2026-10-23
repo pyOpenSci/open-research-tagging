@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through offline fixture regen of `comments.json` (plan tasks through 4d). Fetch, project join, the static site UI, and CI are not built yet.
+**Status:** describes what exists through project template + discovery (plan tasks through 5a). Comment→project join, fetch, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -67,6 +67,10 @@ Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixtur
 
 **Offline path:** `site/data/raw_comments.fixture.json` is a committed dump of demo-shaped review comments (no network). Regenerating with `process_comments` writes committed `site/data/comments.json` so the site and CI can run without a GitHub token. Live fetch will write gitignored `raw_comments.json` later; the fixture stays the deterministic stand-in. Until `projects/pyopensci/` is seeded, quotes for those paths often come from `diff_hunk` rather than local files.
 
+### Projects on disk
+
+Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips any slug whose folder name starts with `_`, so `_template` never becomes a `projects.json` row. Load helpers live in `projects.py` (join/build comes next).
+
 ## Module map
 
 | Module | Role |
@@ -77,6 +81,7 @@ Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixtur
 | `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
 | `quotes.py` | Local file or diff_hunk quote resolution |
 | `process_comments.py` | Maintainer/Actions CLI for normalize + write |
+| `projects.py` | Discover/load `project.yaml` (skip `_` slugs) |
 
 Package root: `src/open_research_tagging/`.
 
@@ -90,7 +95,7 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
+- Joining overall `project.yaml` codes to comment evidence (`projects.json`)
 - Fetching review comments from the GitHub API
-- Joining overall `project.yaml` codes to comment evidence
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)
