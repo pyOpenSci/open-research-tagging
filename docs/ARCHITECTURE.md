@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the comment index for evidence links (plan tasks through 5b). Overall join into `projects.json`, fetch, the static site UI, and CI are not built yet.
+**Status:** describes what exists through building site project rows from `project.yaml` (plan tasks through 5c). Emitting `projects.json`, fetch, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -71,7 +71,17 @@ Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixtur
 
 Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips any slug whose folder name starts with `_`, so `_template` never becomes a `projects.json` row.
 
-**Comment index:** from normalized `comments.json` rows, `comment_index` groups comment ids per project (`all_ids`, `by_dimension`, `by_filter_key`) so overall codes can link to matching passage evidence. `normalize_scope_key` maps YAML underscore keys (`docs_and_text`) to hashtag hyphen form (`docs-and-text`) until the template and codebook spellings are unified.
+**Putting overall codes next to passage evidence**
+
+Remember the two layers: **overall** codes live in `project.yaml` (how we code the policy as a whole); **passage** tags live on PR comments (evidence on specific lines).
+
+For the projects page we need both in one place. The pipeline:
+
+1. Look through all normalized comments and, for each project, remember which comment ids mention which dimension or specific code (the comment index).
+2. Read that project’s `coding:` block from `project.yaml`.
+3. For each overall code, attach human labels from the codebook and links into the comment browser — “all comments on this dimension” and “comments that match this exact code.”
+
+A few practical details: scope entries marked `not_addressed` are skipped so the table stays sparse; if `project.yaml` uses an id the current codebook doesn’t know, we still show it and flag it for review rather than dropping it. Scope keys in YAML sometimes use underscores (`docs_and_text`) while hashtags use hyphens (`docs-and-text`); we normalize that when matching. The mapping from YAML fields to site fields is hand-written for the known layout — we are not auto-generating it from every codebook dimension.
 
 ## Module map
 
@@ -83,7 +93,7 @@ Each studied policy lives under `projects/<slug>/` with a `project.yaml` (proven
 | `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
 | `quotes.py` | Local file or diff_hunk quote resolution |
 | `process_comments.py` | Maintainer/Actions CLI for normalize + write |
-| `projects.py` | Discover/load `project.yaml`; comment index + scope-key shim |
+| `projects.py` | Discover/load YAML; comment index; `build_overall` / `build_project` |
 
 Package root: `src/open_research_tagging/`.
 
@@ -97,7 +107,7 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Joining overall `project.yaml` codes to comment evidence (`projects.json`)
+- Writing `projects.json` (process_projects entrypoint)
 - Fetching review comments from the GitHub API
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)

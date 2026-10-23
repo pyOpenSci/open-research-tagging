@@ -1,11 +1,15 @@
-"""Discover/load project.yaml and index comments for evidence links."""
+"""Discover/load project.yaml, index comments, and build site project rows."""
 
 from __future__ import annotations
 
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Iterator, Mapping
 
 import yaml
+
+from open_research_tagging.codebook import Codebook
+from open_research_tagging.tags import humanize
 
 
 class ProjectYamlError(ValueError):
@@ -85,3 +89,323 @@ def comment_index(
         for key, ids in bucket["by_filter_key"].items():
             bucket["by_filter_key"][key] = list(dict.fromkeys(ids))
     return idx
+
+
+def as_list(value: Any) -> list[Any]:
+    """Normalize null / scalar / list into a list of values."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    return [value]
+
+
+def jsonable(value: Any) -> Any:
+    """Convert YAML date objects to ISO strings for JSON output."""
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    return value
+
+
+def coerce_code_id(value: Any) -> str:
+    """YAML may turn bare yes/no into booleans; map those to codebook ids."""
+    if value is True:
+        return "yes"
+    if value is False:
+        return "no"
+    return str(value)
+
+
+def _dimension_label(codebook: Codebook, dimension: str) -> str:
+    for namespace in codebook.known_namespaces():
+        info = codebook.namespace_info(namespace)
+        if info is not None and info.dimension == dimension:
+            return info.label
+    return humanize(dimension)
+
+
+def _value_label(codebook: Codebook, dimension: str, value_id: str) -> str:
+    return codebook.label_for(dimension, value_id) or humanize(value_id)
+
+
+def _value_known(codebook: Codebook, dimension: str, value_id: str) -> bool:
+    return codebook.has_value(dimension, value_id)
+
+
+def link_payload(
+    project: str,
+    dimension: str,
+    value: str | None,
+    codebook: Codebook,
+    cidx: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Hover-link targets: all comments for a dimension, and matching value."""
+    pb = cidx.get(project) or {"by_dimension": {}, "by_filter_key": {}}
+    all_ids = list(pb.get("by_dimension", {}).get(dimension, []))
+    result: dict[str, Any] = {
+        "dimension": dimension,
+        "dimension_label": _dimension_label(codebook, dimension),
+        "all": {
+            "label": f"All {dimension.replace('_', ' ')} comments",
+            "count": len(all_ids),
+            "comment_ids": all_ids,
+            "href": f"index.html?project={project}&dimension={dimension}",
+        },
+    }
+    if value is not None:
+        filter_key = f"{dimension}:{value}"
+        match_ids = list(pb.get("by_filter_key", {}).get(filter_key, []))
+        label = _value_label(codebook, dimension, value)
+        result["value"] = value
+        result["value_label"] = label
+        result["matching"] = {
+            "label": label,
+            "count": len(match_ids),
+            "comment_ids": match_ids,
+            "href": f"index.html?project={project}&filter={filter_key}",
+        }
+    return result
+
+
+def _overall_value(
+    *,
+    value_id: str,
+    dimension: str,
+    project: str,
+    codebook: Codebook,
+    cidx: Mapping[str, Any],
+    warnings: list[str],
+) -> dict[str, Any]:
+    known = _value_known(codebook, dimension, value_id)
+    if not known:
+        warnings.append(
+            f"Unknown overall id '{value_id}' for dimension '{dimension}'"
+        )
+    return {
+        "id": value_id,
+        "label": _value_label(codebook, dimension, value_id),
+        "unknown_id": not known,
+        "links": link_payload(project, dimension, value_id, codebook, cidx),
+    }
+
+
+def build_overall(
+    coding: Mapping[str, Any],
+    project: str,
+    codebook: Codebook,
+    cidx: Mapping[str, Any],
+) -> tuple[dict[str, Any], list[str]]:
+    """
+    Map nested project.yaml coding → site overall block.
+
+    Explicit adapter for the known YAML shape (not a generic codebook walker).
+    Omits scope positions that are null or not_addressed.
+    """
+    overall: dict[str, Any] = {}
+    warnings: list[str] = []
+
+    stance = coding.get("stance")
+    if stance:
+        overall["stance"] = {
+            "values": [
+                _overall_value(
+                    value_id=coerce_code_id(stance),
+                    dimension="stance",
+                    project=project,
+                    codebook=codebook,
+                    cidx=cidx,
+                    warnings=warnings,
+                )
+            ]
+        }
+
+    rationales = [coerce_code_id(r) for r in as_list(coding.get("stated_rationale"))]
+    if rationales:
+        overall["stated_rationale"] = {
+            "values": [
+                _overall_value(
+                    value_id=r,
+                    dimension="stated_rationale",
+                    project=project,
+                    codebook=codebook,
+                    cidx=cidx,
+                    warnings=warnings,
+                )
+                for r in rationales
+            ]
+        }
+
+    guidance = coding.get("guidance_on_use") or {}
+    if isinstance(guidance, Mapping):
+        level = guidance.get("level")
+        if level:
+            overall["guidance_level"] = {
+                "values": [
+                    _overall_value(
+                        value_id=coerce_code_id(level),
+                        dimension="guidance_level",
+                        project=project,
+                        codebook=codebook,
+                        cidx=cidx,
+                        warnings=warnings,
+                    )
+                ]
+            }
+        gtypes = [coerce_code_id(t) for t in as_list(guidance.get("types"))]
+        if gtypes:
+            overall["guidance_type"] = {
+                "values": [
+                    _overall_value(
+                        value_id=t,
+                        dimension="guidance_type",
+                        project=project,
+                        codebook=codebook,
+                        cidx=cidx,
+                        warnings=warnings,
+                    )
+                    for t in gtypes
+                ]
+            }
+
+    acct = coding.get("accountability") or {}
+    if isinstance(acct, Mapping):
+        for field, dim in (
+            ("human_responsibility", "human_responsibility"),
+            ("disclosure", "disclosure"),
+        ):
+            val = acct.get(field)
+            if val is not None:
+                overall[dim] = {
+                    "values": [
+                        _overall_value(
+                            value_id=coerce_code_id(val),
+                            dimension=dim,
+                            project=project,
+                            codebook=codebook,
+                            cidx=cidx,
+                            warnings=warnings,
+                        )
+                    ]
+                }
+        enforcement = [coerce_code_id(e) for e in as_list(acct.get("enforcement"))]
+        if enforcement:
+            overall["enforcement"] = {
+                "values": [
+                    _overall_value(
+                        value_id=e,
+                        dimension="enforcement",
+                        project=project,
+                        codebook=codebook,
+                        cidx=cidx,
+                        warnings=warnings,
+                    )
+                    for e in enforcement
+                ]
+            }
+
+    scope = coding.get("scope") or {}
+    scope_values: list[dict[str, Any]] = []
+    if isinstance(scope, Mapping):
+        for raw_type, position in scope.items():
+            if position in (None, "not_addressed"):
+                continue
+            ctype = normalize_scope_key(str(raw_type))
+            pos = coerce_code_id(position)
+            filter_key = f"scope:{ctype}:{pos}"
+            pb = cidx.get(project) or {"by_dimension": {}, "by_filter_key": {}}
+            all_scope = list(pb.get("by_dimension", {}).get("scope", []))
+            match_ids = list(pb.get("by_filter_key", {}).get(filter_key, []))
+            type_known = codebook.has_scope_type(ctype)
+            pos_known = codebook.has_scope_position(pos)
+            unknown = not (type_known and pos_known)
+            if unknown:
+                warnings.append(
+                    f"Unknown overall scope '{ctype}:{pos}'"
+                )
+            type_label = codebook.scope_type_label(ctype) or humanize(ctype)
+            pos_label = codebook.scope_position_label(pos) or humanize(pos)
+            scope_values.append(
+                {
+                    "id": f"{ctype}:{pos}",
+                    "contribution_type": ctype,
+                    "position": pos,
+                    "label": f"{type_label} → {pos_label}",
+                    "unknown_id": unknown,
+                    "links": {
+                        "dimension": "scope",
+                        "dimension_label": _dimension_label(codebook, "scope"),
+                        "all": {
+                            "label": "All scope comments",
+                            "count": len(all_scope),
+                            "comment_ids": all_scope,
+                            "href": (
+                                f"index.html?project={project}&dimension=scope"
+                            ),
+                        },
+                        "matching": {
+                            "label": f"{type_label} → {pos_label}",
+                            "count": len(match_ids),
+                            "comment_ids": match_ids,
+                            "href": (
+                                f"index.html?project={project}"
+                                f"&scope_type={ctype}&scope_position={pos}"
+                            ),
+                        },
+                    },
+                }
+            )
+    if scope_values:
+        overall["scope"] = {"values": scope_values}
+
+    return overall, warnings
+
+
+def build_project(
+    path: str | Path,
+    codebook: Codebook,
+    cidx: Mapping[str, Any],
+    *,
+    repo_root: Path | None = None,
+) -> dict[str, Any] | None:
+    """Build one projects.json row from a project.yaml path."""
+    path = Path(path)
+    root = repo_root if repo_root is not None else path.parents[1]
+    data = load_project_yaml(path)
+    slug = str(data.get("slug") or path.parent.name)
+    if slug.startswith("_"):
+        return None
+    coding = data.get("coding") or {}
+    if not isinstance(coding, Mapping):
+        coding = {}
+    provenance = data.get("provenance") or {}
+    if not isinstance(provenance, Mapping):
+        provenance = {}
+    context = coding.get("context") or {}
+    if not isinstance(context, Mapping):
+        context = {}
+    overall, warnings = build_overall(coding, slug, codebook, cidx)
+    pb = cidx.get(slug) or {"all_ids": []}
+    try:
+        yaml_rel = str(path.resolve().relative_to(Path(root).resolve()))
+    except ValueError:
+        yaml_rel = str(path)
+    return {
+        "slug": slug,
+        "display_name": data.get("display_name") or slug,
+        "provenance": {
+            "source_repo": provenance.get("source_repo"),
+            "source_commit": provenance.get("source_commit"),
+            "source_url": provenance.get("source_url"),
+            "policy_location": provenance.get("policy_location"),
+            "retrieved_at": jsonable(provenance.get("retrieved_at")),
+        },
+        "context": {
+            "governance": context.get("governance"),
+            "domain": context.get("domain"),
+        },
+        "overall": overall,
+        "comment_count": len(pb.get("all_ids") or []),
+        "comments_href": f"index.html?project={slug}",
+        "yaml_path": yaml_rel,
+        "coding_warnings": warnings,
+    }
