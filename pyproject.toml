@@ -15,6 +15,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
+    "pytest-playwright>=0.5.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -23,3 +24,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "integration: Playwright site browse tests (needs chromium + network for CDNs)",
+]

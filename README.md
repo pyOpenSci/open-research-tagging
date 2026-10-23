@@ -10,6 +10,7 @@ How the pieces fit together (kept up to date as we build): [`docs/ARCHITECTURE.m
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+playwright install chromium   # once; needed for site integration tests
 pytest
 ```
 

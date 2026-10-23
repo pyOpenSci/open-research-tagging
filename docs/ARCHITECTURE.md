@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the projects overview (plan tasks through 8c). Tag picker, coding view, and CI workflows are not built yet.
+**Status:** describes what exists through site browse parity tests (plan tasks through 8d). Tag picker, coding view, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -162,6 +162,8 @@ Also filters in-page: text search, project/PR selects, dimension chips, Clear. F
 
 Local preview: `cd site && python3 -m http.server 8000` then open http://localhost:8000/
 
+**Browse parity tests:** `tests/test_site_integration.py` (Playwright + Chromium) serves `site/` and checks fixture banner, URL filters, projects chips/evidence links, and nav. Needs network for CDN Alpine/jQuery/DataTables. One-time: `playwright install chromium`.
+
 ## How we keep this document current
 
 - When a plan task changes how pieces fit together, update the matching section here in the same handoff (small diffs).
@@ -173,4 +175,4 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
 - Tag picker and coding view pages
-- GitHub Actions (tests, tag check, Pages refresh)
+- GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)
