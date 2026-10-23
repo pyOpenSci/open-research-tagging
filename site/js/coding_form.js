@@ -237,9 +237,95 @@
       });
   }
 
+  const QUOTE_WORDS = {
+    yes: 1,
+    no: 1,
+    true: 1,
+    false: 1,
+    null: 1,
+    on: 1,
+    off: 1,
+    y: 1,
+    n: 1,
+  };
+
+  /**
+   * Paste-ready coding: YAML block. Must match Python emit_coding_block.
+   * @param {object|null|undefined} raw
+   * @returns {string}
+   */
+  function emitCodingYaml(raw) {
+    const c = prefillCoding(raw);
+    const lines = ["coding:"];
+    lines.push("  stance: " + yamlScalar(c.stance));
+    lines.push("  scope:");
+    DEFAULT_SCOPE_KEYS.forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(c.scope, key)) {
+        lines.push("    " + key + ": " + yamlScalar(c.scope[key]));
+      }
+    });
+    Object.keys(c.scope).forEach(function (key) {
+      if (DEFAULT_SCOPE_KEYS.indexOf(key) < 0) {
+        lines.push("    " + key + ": " + yamlScalar(c.scope[key]));
+      }
+    });
+    appendListField(lines, "  stated_rationale", c.stated_rationale);
+    lines.push("  guidance_on_use:");
+    lines.push("    level: " + yamlScalar(c.guidance_on_use.level));
+    appendListField(lines, "    types", c.guidance_on_use.types);
+    lines.push("  accountability:");
+    lines.push(
+      "    human_responsibility: " +
+        yamlScalar(c.accountability.human_responsibility)
+    );
+    lines.push(
+      "    disclosure: " + yamlScalar(c.accountability.disclosure)
+    );
+    appendListField(
+      lines,
+      "    disclosure_format",
+      c.accountability.disclosure_format
+    );
+    appendListField(lines, "    enforcement", c.accountability.enforcement);
+    lines.push("  context:");
+    lines.push(
+      "    project_size: " + yamlScalar(c.context.project_size)
+    );
+    lines.push("    governance: " + yamlScalar(c.context.governance));
+    lines.push("    domain: " + yamlScalar(c.context.domain));
+    lines.push("    notes: " + yamlScalar(c.context.notes));
+    return lines.join("\n") + "\n";
+  }
+
+  function appendListField(lines, keyLine, items) {
+    const list = items || [];
+    if (list.length === 0) {
+      lines.push(keyLine + ": []");
+      return;
+    }
+    lines.push(keyLine + ":");
+    const leading = keyLine.match(/^ */)[0].length;
+    const pad = new Array(leading + 3).join(" ");
+    list.forEach(function (item) {
+      lines.push(pad + "- " + yamlScalar(item));
+    });
+  }
+
+  function yamlScalar(value) {
+    if (value === null || value === undefined) return "null";
+    if (typeof value === "boolean") return value ? "true" : "false";
+    const s = String(value);
+    if (s === "") return '""';
+    if (QUOTE_WORDS[s.toLowerCase()] || /[\s:#\[\]{},&*!|>'"%@`]/.test(s)) {
+      return JSON.stringify(s);
+    }
+    return s;
+  }
+
   global.OrtCodingForm = {
     emptyCoding: emptyCoding,
     prefillCoding: prefillCoding,
+    emitCodingYaml: emitCodingYaml,
     toggleMulti: toggleMulti,
     yamlScopeKey: yamlScopeKey,
     hashtagScopeKey: hashtagScopeKey,

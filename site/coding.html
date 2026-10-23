@@ -18,9 +18,9 @@
     <header class="page-header">
       <h1>Project coding view</h1>
       <p class="lede">
-        Walk overall codes with passage evidence. Form edits stay in the browser
-        until Copy YAML (next). Prefills from the project’s nested
-        <code>coding:</code> when present in site data.
+        Walk overall codes with passage evidence, then Copy YAML and paste the
+        <code>coding:</code> block into <code>project.yaml</code>. Prefills from
+        site data when present.
       </p>
       <p class="meta-row" x-show="loading">Loading…</p>
       <p class="meta-row" x-show="error" x-text="error"></p>
@@ -304,9 +304,31 @@
               </label>
             </fieldset>
 
-            <p class="stub-note">
-              Copy YAML preview and clipboard action land in the next task (10d).
-            </p>
+            <div class="copy-yaml-block" id="copy-yaml">
+              <div class="sidebar-head">
+                <h2>Copy coding YAML</h2>
+              </div>
+              <p class="meta-row">
+                Paste over the <code>coding:</code> block in
+                <code>project.yaml</code> (not provenance or files).
+              </p>
+              <textarea
+                class="copy-preview"
+                id="yaml-preview"
+                readonly
+                rows="14"
+                :value="yamlPreview"
+              ></textarea>
+              <div class="copy-actions">
+                <button
+                  type="button"
+                  class="chip"
+                  id="copy-yaml-btn"
+                  @click="copyYaml"
+                >Copy YAML</button>
+                <span class="meta-row" x-text="copyStatus"></span>
+              </div>
+            </div>
           </form>
         </section>
       </div>

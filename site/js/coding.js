@@ -27,6 +27,7 @@
       evidenceDim: "",
       /** Nested coding: block (mirrors project.yaml) */
       coding: Form ? Form.emptyCoding() : null,
+      copyStatus: "",
 
       async init() {
         try {
@@ -134,6 +135,23 @@
         }
         const key = parts[parts.length - 1];
         parent[key] = Form.toggleMulti(parent[key], id, on);
+        this.copyStatus = "";
+      },
+
+      get yamlPreview() {
+        if (!Form || !this.coding) return "";
+        return Form.emitCodingYaml(this.coding);
+      },
+
+      async copyYaml() {
+        const text = this.yamlPreview;
+        if (!text) return;
+        try {
+          await writeClipboard(text);
+          this.copyStatus = "Copied";
+        } catch (err) {
+          this.copyStatus = "Copy failed — select preview and copy manually";
+        }
       },
     };
   }
@@ -142,6 +160,40 @@
     return fetch(url).then(function (res) {
       if (!res.ok) throw new Error("Failed to load " + url + ": " + res.status);
       return res.json();
+    });
+  }
+
+  function writeClipboard(text) {
+    if (
+      global.navigator &&
+      global.navigator.clipboard &&
+      global.navigator.clipboard.writeText
+    ) {
+      return global.navigator.clipboard.writeText(text).catch(function () {
+        return fallbackCopy(text);
+      });
+    }
+    return fallbackCopy(text);
+  }
+
+  function fallbackCopy(text) {
+    return new Promise(function (resolve, reject) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (ok) resolve();
+        else reject(new Error("execCommand copy failed"));
+      } catch (err) {
+        document.body.removeChild(ta);
+        reject(err);
+      }
     });
   }
 })(typeof window !== "undefined" ? window : globalThis);

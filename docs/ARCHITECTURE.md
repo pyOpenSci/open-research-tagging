@@ -98,6 +98,7 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 | `codebook.py` | Validate, load, index codebook YAML |
 | `codebook_emit.py` | Write `site/data/codebook.json` (includes `tag_catalog`) |
 | `tag_catalog.py` | Canonical hashtag list for the tag picker |
+| `coding_yaml.py` | Emit paste-ready `coding:` YAML (coding-view Copy) |
 
 | `tags.py` | Parse, enrich, warn on hashtags; group codes by dimension |
 | `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
@@ -154,7 +155,8 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
 - `codebook/COMMENTING.md` — coder workflow (picker → stage/copy → Files-tab paste). Exact strings come from the picker / `tag_catalog`, not a second markdown table
 - Paste-shape check: `tests/test_tag_picker_paste.py` (Playwright stage → comment body → `parse_tags` clean)
-- `site/coding.html` + `js/coding.js` / `coding_resolve.js` / `coding_form.js` — coding view: `?project=` resolve, evidence pane, and an **explicit nested form** for the full `coding:` block (stance, scope grid, rationale, guidance, accountability including disclosure_format, context). Prefills from each projects.json row’s raw `coding` passthrough (same nested shape as `project.yaml`). Copy YAML next.
+- `site/coding.html` + `js/coding.js` / `coding_resolve.js` / `coding_form.js` — coding view: `?project=` resolve, evidence pane, nested form, and **Copy YAML** (`coding:` block only). Prefills from each projects.json row’s raw `coding` passthrough.
+- `coding_yaml.py` — Python contract for the paste-ready `coding:` fragment; browser `emitCodingYaml` must match (emit-drift).
 - Evidence filter: empty select = all project comments; a dimension key keeps comments that have ≥1 tag on that dimension (dims with no passage tags show an empty list until you switch to All). Click a section title (or focus into the section) to set that evidence filter; Context resets to all comments (no passage dimension).
 - `projects.json` rows include both processed `overall` (projects table) and raw nested `coding` (coding-view pre-fill).
 
@@ -184,5 +186,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Coding view Copy YAML (form + evidence shipped)
+- Coding view entry notes + walkthrough polish (10e–10f)
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)
