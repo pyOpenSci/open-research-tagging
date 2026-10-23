@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects — overall codes</title>
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="top" aria-label="Primary">
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="index.html">Comments</a>
+      <a class="stub" href="tags.html">Tag picker</a>
+      <a class="stub" href="coding.html">Coding view</a>
+    </nav>
+    <header class="page-header">
+      <h1 class="page-title">Projects</h1>
+      <p class="lede">
+        Shared assets only for now. The overall-codes table and evidence links
+        land in the next projects-page task — filter dims will come from the
+        codebook, not a hardcoded list.
+      </p>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="Code filters">
+        <div class="sidebar-head">
+          <h2>Code filters</h2>
+        </div>
+        <p class="meta-row" id="filter-meta">Loading codebook…</p>
+        <ul class="dim-list" id="dim-preview" aria-live="polite"></ul>
+      </aside>
+      <section class="main-pane">
+        <p class="stub-note">
+          Shell page proving <code>OrtCodebook.filterDimensionsFromCodebook</code>
+          replaces the demo’s hardcoded filter-dimension array.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script src="js/codebook.js"></script>
+  <script src="js/chips.js"></script>
+  <script>
+    (function () {
+      OrtCodebook.loadCodebook("data/codebook.json")
+        .then(function (codebook) {
+          const dims = OrtCodebook.filterDimensionsFromCodebook(codebook);
+          document.getElementById("filter-meta").textContent =
+            dims.length + " dimensions (codebook-driven)";
+          const list = document.getElementById("dim-preview");
+          list.innerHTML = "";
+          dims.forEach(function (d) {
+            const li = document.createElement("li");
+            li.textContent = d.label;
+            list.appendChild(li);
+          });
+        })
+        .catch(function (err) {
+          document.getElementById("filter-meta").textContent = String(err);
+        });
+    })();
+  </script>
+</body>
+</html>

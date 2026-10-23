@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through draft-codebook tag-check policy (plan tasks through 7c). The static site UI and CI workflows are not built yet.
+**Status:** describes what exists through shared site assets (plan tasks through 8a). Full comment/projects browsers, tag picker, coding view, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -134,7 +134,16 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 
 `--reply` posts on the review comment (skips `*[bot]`). `--soft` prints issues but exits 0.
 
-**Draft-codebook CI policy:** the Actions status check **fails only on malformed tags** (bare `#Word`, `#…` that does not parse as `#namespace/value`). Well-formed tags with unknown namespace/value/scope ids are still printed (and may get a reply); they keep `needs_tag_review` on the site after refresh, but they do **not** fail the PR check until we tighten the policy later.
+**Draft-codebook CI policy:** the Actions status check **fails only on malformed tags** (bare `#Word`, or `#…` that does not parse as `#namespace/value`). Well-formed tags with unknown namespace/value/scope ids are still printed (and may get a reply). They keep `needs_tag_review` on the site after refresh, but they do **not** fail the PR check until we tighten the policy later.
+
+### Static site (shared assets)
+
+- `site/css/site.css` — shared chrome (nav, sidebar, chips, tables)
+- `site/js/codebook.js` — loads `data/codebook.json`; builds filter dimensions from `filter_order` + namespace labels (**no** hardcoded filter-dimension list)
+- `site/js/chips.js` — chip/details helpers for later pages
+- `index.html` and `projects.html` — thin shells that prove the shared path; full browse UX is next
+
+Local preview: `cd site && python3 -m http.server 8000` then open http://localhost:8000/
 
 ## How we keep this document current
 
@@ -146,5 +155,6 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Static site (browse / tag picker / coding view)
+- Full comment browser and projects overview tables
+- Tag picker and coding view pages
 - GitHub Actions (tests, tag check, Pages refresh)

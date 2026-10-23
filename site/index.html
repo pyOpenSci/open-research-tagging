@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Open research tagging — comments</title>
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+  <div class="page">
+    <nav class="top" aria-label="Primary">
+      <a href="projects.html">Projects</a>
+      <a href="index.html" aria-current="page">Comments</a>
+      <a class="stub" href="tags.html">Tag picker</a>
+      <a class="stub" href="coding.html">Coding view</a>
+    </nav>
+    <header class="page-header">
+      <h1>Research comment browser</h1>
+      <p class="lede">
+        Shared site chrome and codebook-driven filters are in place.
+        Full comment table, URL filters, and quote UI land in the next task.
+      </p>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="Code filters">
+        <div class="sidebar-head">
+          <h2>Code filters</h2>
+        </div>
+        <p class="meta-row" id="filter-meta">Loading codebook…</p>
+        <ul class="dim-list" id="dim-preview" aria-live="polite"></ul>
+      </aside>
+      <section class="main-pane">
+        <p class="stub-note" id="status">
+          Shell page for shared assets (<code>css/site.css</code>,
+          <code>js/codebook.js</code>, <code>js/chips.js</code>).
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script src="js/codebook.js"></script>
+  <script src="js/chips.js"></script>
+  <script>
+    (function () {
+      OrtCodebook.loadCodebook("data/codebook.json")
+        .then(function (codebook) {
+          const dims = OrtCodebook.filterDimensionsFromCodebook(codebook);
+          const meta = document.getElementById("filter-meta");
+          const list = document.getElementById("dim-preview");
+          meta.textContent =
+            dims.length +
+            " filter dimensions from codebook.json (version " +
+            (codebook.version || "?") +
+            ")";
+          list.innerHTML = "";
+          dims.forEach(function (d) {
+            const li = document.createElement("li");
+            li.textContent = d.label + " (" + d.key + ")";
+            li.dataset.dim = d.key;
+            list.appendChild(li);
+          });
+        })
+        .catch(function (err) {
+          document.getElementById("filter-meta").textContent = String(err);
+        });
+    })();
+  </script>
+</body>
+</html>
