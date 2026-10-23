@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through building site project rows from `project.yaml` (plan tasks through 5c). Emitting `projects.json`, fetch, the static site UI, and CI are not built yet.
+**Status:** describes what exists through emitting `projects.json` (plan tasks through 5d). Seed project files, fetch, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -83,6 +83,14 @@ For the projects page we need both in one place. The pipeline:
 
 A few practical details: scope entries marked `not_addressed` are skipped so the table stays sparse; if `project.yaml` uses an id the current codebook doesn’t know, we still show it and flag it for review rather than dropping it. Scope keys in YAML sometimes use underscores (`docs_and_text`) while hashtags use hyphens (`docs-and-text`); we normalize that when matching. The mapping from YAML fields to site fields is hand-written for the known layout — we are not auto-generating it from every codebook dimension.
 
+Maintainers / Actions emit the joined file with:
+
+```bash
+python -m open_research_tagging.process_projects --comments site/data/comments.json --out site/data/projects.json
+```
+
+Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_version`. Missing comments file → empty index and a warning (project rows still emit).
+
 ## Module map
 
 | Module | Role |
@@ -93,7 +101,8 @@ A few practical details: scope entries marked `not_addressed` are skipped so the
 | `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
 | `quotes.py` | Local file or diff_hunk quote resolution |
 | `process_comments.py` | Maintainer/Actions CLI for normalize + write |
-| `projects.py` | Discover/load YAML; comment index; `build_overall` / `build_project` |
+| `projects.py` | Discover/load YAML; comment index; build rows; write payload |
+| `process_projects.py` | Maintainer/Actions CLI for `projects.json` |
 
 Package root: `src/open_research_tagging/`.
 
@@ -107,7 +116,7 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Writing `projects.json` (process_projects entrypoint)
+- Seed `projects/pyopensci/` (policy files + filled `project.yaml`)
 - Fetching review comments from the GitHub API
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)

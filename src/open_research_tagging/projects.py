@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Iterator, Mapping
@@ -409,3 +410,67 @@ def build_project(
         "yaml_path": yaml_rel,
         "coding_warnings": warnings,
     }
+
+
+def collect_project_rows(
+    *,
+    projects_dir: str | Path,
+    codebook: Codebook,
+    comments: list[Mapping[str, Any]],
+    repo_root: Path | None = None,
+) -> list[dict[str, Any]]:
+    """Build site rows for every discoverable project.yaml under projects_dir."""
+    cidx = comment_index(comments)
+    rows: list[dict[str, Any]] = []
+    for yaml_path in iter_project_yaml_paths(projects_dir):
+        row = build_project(
+            yaml_path, codebook, cidx, repo_root=repo_root
+        )
+        if row is not None:
+            rows.append(row)
+    return rows
+
+
+def build_projects_payload(
+    rows: list[Mapping[str, Any]],
+    *,
+    comments_source: str | Path,
+    codebook: Codebook,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """Build the {meta, data} envelope for projects.json."""
+    root = repo_root
+    source = Path(comments_source)
+    if root is not None:
+        try:
+            relative = str(source.resolve().relative_to(Path(root).resolve()))
+        except ValueError:
+            relative = str(source)
+    else:
+        relative = str(source)
+    return {
+        "meta": {
+            "count": len(rows),
+            "comments_source": relative,
+            "codebook_version": codebook.version,
+        },
+        "data": list(rows),
+    }
+
+
+def write_projects_json(payload: Mapping[str, Any], path: str | Path) -> None:
+    """Write projects.json with trailing newline (dates already jsonable)."""
+    out = Path(path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+
+    def _default(obj: Any) -> Any:
+        if isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+        raise TypeError(
+            f"Object of type {obj.__class__.__name__} is not JSON serializable"
+        )
+
+    out.write_text(
+        json.dumps(payload, indent=2, default=_default) + "\n",
+        encoding="utf-8",
+    )
