@@ -75,6 +75,16 @@ class Codebook:
     def namespace_info(self, namespace: str) -> NamespaceInfo | None:
         return self._namespaces.get(namespace)
 
+    def known_namespaces(self) -> set[str]:
+        return set(self._namespaces)
+
+    def sample_value_id(self, dimension: str) -> str | None:
+        values = self._values.get(dimension) or {}
+        return next(iter(values), None)
+
+    def known_scope_positions(self) -> set[str]:
+        return set(self._scope_positions)
+
     def has_scope_type(self, type_id: str) -> bool:
         return type_id in self._scope_types
 
