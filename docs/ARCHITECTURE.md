@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through emitting `projects.json` (plan tasks through 5d). Seed project files, fetch, the static site UI, and CI are not built yet.
+**Status:** describes what exists through the pyOpenSci seed and regenerated site JSON (plan tasks through 5e). Fetch, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -65,11 +65,11 @@ python -m open_research_tagging.process_comments --in site/data/raw_comments.jso
 
 Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixture` (true when the input filename contains `fixture`), and `codebook_version`. Raw input is a JSON list or `{ "comments": [...] }`; already-processed `{ meta, data }` is rejected.
 
-**Offline path:** `site/data/raw_comments.fixture.json` is a committed dump of demo-shaped review comments (no network). Regenerating with `process_comments` writes committed `site/data/comments.json` so the site and CI can run without a GitHub token. Live fetch will write gitignored `raw_comments.json` later; the fixture stays the deterministic stand-in. Until `projects/pyopensci/` is seeded, quotes for those paths often come from `diff_hunk` rather than local files.
+**Offline path:** `site/data/raw_comments.fixture.json` is a committed dump of demo-shaped review comments (no network). Regenerating with `process_comments` writes committed `site/data/comments.json` so the site and CI can run without a GitHub token. Live fetch will write gitignored `raw_comments.json` later; the fixture stays the deterministic stand-in. With `projects/pyopensci/` present, fixture quotes usually resolve from local policy files (`paragraph` / `selection`) instead of `diff_hunk`.
 
 ### Projects on disk
 
-Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips any slug whose folder name starts with `_`, so `_template` never becomes a `projects.json` row.
+Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips any slug whose folder name starts with `_`, so `_template` never becomes a `projects.json` row. The first real seed is **pyOpenSci** (`projects/pyopensci/`): policy markdown plus a filled `project.yaml`, joined with the comment fixture into committed `site/data/projects.json`.
 
 **Putting overall codes next to passage evidence**
 
@@ -116,7 +116,6 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Seed `projects/pyopensci/` (policy files + filled `project.yaml`)
 - Fetching review comments from the GitHub API
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)
