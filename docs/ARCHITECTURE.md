@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through comment quote resolution (plan tasks through 4b). Fetch, full comment normalize/write, the static site UI, and CI are not built yet.
+**Status:** describes what exists through comment normalization and `comments.json` writing (plan tasks through 4c). Fetch, project join, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -36,7 +36,7 @@ Pipeline for a comment body:
 
 1. **Parse** — find `#namespace/value`, `#namespace:value` (colon slip), and `#scope/type:position`.
 2. **Enrich** — attach dimension, labels, `display`, and `filter_key` from the codebook. Unknown values still get a humanized fallback label so nothing disappears silently.
-3. **Warn** — bare `#Word` tokens, unknown namespaces/values, bad scope type/position. Any warnings mean the comment will need tag review later (`needs_tag_review` when normalize lands).
+3. **Warn** — bare `#Word` tokens, unknown namespaces/values, bad scope type/position. Any warnings set `needs_tag_review` on the normalized row.
 
 ### Comment provenance (refs)
 
@@ -53,15 +53,28 @@ For the UI excerpt of what was tagged:
 2. If the file is missing, clean GitHub’s `diff_hunk` (drop patch headers and pure deletions).
 3. If neither works, store no quote; the comment can still exist without a preview.
 
+### Normalize → `comments.json`
+
+`normalize` combines refs, tags, warnings, and quote into one site row. Malformed or unknown tags stay on the row with `parse_warnings` and `needs_tag_review: true` — nothing is dropped.
+
+Maintainers / Actions run:
+
+```bash
+python -m open_research_tagging.process_comments --in site/data/raw_comments.json --out site/data/comments.json
+```
+
+Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixture` (true when the input filename contains `fixture`), and `codebook_version`. Raw input is a JSON list or `{ "comments": [...] }`; already-processed `{ meta, data }` is rejected.
+
 ## Module map
 
 | Module | Role |
 |--------|------|
 | `codebook.py` | Validate, load, index codebook YAML |
 | `codebook_emit.py` | Write `site/data/codebook.json` |
-| `tags.py` | Parse, enrich, warn on hashtags |
-| `comments.py` | Project / PR / user refs from raw comments |
+| `tags.py` | Parse, enrich, warn on hashtags; group codes by dimension |
+| `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
 | `quotes.py` | Local file or diff_hunk quote resolution |
+| `process_comments.py` | Maintainer/Actions CLI for normalize + write |
 
 Package root: `src/open_research_tagging/`.
 
@@ -75,7 +88,7 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Full `normalize` + writing `comments.json`
+- Offline raw-comment fixture committed for regen without GitHub
 - Fetching review comments from the GitHub API
 - Joining overall `project.yaml` codes to comment evidence
 - Static site (browse / tag picker / coding view)

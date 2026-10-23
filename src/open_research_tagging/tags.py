@@ -87,6 +87,28 @@ def parse_and_enrich(body: str | None, codebook: Codebook) -> list[dict[str, Any
     return [enrich_tag(tag, codebook) for tag in parse_tags(body)]
 
 
+def codes_by_dimension(tags: list[Mapping[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Group enriched tags for site filters: dimension → list of entries."""
+    out: dict[str, list[dict[str, Any]]] = {}
+    for tag in tags:
+        dim = str(tag["dimension"])
+        if tag.get("kind") == "scope":
+            entry = {
+                "contribution_type": tag["contribution_type"],
+                "position": tag["position"],
+                "filter_key": tag["filter_key"],
+                "display": tag["display"],
+            }
+        else:
+            entry = {
+                "value": tag["value"],
+                "filter_key": tag["filter_key"],
+                "display": tag["display"],
+            }
+        out.setdefault(dim, []).append(entry)
+    return out
+
+
 def tag_warnings(
     body: str | None,
     tags: list[dict[str, Any]],
