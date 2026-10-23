@@ -103,6 +103,20 @@
     });
   }
 
+  /**
+   * Multiline hashtags only (one per line), ready to paste above a review note.
+   * @param {object[]} staged
+   * @returns {string}
+   */
+  function stagedToCopyText(staged) {
+    return (staged || [])
+      .map(function (t) {
+        return t && t.hashtag ? String(t.hashtag) : "";
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
+
   global.OrtTagsStage = {
     tagMatchesQuery: tagMatchesQuery,
     filterCatalog: filterCatalog,
@@ -110,5 +124,6 @@
     removeStaged: removeStaged,
     clearStaged: clearStaged,
     groupByDimension: groupByDimension,
+    stagedToCopyText: stagedToCopyText,
   };
 })(typeof window !== "undefined" ? window : globalThis);

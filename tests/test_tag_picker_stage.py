@@ -20,11 +20,16 @@ def test_tags_page_wires_search_and_staged_panel():
     assert 'id="tag-search"' in html
     assert 'id="staged-list"' in html or "staged" in html
     assert 'src="js/tags_stage.js"' in html
+    assert 'id="copy-staged"' in html
+    assert 'id="copy-preview"' in html
     assert "Shell page" not in html
     js = TAGS_JS.read_text(encoding="utf-8")
     assert "OrtTagsStage" in js
     assert "stageTag" in js or "addTag" in js
-    assert "tagMatchesQuery" in HELPERS_JS.read_text(encoding="utf-8")
+    assert "copyStaged" in js or "stagedToCopyText" in js
+    helpers = HELPERS_JS.read_text(encoding="utf-8")
+    assert "tagMatchesQuery" in helpers
+    assert "stagedToCopyText" in helpers
 
 
 def _run_node(script: str) -> str:
@@ -135,6 +140,29 @@ const groups = S.groupByDimension(filtered);
 if (groups.length !== 1 || groups[0].dimension !== 'stance') {
   throw new Error(JSON.stringify(groups));
 }
+console.log('ok');
+"""
+    )
+    assert out == "ok"
+
+
+def test_staged_to_copy_text_multiline_hashtags_only():
+    out = _run_node(
+        r"""
+if (S.stagedToCopyText([]) !== '') throw new Error('empty');
+if (S.stagedToCopyText(null) !== '') throw new Error('null');
+const one = S.stagedToCopyText([{ hashtag: '#stance/allow', label: 'Allow' }]);
+if (one !== '#stance/allow') throw new Error('one: ' + JSON.stringify(one));
+const many = S.stagedToCopyText([
+  { hashtag: '#stance/allow', label: 'Allow' },
+  { hashtag: '#disclosure/required', label: 'Required' },
+]);
+const expected = ['#stance/allow', '#disclosure/required'].join('\n');
+if (many !== expected) {
+  throw new Error('many: ' + JSON.stringify(many));
+}
+// labels must not appear in copy text
+if (many.indexOf('Allow') >= 0) throw new Error('label leak');
 console.log('ok');
 """
     )

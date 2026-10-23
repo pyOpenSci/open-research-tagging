@@ -18,7 +18,7 @@
     <header class="page-header">
       <h1>Tag picker</h1>
       <p class="lede">
-        Click a tag to stage it. Copy into a GitHub review comment next.
+        Click a tag to stage it, then Copy for a GitHub review comment.
       </p>
       <p class="meta-row" x-show="version" x-text="'Codebook ' + version"></p>
       <p class="meta-row" x-show="error" x-text="error"></p>
@@ -53,6 +53,24 @@
         <p class="meta-row" x-show="staged.length === 0">
           Click tags below to stage them.
         </p>
+        <label class="copy-preview-label" x-show="staged.length > 0">Preview
+          <textarea
+            id="copy-preview"
+            class="copy-preview"
+            readonly
+            rows="4"
+            :value="copyText"
+          ></textarea>
+        </label>
+        <div class="copy-actions" x-show="staged.length > 0">
+          <button
+            type="button"
+            class="chip"
+            id="copy-staged"
+            @click="copyStaged()"
+          >Copy</button>
+          <span class="meta-row" x-text="copyStatus" aria-live="polite"></span>
+        </div>
       </aside>
 
       <section class="catalog-pane">

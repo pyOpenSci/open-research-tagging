@@ -511,6 +511,41 @@ body.tags-page .lede {
   padding: 0;
   word-break: break-all;
 }
+.copy-preview-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.55rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.copy-preview {
+  font: inherit;
+  font-size: 0.75rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ink);
+  width: 100%;
+  min-height: 4.5rem;
+  resize: vertical;
+  padding: 0.35rem 0.4rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  white-space: pre;
+}
+.copy-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+}
+.copy-actions .chip {
+  background: var(--accent);
+  color: var(--chip-on-ink);
+  border-color: var(--accent);
+}
 
 @media (max-width: 860px) {
   .layout {

@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through tag picker search/stage (plan tasks through 9b). Copy-to-clipboard, coding view, and CI workflows are not built yet.
+**Status:** describes what exists through tag picker copy (plan tasks through 9c). Coding view and CI workflows are not built yet.
 
 ## What this system is
 
@@ -149,8 +149,8 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `site/js/projects.js` — Alpine `projectsOverview` + DataTables (code pills with evidence hover links)
 - `index.html` — comment browser; `projects.html` — overall-codes table + codebook-driven chip filters (no hardcoded `FILTER_DIMS`)
 - UI library: **Alpine.js** (CDN) for declarative filter chrome / tag picker; jQuery + DataTables for sortable tables
-- `site/tags.html` + `js/tags.js` — passage tag picker (catalog + search + ordered stage list). Copy-to-clipboard not built yet.
-- `site/js/tags_stage.js` — pure `tagMatchesQuery` / `filterCatalog` / `stageTag` (dedupe) / remove / clear
+- `site/tags.html` + `js/tags.js` — passage tag picker (catalog + search + stage + **Copy** hashtags). Narrow layout for use beside GitHub.
+- `site/js/tags_stage.js` — pure match/filter/stage helpers + `stagedToCopyText` (hashtags only, one per line)
 - `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
@@ -179,6 +179,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Tag picker copy staged hashtags
 - Coding view page
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)
