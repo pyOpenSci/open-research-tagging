@@ -7,9 +7,6 @@ Pages load Alpine/jQuery/DataTables from CDNs (network needed).
 from __future__ import annotations
 
 import json
-import socket
-import subprocess
-import time
 from pathlib import Path
 
 import pytest
@@ -23,43 +20,6 @@ COMMENTS_JSON = SITE / "data" / "comments.json"
 PROJECTS_JSON = SITE / "data" / "projects.json"
 
 pytestmark = pytest.mark.integration
-
-
-def _free_port() -> int:
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind(("127.0.0.1", 0))
-        return int(sock.getsockname()[1])
-
-
-@pytest.fixture(scope="module")
-def site_base_url():
-    """Serve site/ on a local ephemeral port for the module."""
-    port = _free_port()
-    proc = subprocess.Popen(
-        ["python3", "-m", "http.server", str(port), "--bind", "127.0.0.1"],
-        cwd=SITE,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    base = f"http://127.0.0.1:{port}"
-    deadline = time.time() + 5
-    last_err: Exception | None = None
-    while time.time() < deadline:
-        try:
-            with socket.create_connection(("127.0.0.1", port), timeout=0.2):
-                break
-        except OSError as err:
-            last_err = err
-            time.sleep(0.05)
-    else:
-        proc.kill()
-        raise RuntimeError(f"site server did not start: {last_err}")
-    yield base
-    proc.terminate()
-    try:
-        proc.wait(timeout=3)
-    except subprocess.TimeoutExpired:
-        proc.kill()
 
 
 @pytest.fixture(scope="module")

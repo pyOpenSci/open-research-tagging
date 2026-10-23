@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through tag picker docs/contract (plan tasks through 9d). Coding view and CI workflows are not built yet.
+**Status:** describes what exists through the passage tag picker (plan tasks through 9e). Coding view and CI workflows are not built yet.
 
 ## What this system is
 
@@ -153,6 +153,7 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `site/js/tags_stage.js` — pure match/filter/stage helpers + `stagedToCopyText` (hashtags only, one per line)
 - `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
 - `codebook/COMMENTING.md` — coder workflow (picker → stage/copy → Files-tab paste). Exact strings come from the picker / `tag_catalog`, not a second markdown table
+- Paste-shape check: `tests/test_tag_picker_paste.py` (Playwright stage → comment body → `parse_tags` clean)
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
 
