@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through comment normalization and `comments.json` writing (plan tasks through 4c). Fetch, project join, the static site UI, and CI are not built yet.
+**Status:** describes what exists through offline fixture regen of `comments.json` (plan tasks through 4d). Fetch, project join, the static site UI, and CI are not built yet.
 
 ## What this system is
 
@@ -65,6 +65,8 @@ python -m open_research_tagging.process_comments --in site/data/raw_comments.jso
 
 Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixture` (true when the input filename contains `fixture`), and `codebook_version`. Raw input is a JSON list or `{ "comments": [...] }`; already-processed `{ meta, data }` is rejected.
 
+**Offline path:** `site/data/raw_comments.fixture.json` is a committed dump of demo-shaped review comments (no network). Regenerating with `process_comments` writes committed `site/data/comments.json` so the site and CI can run without a GitHub token. Live fetch will write gitignored `raw_comments.json` later; the fixture stays the deterministic stand-in. Until `projects/pyopensci/` is seeded, quotes for those paths often come from `diff_hunk` rather than local files.
+
 ## Module map
 
 | Module | Role |
@@ -88,7 +90,6 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Offline raw-comment fixture committed for regen without GitHub
 - Fetching review comments from the GitHub API
 - Joining overall `project.yaml` codes to comment evidence
 - Static site (browse / tag picker / coding view)
