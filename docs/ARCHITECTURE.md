@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the shared GitHub HTTP client (plan tasks through 6a). Fetch entrypoint, the static site UI, and CI are not built yet.
+**Status:** describes what exists through fetching raw review comments (plan tasks through 6b). Tag-check CLI, the static site UI, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -104,12 +104,22 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 | `projects.py` | Discover/load YAML; comment index; build rows; write payload |
 | `process_projects.py` | Maintainer/Actions CLI for `projects.json` |
 | `github_client.py` | Shared GET + Link pagination (injectable for tests) |
+| `fetch_comments.py` | Maintainer/Actions CLI → `raw_comments.json` |
 
 Package root: `src/open_research_tagging/`.
 
 ### GitHub HTTP (shared)
 
-`github_client` builds auth headers and GETs JSON from the GitHub API, following `Link: rel="next"` for pagination. Fetch and tag-check will share this module. Tests inject a `getter` (or stub `urlopen`) so CI never calls the live API. Stdlib only for v1; a fuller client (e.g. PyGithub) can replace this later if the thin wrapper stops being enough.
+`github_client` builds auth headers and GETs JSON from the GitHub API, following `Link: rel="next"` for pagination. Fetch and tag-check share this module. Tests inject a `getter` (or stub `urlopen`) so CI never calls the live API. Stdlib only for v1; a fuller client (e.g. PyGithub) can replace this later if the thin wrapper stops being enough.
+
+**Fetch:** maintainers / Actions run:
+
+```bash
+python -m open_research_tagging.fetch_comments --owner ORG --repo NAME
+# or set GITHUB_REPOSITORY=owner/repo (and optional GITHUB_TOKEN)
+```
+
+Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, comments }`). Offline work keeps using `raw_comments.fixture.json` instead.
 
 ## How we keep this document current
 
@@ -121,6 +131,6 @@ Package root: `src/open_research_tagging/`.
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Fetch entrypoint writing `raw_comments.json`
+- Tag-check entrypoint for Actions (reply / PR scan)
 - Static site (browse / tag picker / coding view)
 - GitHub Actions (tests, tag check, Pages refresh)
