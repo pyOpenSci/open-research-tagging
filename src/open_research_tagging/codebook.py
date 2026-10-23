@@ -14,12 +14,21 @@ class CodebookValidationError(ValueError):
 
 
 @dataclass(frozen=True)
+class NamespaceInfo:
+    """Hashtag namespace metadata from the codebook."""
+
+    dimension: str
+    kind: str
+    label: str
+
+
+@dataclass(frozen=True)
 class Codebook:
     """Indexed codebook: lookups by dimension / namespace / value id."""
 
     version: str
     _values: Mapping[str, Mapping[str, str]]
-    _namespaces: Mapping[str, str]
+    _namespaces: Mapping[str, NamespaceInfo]
     _scope_types: Mapping[str, str]
     _scope_positions: Mapping[str, str]
 
@@ -27,14 +36,17 @@ class Codebook:
     def from_validated(cls, data: Mapping[str, Any]) -> Codebook:
         """Build indexes from an already-validated codebook mapping."""
         values: dict[str, dict[str, str]] = {}
-        namespaces: dict[str, str] = {}
+        namespaces: dict[str, NamespaceInfo] = {}
         scope_types: dict[str, str] = {}
         scope_positions: dict[str, str] = {}
         dimensions = data["dimensions"]
         for namespace, info in data["namespaces"].items():
             dimension = str(info["dimension"])
-            namespaces[str(namespace)] = dimension
             kind = str(info["kind"])
+            label = str(info.get("label") or dimension)
+            namespaces[str(namespace)] = NamespaceInfo(
+                dimension=dimension, kind=kind, label=label
+            )
             if kind == "scope":
                 scope_body = _resolve_path(dimensions, dimension)
                 scope_types, scope_positions = _index_scope(scope_body)
@@ -57,6 +69,10 @@ class Codebook:
         return value_id in self._values.get(dimension, {})
 
     def dimension_for_namespace(self, namespace: str) -> str | None:
+        info = self._namespaces.get(namespace)
+        return None if info is None else info.dimension
+
+    def namespace_info(self, namespace: str) -> NamespaceInfo | None:
         return self._namespaces.get(namespace)
 
     def has_scope_type(self, type_id: str) -> bool:
