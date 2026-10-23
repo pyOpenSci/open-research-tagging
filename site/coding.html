@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coding view — open research tagging</title>
+  <link rel="stylesheet" href="css/site.css" />
+  <style>[x-cloak] { display: none !important; }</style>
+</head>
+<body>
+  <div class="page" x-data="codingView" x-cloak>
+    <nav class="top" aria-label="Primary">
+      <a href="projects.html">Projects</a>
+      <a href="index.html">Comments</a>
+      <a href="tags.html">Tag picker</a>
+      <a href="coding.html" aria-current="page">Coding view</a>
+    </nav>
+    <header class="page-header">
+      <h1>Project coding view</h1>
+      <p class="lede">
+        Walk overall codes for a project with passage evidence, then copy a
+        <code>coding:</code> YAML block into <code>project.yaml</code>.
+        Evidence and form controls come next — this shell loads the project.
+      </p>
+      <p class="meta-row" x-show="loading">Loading…</p>
+      <p class="meta-row" x-show="error" x-text="error"></p>
+    </header>
+
+    <div id="coding-empty" x-show="!loading && !error && state === 'missing'">
+      <p class="stub-note">
+        Choose a project via <code>?project=&lt;slug&gt;</code>, or open one below.
+      </p>
+      <ul class="dim-list">
+        <template x-for="p in allProjects" :key="p.slug">
+          <li>
+            <a :href="'coding.html?project=' + encodeURIComponent(p.slug)"
+               x-text="p.display_name || p.slug"></a>
+          </li>
+        </template>
+      </ul>
+      <p class="meta-row" x-show="allProjects.length === 0">
+        No projects in <code>projects.json</code> yet.
+      </p>
+    </div>
+
+    <div id="coding-unknown" x-show="!loading && !error && state === 'unknown'">
+      <p class="stub-note">
+        Unknown project
+        <code x-text="slug"></code>.
+        Pick one from
+        <a href="projects.html">Projects</a>
+        or the list below.
+      </p>
+      <ul class="dim-list">
+        <template x-for="p in allProjects" :key="p.slug">
+          <li>
+            <a :href="'coding.html?project=' + encodeURIComponent(p.slug)"
+               x-text="p.display_name || p.slug"></a>
+          </li>
+        </template>
+      </ul>
+    </div>
+
+    <div id="coding-ready" x-show="!loading && !error && state === 'ready'">
+      <p class="meta-row">
+        <strong x-text="project.display_name"></strong>
+        · <code x-text="project.slug"></code>
+        · <span x-text="comments.length + ' comments'"></span>
+        ·
+        <a :href="project.comments_href || ('index.html?project=' + project.slug)">
+          Browse comments
+        </a>
+      </p>
+
+      <div class="layout coding-shell">
+        <aside class="sidebar" aria-label="Evidence (placeholder)">
+          <div class="sidebar-head"><h2>Evidence</h2></div>
+          <p class="meta-row">Passage evidence for each dimension lands in the next task.</p>
+        </aside>
+        <section class="main-pane">
+          <p class="stub-note">
+            Coding form (stance, scope, rationale, …) and Copy YAML land in later tasks.
+            Project data and comments are loaded and ready.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/codebook.js"></script>
+  <script src="js/coding_resolve.js"></script>
+  <script src="js/coding.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the passage tag picker (plan tasks through 9e). Coding view and CI workflows are not built yet.
+**Status:** describes what exists through the coding view shell (plan tasks through 10a). Evidence pane, coding form, Copy YAML, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -154,6 +154,7 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
 - `codebook/COMMENTING.md` — coder workflow (picker → stage/copy → Files-tab paste). Exact strings come from the picker / `tag_catalog`, not a second markdown table
 - Paste-shape check: `tests/test_tag_picker_paste.py` (Playwright stage → comment body → `parse_tags` clean)
+- `site/coding.html` + `js/coding.js` / `coding_resolve.js` — coding view **shell**: `?project=` resolve, missing/unknown empty states, project header + comment count. Evidence + form next.
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
 
@@ -181,5 +182,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Coding view page
+- Coding view evidence pane + form + Copy YAML
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)
