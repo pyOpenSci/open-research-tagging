@@ -4,10 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Projects — overall codes</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
   <link rel="stylesheet" href="css/site.css" />
+  <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body>
-  <div class="page">
+  <div class="page" x-data="projectsOverview" x-cloak>
     <nav class="top" aria-label="Primary">
       <a href="projects.html" aria-current="page">Projects</a>
       <a href="index.html">Comments</a>
@@ -15,52 +17,99 @@
       <a class="stub" href="coding.html">Coding view</a>
     </nav>
     <header class="page-header">
-      <h1 class="page-title">Projects</h1>
+      <h1 class="page-title">Project overview</h1>
       <p class="lede">
-        Shared assets only for now. The overall-codes table and evidence links
-        land in the next projects-page task — filter dims will come from the
-        codebook, not a hardcoded list.
+        Overall codes from each <code>project.yaml</code>. Filter by stance and
+        other dimensions on the left. Hover a code for evidence links into the
+        comment browser.
       </p>
     </header>
 
     <div class="layout">
-      <aside class="sidebar" aria-label="Code filters">
+      <aside class="sidebar" aria-label="Project code filters">
         <div class="sidebar-head">
-          <h2>Code filters</h2>
+          <h2>Filter projects</h2>
+          <button
+            type="button"
+            class="clear-filters"
+            id="clear-filters"
+            @click="clearFilters()"
+          >Clear</button>
         </div>
-        <p class="meta-row" id="filter-meta">Loading codebook…</p>
-        <ul class="dim-list" id="dim-preview" aria-live="polite"></ul>
+        <div class="dim-filters" id="dim-filters">
+          <template x-for="block in filterBlocks" :key="block.key">
+            <details
+              class="dim-block"
+              :class="{ 'has-active': dimActiveCount(block.key) > 0 }"
+              :open="openDims[block.key] || dimActiveCount(block.key) > 0"
+              @toggle="openDims[block.key] = $event.target.open"
+            >
+              <summary>
+                <span class="summary-label" x-text="block.label"></span>
+                <span
+                  class="summary-meta"
+                  x-text="dimActiveCount(block.key)
+                    ? dimActiveCount(block.key) + ' on'
+                    : block.chips.length + ' opts'"
+                ></span>
+              </summary>
+              <div class="dim-body">
+                <div class="chips">
+                  <template x-for="chip in block.chips" :key="chip.id">
+                    <button
+                      type="button"
+                      class="chip"
+                      :aria-pressed="isChipOn(block.key, chip.id) ? 'true' : 'false'"
+                      :class="{ on: isChipOn(block.key, chip.id) }"
+                      @click="toggleChip(block.key, chip.id)"
+                    >
+                      <span x-text="chip.label"></span>
+                      <span class="count" x-text="'(' + chip.count + ')'"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </details>
+          </template>
+        </div>
       </aside>
+
       <section class="main-pane">
-        <p class="stub-note">
-          Shell page proving <code>OrtCodebook.filterDimensionsFromCodebook</code>
-          replaces the demo’s hardcoded filter-dimension array.
-        </p>
+        <p class="meta-row" id="meta" x-text="metaText || (loading ? 'Loading projects…' : '')"></p>
+        <div class="controls">
+          <label>Search
+            <input
+              type="search"
+              id="q"
+              placeholder="name, domain, governance…"
+              x-model="q"
+              @input="onSearchInput()"
+            />
+          </label>
+        </div>
+        <table id="projectstable" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Stance</th>
+              <th>Scope</th>
+              <th>Rationale</th>
+              <th>Guidance</th>
+              <th>Accountability</th>
+              <th>Comments</th>
+            </tr>
+          </thead>
+        </table>
       </section>
     </div>
   </div>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
   <script src="js/codebook.js"></script>
-  <script src="js/chips.js"></script>
-  <script>
-    (function () {
-      OrtCodebook.loadCodebook("data/codebook.json")
-        .then(function (codebook) {
-          const dims = OrtCodebook.filterDimensionsFromCodebook(codebook);
-          document.getElementById("filter-meta").textContent =
-            dims.length + " dimensions (codebook-driven)";
-          const list = document.getElementById("dim-preview");
-          list.innerHTML = "";
-          dims.forEach(function (d) {
-            const li = document.createElement("li");
-            li.textContent = d.label;
-            list.appendChild(li);
-          });
-        })
-        .catch(function (err) {
-          document.getElementById("filter-meta").textContent = String(err);
-        });
-    })();
-  </script>
+  <script src="js/projects_filters.js"></script>
+  <script src="js/projects.js"></script>
+  <!-- filterDimensionsFromCodebook via OrtCodebook in projects.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </body>
 </html>

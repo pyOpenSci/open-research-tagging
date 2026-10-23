@@ -337,6 +337,72 @@ table.dataTable thead th {
 }
 a { color: var(--accent); }
 #commentstable_filter { display: none; }
+#projectstable_filter { display: none; }
+
+.project-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.project-name a { color: var(--ink); text-decoration: none; }
+.project-name a:hover { color: var(--accent); }
+.sub {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+.code-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.code-pill {
+  position: relative;
+  display: inline-block;
+  background: var(--chip);
+  border: 1px solid transparent;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.78rem;
+  cursor: default;
+  max-width: 14rem;
+  line-height: 1.25;
+}
+.code-pill:hover,
+.code-pill:focus-within {
+  border-color: var(--accent);
+  z-index: 5;
+}
+.code-pill .pop {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  min-width: 12rem;
+  background: var(--pop);
+  color: #f6f3ee;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.78rem;
+  z-index: 20;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+.code-pill:hover .pop,
+.code-pill:focus-within .pop {
+  display: block;
+}
+.pop a {
+  display: block;
+  color: #c8e6d8;
+  text-decoration: none;
+  padding: 0.2rem 0;
+}
+.pop a:hover { color: #fff; }
+.pop .hint {
+  color: #9aa39d;
+  font-size: 0.7rem;
+  margin-bottom: 0.25rem;
+}
+.empty { color: var(--muted); font-size: 0.8rem; }
 
 @media (max-width: 860px) {
   .layout {

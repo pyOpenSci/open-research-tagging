@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through the comment browser (plan tasks through 8b). Projects overview tables, tag picker, coding view, and CI workflows are not built yet.
+**Status:** describes what exists through the projects overview (plan tasks through 8c). Tag picker, coding view, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -143,8 +143,10 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `site/js/chips.js` — chip/details helpers
 - `site/js/comments_filters.js` — pure URL parse + row matching + chip/scope option helpers (OR within a dimension, AND across; scope full/partial keys)
 - `site/js/comments.js` — Alpine `commentBrowser` component + DataTables cell renderers
-- `index.html` — comment browser (Alpine templates for sidebar/controls; DataTables for the table); `projects.html` — shell until the projects overview task
-- UI library: **Alpine.js** (CDN) for declarative filter chrome; jQuery + DataTables for the sortable table
+- `site/js/projects_filters.js` — pure overall-code filter matching (`projectMatchesFilters`, `codesPresent`)
+- `site/js/projects.js` — Alpine `projectsOverview` + DataTables (code pills with evidence hover links)
+- `index.html` — comment browser; `projects.html` — overall-codes table + codebook-driven chip filters (no hardcoded `FILTER_DIMS`)
+- UI library: **Alpine.js** (CDN) for declarative filter chrome; jQuery + DataTables for sortable tables
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
 
@@ -170,6 +172,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Projects overview tables (overall codes + evidence deep links)
 - Tag picker and coding view pages
 - GitHub Actions (tests, tag check, Pages refresh)
