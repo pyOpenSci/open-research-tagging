@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes what exists through site browse parity tests (plan tasks through 8d). Tag picker, coding view, and CI workflows are not built yet.
+**Status:** describes what exists through the tag picker catalog shell (plan tasks through 9a). Staging/copy, coding view, and CI workflows are not built yet.
 
 ## What this system is
 
@@ -96,7 +96,9 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 | Module | Role |
 |--------|------|
 | `codebook.py` | Validate, load, index codebook YAML |
-| `codebook_emit.py` | Write `site/data/codebook.json` |
+| `codebook_emit.py` | Write `site/data/codebook.json` (includes `tag_catalog`) |
+| `tag_catalog.py` | Canonical hashtag list for the tag picker |
+
 | `tags.py` | Parse, enrich, warn on hashtags; group codes by dimension |
 | `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
 | `quotes.py` | Local file or diff_hunk quote resolution |
@@ -146,7 +148,9 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `site/js/projects_filters.js` — pure overall-code filter matching (`projectMatchesFilters`, `codesPresent`)
 - `site/js/projects.js` — Alpine `projectsOverview` + DataTables (code pills with evidence hover links)
 - `index.html` — comment browser; `projects.html` — overall-codes table + codebook-driven chip filters (no hardcoded `FILTER_DIMS`)
-- UI library: **Alpine.js** (CDN) for declarative filter chrome; jQuery + DataTables for sortable tables
+- UI library: **Alpine.js** (CDN) for declarative filter chrome / tag picker; jQuery + DataTables for sortable tables
+- `site/tags.html` + `js/tags.js` — passage tag picker **catalog** (labels + exact hashtags from `codebook.json` → `tag_catalog`). Search/stage/copy not built yet.
+- `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
 
@@ -174,5 +178,6 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Tag picker and coding view pages
+- Tag picker search / stage / copy
+- Coding view page
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)

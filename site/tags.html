@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tag picker — open research tagging</title>
+  <link rel="stylesheet" href="css/site.css" />
+  <style>[x-cloak] { display: none !important; }</style>
+</head>
+<body>
+  <div class="page" x-data="tagPicker" x-cloak>
+    <nav class="top" aria-label="Primary">
+      <a href="projects.html">Projects</a>
+      <a href="index.html">Comments</a>
+      <a href="tags.html" aria-current="page">Tag picker</a>
+      <a class="stub" href="coding.html">Coding view</a>
+    </nav>
+    <header class="page-header">
+      <h1>Passage tag picker</h1>
+      <p class="lede">
+        Full codebook catalog with exact hashtag strings for pasting into GitHub
+        review comments. Search, staging, and copy come next.
+      </p>
+      <p class="meta-row" x-show="version" x-text="'Codebook ' + version"></p>
+      <p class="meta-row" x-show="error" x-text="error"></p>
+      <p class="meta-row" x-show="loading">Loading catalog…</p>
+      <p class="meta-row" x-show="!loading && !error"
+         x-text="catalog.length + ' tags'"></p>
+    </header>
+
+    <div class="tag-catalog" x-show="!loading && !error">
+      <template x-for="group in grouped" :key="group.dimension">
+        <section class="tag-group">
+          <h2 x-text="group.label"></h2>
+          <ul class="tag-list">
+            <template x-for="tag in group.tags" :key="tag.hashtag">
+              <li>
+                <span class="tag-label" x-text="tag.label"></span>
+                <code class="tag-hashtag" x-text="tag.hashtag"></code>
+              </li>
+            </template>
+          </ul>
+        </section>
+      </template>
+    </div>
+  </div>
+
+  <script src="js/codebook.js"></script>
+  <script src="js/tags.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</body>
+</html>

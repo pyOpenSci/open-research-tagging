@@ -116,5 +116,487 @@
     "disclosure",
     "human_responsibility",
     "enforcement"
+  ],
+  "tag_catalog": [
+    {
+      "hashtag": "#disclosure/none",
+      "label": "None",
+      "dimension": "disclosure",
+      "dimension_label": "Disclosure",
+      "namespace": "disclosure",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#disclosure/recommended",
+      "label": "Recommended",
+      "dimension": "disclosure",
+      "dimension_label": "Disclosure",
+      "namespace": "disclosure",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#disclosure/required",
+      "label": "Required",
+      "dimension": "disclosure",
+      "dimension_label": "Disclosure",
+      "namespace": "disclosure",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#enforcement/contributor-blocked",
+      "label": "Contributor blocked",
+      "dimension": "enforcement",
+      "dimension_label": "Enforcement",
+      "namespace": "enforcement",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#enforcement/none-stated",
+      "label": "None stated",
+      "dimension": "enforcement",
+      "dimension_label": "Enforcement",
+      "namespace": "enforcement",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#enforcement/other",
+      "label": "Other",
+      "dimension": "enforcement",
+      "dimension_label": "Enforcement",
+      "namespace": "enforcement",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#enforcement/pr-closed",
+      "label": "PR closed",
+      "dimension": "enforcement",
+      "dimension_label": "Enforcement",
+      "namespace": "enforcement",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance/design",
+      "label": "Design (modularity, existing patterns, technical debt)",
+      "dimension": "guidance_type",
+      "dimension_label": "Guidance type",
+      "namespace": "guidance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance/evaluation",
+      "label": "Evaluation (understand, test, and explain output)",
+      "dimension": "guidance_type",
+      "dimension_label": "Guidance type",
+      "namespace": "guidance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance/iteration",
+      "label": "Iteration (human-AI cycles rather than one-shot)",
+      "dimension": "guidance_type",
+      "dimension_label": "Guidance type",
+      "namespace": "guidance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance/learning",
+      "label": "Learning (supports building skills or understanding)",
+      "dimension": "guidance_type",
+      "dimension_label": "Guidance type",
+      "namespace": "guidance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance/scoping",
+      "label": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "dimension": "guidance_type",
+      "dimension_label": "Guidance type",
+      "namespace": "guidance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-level/restricts-only",
+      "label": "Restricts only",
+      "dimension": "guidance_level",
+      "dimension_label": "Guidance level",
+      "namespace": "guidance-level",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-level/some-guidance",
+      "label": "Some guidance",
+      "dimension": "guidance_level",
+      "dimension_label": "Guidance level",
+      "namespace": "guidance-level",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-level/substantive-guidance",
+      "label": "Substantive guidance",
+      "dimension": "guidance_level",
+      "dimension_label": "Guidance level",
+      "namespace": "guidance-level",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#human-responsibility/no",
+      "label": "no",
+      "dimension": "human_responsibility",
+      "dimension_label": "Human responsibility",
+      "namespace": "human-responsibility",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#human-responsibility/not_stated",
+      "label": "Not stated",
+      "dimension": "human_responsibility",
+      "dimension_label": "Human responsibility",
+      "namespace": "human-responsibility",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#human-responsibility/yes",
+      "label": "Yes \u2014 contributor is responsible for submitted work",
+      "dimension": "human_responsibility",
+      "dimension_label": "Human responsibility",
+      "namespace": "human-responsibility",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/code-quality",
+      "label": "Code quality",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/contributor-learning-and-skill-development",
+      "label": "Contributor learning and skill development",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/environmental",
+      "label": "Environmental",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/licensing-and-copyright",
+      "label": "Licensing and copyright",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/maintainer-and-reviewer-burden",
+      "label": "Maintainer and reviewer burden",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/other",
+      "label": "Other (specify in free text)",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/security",
+      "label": "Security",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale/social-and-ethical",
+      "label": "Social and ethical (trust, transparency, community norms)",
+      "dimension": "stated_rationale",
+      "dimension_label": "Stated rationale",
+      "namespace": "rationale",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance/ban",
+      "label": "Ban",
+      "dimension": "stance",
+      "dimension_label": "Stance",
+      "namespace": "stance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance/discouraged",
+      "label": "Discouraged",
+      "dimension": "stance",
+      "dimension_label": "Stance",
+      "namespace": "stance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance/gate-restrict",
+      "label": "Gate/restrict",
+      "dimension": "stance",
+      "dimension_label": "Stance",
+      "namespace": "stance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance/no-policy",
+      "label": "No policy",
+      "dimension": "stance",
+      "dimension_label": "Stance",
+      "namespace": "stance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance/permissive",
+      "label": "Permissive",
+      "dimension": "stance",
+      "dimension_label": "Stance",
+      "namespace": "stance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance/permissive-with-conditions",
+      "label": "Permissive with conditions",
+      "dimension": "stance",
+      "dimension_label": "Stance",
+      "namespace": "stance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#scope/autonomous-agents:allowed",
+      "label": "Autonomous agents \u2192 Allowed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/autonomous-agents:banned",
+      "label": "Autonomous agents \u2192 Banned",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/autonomous-agents:not_addressed",
+      "label": "Autonomous agents \u2192 Not Addressed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/autonomous-agents:restricted",
+      "label": "Autonomous agents \u2192 Restricted",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/code:allowed",
+      "label": "Code \u2192 Allowed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/code:banned",
+      "label": "Code \u2192 Banned",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/code:not_addressed",
+      "label": "Code \u2192 Not Addressed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/code:restricted",
+      "label": "Code \u2192 Restricted",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/contribution-types-not-defined:allowed",
+      "label": "Contribution types not defined \u2192 Allowed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/contribution-types-not-defined:banned",
+      "label": "Contribution types not defined \u2192 Banned",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/contribution-types-not-defined:not_addressed",
+      "label": "Contribution types not defined \u2192 Not Addressed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/contribution-types-not-defined:restricted",
+      "label": "Contribution types not defined \u2192 Restricted",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/docs-and-text:allowed",
+      "label": "Docs and text \u2192 Allowed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/docs-and-text:banned",
+      "label": "Docs and text \u2192 Banned",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/docs-and-text:not_addressed",
+      "label": "Docs and text \u2192 Not Addressed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/docs-and-text:restricted",
+      "label": "Docs and text \u2192 Restricted",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/issues-and-pr-descriptions:allowed",
+      "label": "Issues and PR descriptions \u2192 Allowed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/issues-and-pr-descriptions:banned",
+      "label": "Issues and PR descriptions \u2192 Banned",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/issues-and-pr-descriptions:not_addressed",
+      "label": "Issues and PR descriptions \u2192 Not Addressed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/issues-and-pr-descriptions:restricted",
+      "label": "Issues and PR descriptions \u2192 Restricted",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/review:allowed",
+      "label": "Review \u2192 Allowed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/review:banned",
+      "label": "Review \u2192 Banned",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/review:not_addressed",
+      "label": "Review \u2192 Not Addressed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/review:restricted",
+      "label": "Review \u2192 Restricted",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/tests:allowed",
+      "label": "Tests \u2192 Allowed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/tests:banned",
+      "label": "Tests \u2192 Banned",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/tests:not_addressed",
+      "label": "Tests \u2192 Not Addressed",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    },
+    {
+      "hashtag": "#scope/tests:restricted",
+      "label": "Tests \u2192 Restricted",
+      "dimension": "scope",
+      "dimension_label": "Scope",
+      "namespace": "scope",
+      "kind": "scope"
+    }
   ]
 }

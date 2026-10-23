@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from open_research_tagging.codebook import Codebook
+from open_research_tagging.tag_catalog import canonical_tag_entries
 
 
 def emit_codebook_json(data: Mapping[str, Any]) -> dict[str, Any]:
@@ -30,6 +31,7 @@ def emit_codebook_json(data: Mapping[str, Any]) -> dict[str, Any]:
         "values": values_out,
         "scope": scope_out,
         "filter_order": _filter_order(data),
+        "tag_catalog": canonical_tag_entries(codebook),
     }
 
 

@@ -24,7 +24,10 @@ def test_emit_has_expected_top_level_keys():
         "values",
         "scope",
         "filter_order",
+        "tag_catalog",
     }
+    assert payload["tag_catalog"]
+    assert payload["tag_catalog"][0]["hashtag"].startswith("#")
     assert payload["version"] == "test-0.1"
     assert payload["values"]["stance"]["ban"] == "Ban"
     assert payload["scope"]["contribution_types"]["code"] == "Code"
