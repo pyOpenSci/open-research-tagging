@@ -89,7 +89,7 @@ Maintainers / Actions emit the joined file with:
 python -m open_research_tagging.process_projects --comments site/data/comments.json --out site/data/projects.json
 ```
 
-Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_version`. Missing comments file → empty index and a warning (project rows still emit).
+Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_version`. Each row carries processed `overall` (table + filters) and raw nested `coding` (coding-view form pre-fill). Missing comments file → empty index and a warning (project rows still emit).
 
 ## Module map
 
@@ -154,8 +154,9 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 - `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
 - `codebook/COMMENTING.md` — coder workflow (picker → stage/copy → Files-tab paste). Exact strings come from the picker / `tag_catalog`, not a second markdown table
 - Paste-shape check: `tests/test_tag_picker_paste.py` (Playwright stage → comment body → `parse_tags` clean)
-- `site/coding.html` + `js/coding.js` / `coding_resolve.js` — coding view: `?project=` resolve, missing/unknown empty states, project header + comment count, **evidence pane** (dimension select → `commentsForDimension`; quote/excerpt, tags, GitHub + browser links). Form + Copy YAML next.
-- Evidence filter: empty select = all project comments; a dimension key keeps comments that have ≥1 tag on that dimension (dims with no passage tags show an empty list until you switch to All).
+- `site/coding.html` + `js/coding.js` / `coding_resolve.js` / `coding_form.js` — coding view: `?project=` resolve, evidence pane, and an **explicit nested form** for the full `coding:` block (stance, scope grid, rationale, guidance, accountability including disclosure_format, context). Prefills from each projects.json row’s raw `coding` passthrough (same nested shape as `project.yaml`). Copy YAML next.
+- Evidence filter: empty select = all project comments; a dimension key keeps comments that have ≥1 tag on that dimension (dims with no passage tags show an empty list until you switch to All). Click a section title (or focus into the section) to set that evidence filter; Context resets to all comments (no passage dimension).
+- `projects.json` rows include both processed `overall` (projects table) and raw nested `coding` (coding-view pre-fill).
 
 **Comment browser URL params** (same deep-link shapes the projects join emits):
 
@@ -183,5 +184,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Coding view form + Copy YAML (evidence pane shipped)
+- Coding view Copy YAML (form + evidence shipped)
 - GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)

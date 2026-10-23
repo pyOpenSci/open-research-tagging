@@ -404,6 +404,9 @@ def build_project(
             "governance": context.get("governance"),
             "domain": context.get("domain"),
         },
+        # Nested project.yaml coding for coding-view form pre-fill (not the
+        # processed overall block used by the projects table).
+        "coding": jsonable(dict(coding)),
         "overall": overall,
         "comment_count": len(pb.get("all_ids") or []),
         "comments_href": f"index.html?project={slug}",

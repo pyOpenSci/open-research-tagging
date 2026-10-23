@@ -113,6 +113,9 @@ def test_build_project_row(tmp_path: Path):
     assert row["context"]["governance"] == "community"
     assert row["overall"]["stance"]["values"][0]["id"] == "allow"
     assert row["coding_warnings"] == []
+    # Raw nested coding for coding-view form pre-fill (10c)
+    assert row["coding"]["stance"] == "allow"
+    assert row["coding"]["context"]["domain"] == "test"
 
 
 def test_build_project_skips_underscore_slug(tmp_path: Path):

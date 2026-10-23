@@ -19,6 +19,49 @@
         "governance": "community",
         "domain": "scientific Python / peer review"
       },
+      "coding": {
+        "stance": "permissive-with-conditions",
+        "scope": {
+          "code": "restricted",
+          "tests": "restricted",
+          "docs_and_text": "restricted",
+          "issues_and_pr_descriptions": "restricted",
+          "review": "not_addressed",
+          "autonomous_agents": "not_addressed",
+          "contribution_types_not_defined": "not_addressed"
+        },
+        "stated_rationale": [
+          "code-quality",
+          "maintainer-and-reviewer-burden",
+          "social-and-ethical"
+        ],
+        "guidance_on_use": {
+          "level": "substantive-guidance",
+          "types": [
+            "scoping",
+            "design",
+            "evaluation",
+            "iteration"
+          ]
+        },
+        "accountability": {
+          "human_responsibility": true,
+          "disclosure": "required",
+          "disclosure_format": [
+            "free-text"
+          ],
+          "enforcement": [
+            "contributor-blocked",
+            "other"
+          ]
+        },
+        "context": {
+          "project_size": "Peer-review org for scientific Python packages; size not coded for demo",
+          "governance": "community",
+          "domain": "scientific Python / peer review",
+          "notes": "Foundation-adjacent community; policy co-developed with community input."
+        }
+      },
       "overall": {
         "stance": {
           "values": [

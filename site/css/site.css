@@ -569,6 +569,18 @@ body.tags-page .lede {
   font-size: 0.82rem;
   line-height: 1.35;
   color: var(--ink);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  transition: none;
+}
+.evidence-card:hover .evidence-quote,
+.evidence-card:focus-within .evidence-quote {
+  -webkit-line-clamp: unset;
+  display: block;
+  overflow: visible;
+  white-space: pre-wrap;
 }
 .evidence-tags {
   display: flex;
@@ -580,6 +592,87 @@ body.tags-page .lede {
   font-size: 0.7rem;
   background: var(--chip);
   padding: 0.1rem 0.35rem;
+}
+
+/* Coding form (10c) */
+.coding-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 42rem;
+}
+.coding-section {
+  margin: 0;
+  padding: 0.65rem 0.75rem 0.75rem;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.coding-section legend {
+  padding: 0;
+}
+.section-evidence-btn {
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dotted var(--line);
+  padding: 0 0.15rem 0.05rem;
+  cursor: pointer;
+}
+.section-evidence-btn:hover,
+.section-evidence-btn:focus-visible {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  outline: none;
+}
+.coding-form .search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.coding-form .search select,
+.coding-form .search input,
+.coding-form .search textarea {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.scope-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.45rem 0.75rem;
+}
+.check-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.35rem;
+}
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+.field-label {
+  margin: 0.65rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 @media (max-width: 860px) {

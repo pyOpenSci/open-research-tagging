@@ -18,9 +18,9 @@
     <header class="page-header">
       <h1>Project coding view</h1>
       <p class="lede">
-        Walk overall codes for a project with passage evidence, then copy a
-        <code>coding:</code> YAML block into <code>project.yaml</code>.
-        Form controls come next; evidence is available now.
+        Walk overall codes with passage evidence. Form edits stay in the browser
+        until Copy YAML (next). Prefills from the project’s nested
+        <code>coding:</code> when present in site data.
       </p>
       <p class="meta-row" x-show="loading">Loading…</p>
       <p class="meta-row" x-show="error" x-text="error"></p>
@@ -115,9 +115,199 @@
           </p>
         </aside>
         <section class="main-pane">
-          <p class="stub-note">
-            Coding form (stance, scope, rationale, …) and Copy YAML land in the next tasks.
-          </p>
+          <form id="coding-form" class="coding-form" @submit.prevent>
+            <fieldset class="coding-section" @focusin="focusSection('stance')">
+              <legend>
+                <button
+                  type="button"
+                  class="section-evidence-btn"
+                  @click="focusSection('stance')"
+                  title="Show passage evidence for this section"
+                >Stance</button>
+              </legend>
+              <label class="search">Overall stance
+                <select
+                  :value="coding.stance || ''"
+                  @change="coding.stance = $event.target.value || null"
+                >
+                  <option value="">—</option>
+                  <template x-for="opt in options('stance')" :key="opt.id">
+                    <option :value="opt.id" x-text="opt.label"></option>
+                  </template>
+                </select>
+              </label>
+            </fieldset>
+
+            <fieldset class="coding-section" @focusin="focusSection('scope')">
+              <legend>
+                <button
+                  type="button"
+                  class="section-evidence-btn"
+                  @click="focusSection('scope')"
+                  title="Show passage evidence for this section"
+                >Scope</button>
+              </legend>
+              <div class="scope-grid">
+                <template x-for="row in scopeRows()" :key="row.key">
+                  <label class="search">
+                    <span x-text="row.label"></span>
+                    <select
+                      :value="coding.scope[row.key]"
+                      @change="coding.scope[row.key] = $event.target.value"
+                    >
+                      <template x-for="pos in scopePositions()" :key="pos.id">
+                        <option :value="pos.id" x-text="pos.label"></option>
+                      </template>
+                    </select>
+                  </label>
+                </template>
+              </div>
+            </fieldset>
+
+            <fieldset class="coding-section" @focusin="focusSection('stated_rationale')">
+              <legend>
+                <button
+                  type="button"
+                  class="section-evidence-btn"
+                  @click="focusSection('stated_rationale')"
+                  title="Show passage evidence for this section"
+                >Stated rationale</button>
+              </legend>
+              <div class="check-grid">
+                <template x-for="opt in options('stated_rationale')" :key="opt.id">
+                  <label class="check">
+                    <input
+                      type="checkbox"
+                      :checked="multiHas(coding.stated_rationale, opt.id)"
+                      @change="setMulti('stated_rationale', opt.id, $event.target.checked)"
+                    />
+                    <span x-text="opt.label"></span>
+                  </label>
+                </template>
+              </div>
+            </fieldset>
+
+            <fieldset class="coding-section" @focusin="focusSection('guidance_on_use')">
+              <legend>
+                <button
+                  type="button"
+                  class="section-evidence-btn"
+                  @click="focusSection('guidance_on_use')"
+                  title="Show passage evidence for this section"
+                >Guidance on use</button>
+              </legend>
+              <label class="search">Level
+                <select
+                  :value="coding.guidance_on_use.level || ''"
+                  @change="coding.guidance_on_use.level = $event.target.value || null"
+                >
+                  <option value="">—</option>
+                  <template x-for="opt in options('guidance_level')" :key="opt.id">
+                    <option :value="opt.id" x-text="opt.label"></option>
+                  </template>
+                </select>
+              </label>
+              <p class="field-label">Types</p>
+              <div class="check-grid">
+                <template x-for="opt in options('guidance_type')" :key="opt.id">
+                  <label class="check">
+                    <input
+                      type="checkbox"
+                      :checked="multiHas(coding.guidance_on_use.types, opt.id)"
+                      @change="setMulti('guidance_on_use.types', opt.id, $event.target.checked)"
+                    />
+                    <span x-text="opt.label"></span>
+                  </label>
+                </template>
+              </div>
+            </fieldset>
+
+            <fieldset class="coding-section" @focusin="focusSection('accountability')">
+              <legend>
+                <button
+                  type="button"
+                  class="section-evidence-btn"
+                  @click="focusSection('accountability')"
+                  title="Show passage evidence for this section"
+                >Accountability</button>
+              </legend>
+              <label class="search">Human responsibility
+                <select x-model="coding.accountability.human_responsibility">
+                  <template x-for="opt in options('human_responsibility')" :key="opt.id">
+                    <option :value="opt.id" x-text="opt.label"></option>
+                  </template>
+                </select>
+              </label>
+              <label class="search">Disclosure
+                <select x-model="coding.accountability.disclosure">
+                  <template x-for="opt in options('disclosure')" :key="opt.id">
+                    <option :value="opt.id" x-text="opt.label"></option>
+                  </template>
+                </select>
+              </label>
+              <p class="field-label">Disclosure format</p>
+              <div class="check-grid">
+                <template x-for="opt in disclosureFormats()" :key="opt.id">
+                  <label class="check">
+                    <input
+                      type="checkbox"
+                      :checked="multiHas(coding.accountability.disclosure_format, opt.id)"
+                      @change="setMulti('accountability.disclosure_format', opt.id, $event.target.checked)"
+                    />
+                    <span x-text="opt.label"></span>
+                  </label>
+                </template>
+              </div>
+              <p class="field-label">Enforcement</p>
+              <div class="check-grid">
+                <template x-for="opt in options('enforcement')" :key="opt.id">
+                  <label class="check">
+                    <input
+                      type="checkbox"
+                      :checked="multiHas(coding.accountability.enforcement, opt.id)"
+                      @change="setMulti('accountability.enforcement', opt.id, $event.target.checked)"
+                    />
+                    <span x-text="opt.label"></span>
+                  </label>
+                </template>
+              </div>
+            </fieldset>
+
+            <fieldset class="coding-section" @focusin="focusSection('context')">
+              <legend>
+                <button
+                  type="button"
+                  class="section-evidence-btn"
+                  @click="focusSection('context')"
+                  title="Show all passage comments (context has no passage dimension)"
+                >Context</button>
+              </legend>
+              <label class="search">Governance
+                <select
+                  :value="coding.context.governance || ''"
+                  @change="coding.context.governance = $event.target.value || null"
+                >
+                  <option value="">—</option>
+                  <template x-for="opt in governances()" :key="opt.id">
+                    <option :value="opt.id" x-text="opt.label"></option>
+                  </template>
+                </select>
+              </label>
+              <label class="search">Domain
+                <input type="text" x-model="coding.context.domain" />
+              </label>
+              <label class="search">Project size
+                <input type="text" x-model="coding.context.project_size" />
+              </label>
+              <label class="search">Notes
+                <textarea rows="3" x-model="coding.context.notes"></textarea>
+              </label>
+            </fieldset>
+
+            <p class="stub-note">
+              Copy YAML preview and clipboard action land in the next task (10d).
+            </p>
+          </form>
         </section>
       </div>
     </div>
@@ -125,6 +315,7 @@
 
   <script src="js/codebook.js"></script>
   <script src="js/coding_resolve.js"></script>
+  <script src="js/coding_form.js"></script>
   <script src="js/coding.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </body>

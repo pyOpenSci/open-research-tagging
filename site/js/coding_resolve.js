@@ -57,28 +57,38 @@
   }
 
   /**
-   * Short excerpt for evidence cards when quote is missing.
+   * Full passage text for evidence cards (quote, else body without hashtag lines).
+   * @param {object} comment
+   * @returns {string}
+   */
+  function evidenceText(comment) {
+    if (comment && comment.quote) {
+      return String(comment.quote).replace(/\s+/g, " ").trim();
+    }
+    const body = String((comment && comment.body) || "");
+    const lines = body.split("\n").filter(function (l) {
+      return !l.trim().startsWith("#");
+    });
+    return lines.join(" ").replace(/\s+/g, " ").trim() || body.trim();
+  }
+
+  /**
+   * Truncated evidence text (tests / compact previews).
+   * Cards use evidenceText + CSS clamp; expand on hover.
    * @param {object} comment
    * @param {number} [max]
    * @returns {string}
    */
   function evidenceExcerpt(comment, max) {
     const limit = max || 160;
-    if (comment && comment.quote) {
-      const q = String(comment.quote).replace(/\s+/g, " ").trim();
-      return q.length > limit ? q.slice(0, limit - 1) + "…" : q;
-    }
-    const body = String((comment && comment.body) || "");
-    const lines = body.split("\n").filter(function (l) {
-      return !l.trim().startsWith("#");
-    });
-    const text = lines.join(" ").replace(/\s+/g, " ").trim() || body.trim();
+    const text = evidenceText(comment);
     return text.length > limit ? text.slice(0, limit - 1) + "…" : text;
   }
 
   global.OrtCodingResolve = {
     resolveCodingView: resolveCodingView,
     commentsForDimension: commentsForDimension,
+    evidenceText: evidenceText,
     evidenceExcerpt: evidenceExcerpt,
   };
 })(typeof window !== "undefined" ? window : globalThis);

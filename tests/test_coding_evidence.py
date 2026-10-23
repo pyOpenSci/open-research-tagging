@@ -78,6 +78,8 @@ if (short !== 'hello world') throw new Error('quote normalize: ' + short);
 const longQ = 'x'.repeat(200);
 const trunc = R.evidenceExcerpt({ quote: longQ }, 40);
 if (trunc.length !== 40 || !trunc.endsWith('…')) throw new Error('trunc');
+const full = R.evidenceText({ quote: longQ });
+if (full.length !== 200) throw new Error('full text');
 const fromBody = R.evidenceExcerpt({
   body: '#stance/allow\nFirst line of evidence.\n#scope/code:open',
 });

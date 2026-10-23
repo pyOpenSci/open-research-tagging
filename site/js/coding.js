@@ -1,11 +1,13 @@
 /**
- * Coding view: resolve ?project= + evidence pane (form in 10c).
+ * Coding view: resolve ?project=, evidence pane, nested coding form (10c).
+ * Copy YAML lands in 10d.
  */
 (function (global) {
   "use strict";
 
   const Codebook = global.OrtCodebook;
   const Resolve = global.OrtCodingResolve;
+  const Form = global.OrtCodingForm;
 
   document.addEventListener("alpine:init", function () {
     global.Alpine.data("codingView", codingView);
@@ -23,6 +25,8 @@
       comments: [],
       /** "" = all comments; else codebook dimension key */
       evidenceDim: "",
+      /** Nested coding: block (mirrors project.yaml) */
+      coding: Form ? Form.emptyCoding() : null,
 
       async init() {
         try {
@@ -45,6 +49,11 @@
           this.slug = resolved.slug;
           this.project = resolved.project;
           this.comments = resolved.comments;
+          if (Form) {
+            this.coding = Form.prefillCoding(
+              resolved.project && resolved.project.coding
+            );
+          }
           this.loading = false;
         } catch (err) {
           this.loading = false;
@@ -62,7 +71,9 @@
       },
 
       excerpt(comment) {
-        return Resolve.evidenceExcerpt(comment);
+        return Resolve.evidenceText
+          ? Resolve.evidenceText(comment)
+          : Resolve.evidenceExcerpt(comment);
       },
 
       tagDisplays(comment) {
@@ -83,6 +94,46 @@
           return base + join + "dimension=" + encodeURIComponent(this.evidenceDim);
         }
         return base;
+      },
+
+      focusSection(section) {
+        if (!Form) return;
+        this.evidenceDim = Form.evidenceDimForSection(section);
+      },
+
+      options(dimension) {
+        return Form ? Form.valueOptions(this.codebook, dimension) : [];
+      },
+
+      scopeRows() {
+        return Form ? Form.scopeTypeRows(this.codebook) : [];
+      },
+
+      scopePositions() {
+        return Form ? Form.scopePositionOptions(this.codebook) : [];
+      },
+
+      disclosureFormats() {
+        return Form ? Form.disclosureFormatOptions() : [];
+      },
+
+      governances() {
+        return Form ? Form.governanceOptions() : [];
+      },
+
+      multiHas(list, id) {
+        return (list || []).indexOf(id) >= 0;
+      },
+
+      setMulti(path, id, on) {
+        if (!Form || !this.coding) return;
+        const parts = path.split(".");
+        let parent = this.coding;
+        for (let i = 0; i < parts.length - 1; i++) {
+          parent = parent[parts[i]];
+        }
+        const key = parts[parts.length - 1];
+        parent[key] = Form.toggleMulti(parent[key], id, on);
       },
     };
   }
