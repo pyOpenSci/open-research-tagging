@@ -2,6 +2,8 @@
 
 Rebuild of the open-research-tagging demo: code OSS AI contribution policies via GitHub PR review comments, then browse them on a static site.
 
+How the pieces fit together (kept up to date as we build): [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
 ## Setup (dev)
 
 ```bash
