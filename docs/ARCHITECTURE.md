@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11d** (tests, tag-check, update-comments, deploy-pages). Remaining: PR template + personal Pages go-live (**11e–11f**).
+**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11e** (workflows + PR template + enable-Pages checklist). Remaining: personal/test Pages go-live (**11f**).
 
 ## What this system is
 
@@ -192,5 +192,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- PR template + enable-Pages checklist; personal Pages go-live (Phase **11e–11f**)
+- Personal/test Pages go-live on the remote (Phase **11f**)
 - Seed/parity sign-off, codebook swap, org cutover (Phase 12)
