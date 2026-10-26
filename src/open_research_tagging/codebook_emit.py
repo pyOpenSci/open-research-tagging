@@ -11,6 +11,7 @@ from open_research_tagging.codebook import (
     index_scope_labels,
     resolve_dimension_path,
 )
+from open_research_tagging.coding_schema import build_coding_schema
 from open_research_tagging.tag_catalog import canonical_tag_entries
 
 
@@ -36,6 +37,7 @@ def emit_codebook_json(data: Mapping[str, Any]) -> dict[str, Any]:
         "scope": scope_out,
         "filter_order": _filter_order(data),
         "tag_catalog": canonical_tag_entries(codebook),
+        "coding_schema": build_coding_schema(data),
     }
     implicit_scope = _optional_scope_leaf(data, "scope.implicit")
     if implicit_scope is not None:

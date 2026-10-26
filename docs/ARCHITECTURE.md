@@ -66,7 +66,7 @@ GitHub PR Files (#tags)                  |
 
 - Load and validate YAML shape (required fields, unique ids within each list).
 - Index for lookups by dimension, namespace, and value id (`Codebook` in `codebook.py`).
-- Emit browser JSON (`codebook_emit.py` / `emit_codebook` CLI → `site/data/codebook.json`), including a **`tag_catalog`** of every valid hashtag string.
+- Emit browser JSON (`codebook_emit.py` / `emit_codebook` CLI → `site/data/codebook.json`), including a **`tag_catalog`** of every valid hashtag string and a **`coding_schema`** (dimension → Explicit/Implicit → fields) that drives the coding-view form and `empty_coding()` defaults.
 - YAML `namespaces` map hashtag namespaces (e.g. `rationale`) to dimension ids (e.g. `stated_rationale`), including optional `path` for nested leaves.
 
 While the codebook is still a draft, CI **hard-fails only on malformed tags** (see [Tag-check](#tag-check)); unknown-but-well-formed ids stay soft.
@@ -133,7 +133,7 @@ Shared chrome under `site/` (Alpine.js + DataTables from CDN). Local preview: `c
 | `index.html` | Comment browser (filters, quotes, deep links) |
 | `projects.html` | Overall codes + evidence links into the browser |
 | `tags.html` | Passage **tag picker** (search / stage / Copy hashtags) |
-| `coding.html?project=<slug>` | Overall **coding view** (evidence + form + Copy YAML) |
+| `coding.html?project=<slug>` | Overall **coding view** (evidence + schema-driven form + Copy YAML) |
 
 **Comment browser URL params** (same shapes the projects join emits):
 

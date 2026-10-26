@@ -20,7 +20,7 @@
       <p class="lede">
         Walk overall codes with passage evidence, then Copy YAML and paste the
         <code>coding:</code> block into <code>project.yaml</code>. Prefills from
-        site data when present.
+        site data when present. Form sections come from the codebook schema.
       </p>
       <p class="meta-row" x-show="loading">Loading…</p>
       <p class="meta-row" x-show="error" x-text="error"></p>
@@ -116,329 +116,149 @@
         </aside>
         <section class="main-pane">
           <form id="coding-form" class="coding-form" @submit.prevent>
-            <fieldset class="coding-section" @focusin="focusSection('stance')">
-              <legend>
-                <button
-                  type="button"
-                  class="section-evidence-btn"
-                  @click="focusSection('stance')"
-                  title="Show passage evidence for this section"
-                >Stance</button>
-              </legend>
-              <h3 class="field-label">Explicit</h3>
-              <label class="search">Overall stance
-                <select
-                  :value="coding.stance.explicit || ''"
-                  @change="coding.stance.explicit = $event.target.value || null"
-                >
-                  <option value="">—</option>
-                  <template x-for="opt in options('stance')" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <h3 class="field-label">Implicit</h3>
-              <div class="check-grid">
-                <template x-for="opt in options('stance_implicit')" :key="opt.id">
-                  <label class="check">
-                    <input
-                      type="checkbox"
-                      :checked="multiHas(coding.stance.implicit, opt.id)"
-                      @change="setMulti('stance.implicit', opt.id, $event.target.checked)"
-                    />
-                    <span x-text="opt.label"></span>
-                  </label>
-                </template>
-              </div>
-            </fieldset>
+            <template x-for="dim in schemaDimensions" :key="dim.id">
+              <fieldset
+                class="coding-section"
+                @focusin="focusSection(dim.id)"
+              >
+                <legend>
+                  <button
+                    type="button"
+                    class="section-evidence-btn"
+                    @click="focusSection(dim.id)"
+                    :title="'Show passage evidence for ' + dim.label"
+                    x-text="dim.label"
+                  ></button>
+                </legend>
 
-            <fieldset class="coding-section" @focusin="focusSection('scope')">
-              <legend>
-                <button
-                  type="button"
-                  class="section-evidence-btn"
-                  @click="focusSection('scope')"
-                  title="Show passage evidence for this section"
-                >Scope</button>
-              </legend>
-              <h3 class="field-label">Explicit</h3>
-              <div class="scope-grid">
-                <template x-for="row in scopeRows('explicit')" :key="'e-' + row.key">
-                  <label class="search">
-                    <span x-text="row.label"></span>
-                    <select
-                      :value="coding.scope.explicit[row.key]"
-                      @change="coding.scope.explicit[row.key] = $event.target.value"
-                    >
-                      <template x-for="pos in scopePositions('explicit')" :key="pos.id">
-                        <option :value="pos.id" x-text="pos.label"></option>
-                      </template>
-                    </select>
-                  </label>
-                </template>
-              </div>
-              <h3 class="field-label">Implicit</h3>
-              <div class="scope-grid">
-                <template x-for="row in scopeRows('implicit')" :key="'i-' + row.key">
-                  <label class="search">
-                    <span x-text="row.label"></span>
-                    <select
-                      :value="coding.scope.implicit[row.key]"
-                      @change="coding.scope.implicit[row.key] = $event.target.value"
-                    >
-                      <template x-for="pos in scopePositions('implicit')" :key="pos.id">
-                        <option :value="pos.id" x-text="pos.label"></option>
-                      </template>
-                    </select>
-                  </label>
-                </template>
-              </div>
-            </fieldset>
+                <template x-for="layer in dim.layers" :key="dim.id + '-' + layer.id">
+                  <div class="coding-layer">
+                    <h3 class="field-label" x-text="layer.label"></h3>
 
-            <fieldset class="coding-section" @focusin="focusSection('stated_rationale')">
-              <legend>
-                <button
-                  type="button"
-                  class="section-evidence-btn"
-                  @click="focusSection('stated_rationale')"
-                  title="Show passage evidence for this section"
-                >Stated rationale</button>
-              </legend>
-              <h3 class="field-label">Explicit</h3>
-              <div class="check-grid">
-                <template x-for="opt in options('stated_rationale')" :key="opt.id">
-                  <label class="check">
-                    <input
-                      type="checkbox"
-                      :checked="multiHas(coding.stated_rationale.explicit, opt.id)"
-                      @change="setMulti('stated_rationale.explicit', opt.id, $event.target.checked)"
-                    />
-                    <span x-text="opt.label"></span>
-                  </label>
-                </template>
-              </div>
-              <h3 class="field-label">Implicit</h3>
-              <div class="check-grid">
-                <template x-for="opt in options('rationale_implicit')" :key="opt.id">
-                  <label class="check">
-                    <input
-                      type="checkbox"
-                      :checked="multiHas(coding.stated_rationale.implicit, opt.id)"
-                      @change="setMulti('stated_rationale.implicit', opt.id, $event.target.checked)"
-                    />
-                    <span x-text="opt.label"></span>
-                  </label>
-                </template>
-              </div>
-            </fieldset>
+                    <!-- Scalar layer: single select or multi checkboxes -->
+                    <template x-if="layer.storage === 'scalar'">
+                      <div>
+                        <template x-if="layer.fields[0] && layer.fields[0].kind === 'single'">
+                          <label class="search">
+                            <span x-text="layer.fields[0].label"></span>
+                            <select
+                              @change="setScalar(dim.id, layer.id, $event.target.value)"
+                            >
+                              <option
+                                value=""
+                                :selected="getScalar(dim.id, layer.id) === ''"
+                              >—</option>
+                              <template x-for="opt in layer.fields[0].options" :key="opt.id">
+                                <option
+                                  :value="opt.id"
+                                  :selected="getScalar(dim.id, layer.id) === opt.id"
+                                  x-text="opt.label"
+                                ></option>
+                              </template>
+                            </select>
+                          </label>
+                        </template>
+                        <template x-if="layer.fields[0] && layer.fields[0].kind === 'multi'">
+                          <div class="check-grid">
+                            <template x-for="opt in layer.fields[0].options" :key="opt.id">
+                              <label class="check">
+                                <input
+                                  type="checkbox"
+                                  :checked="multiHas(coding[dim.id][layer.id], opt.id)"
+                                  @change="setScalarMulti(dim.id, layer.id, opt.id, $event.target.checked)"
+                                />
+                                <span x-text="opt.label"></span>
+                              </label>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
 
-            <fieldset class="coding-section" @focusin="focusSection('guidance_on_use')">
-              <legend>
-                <button
-                  type="button"
-                  class="section-evidence-btn"
-                  @click="focusSection('guidance_on_use')"
-                  title="Show passage evidence for this section"
-                >Guidance on use</button>
-              </legend>
-              <h3 class="field-label">Explicit</h3>
-              <label class="search">Level
-                <select
-                  :value="coding.guidance_on_use.explicit.level || ''"
-                  @change="coding.guidance_on_use.explicit.level = $event.target.value || null"
-                >
-                  <option value="">—</option>
-                  <template x-for="opt in options('guidance_level')" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <p class="field-label">Types</p>
-              <div class="check-grid">
-                <template x-for="opt in options('guidance_type')" :key="opt.id">
-                  <label class="check">
-                    <input
-                      type="checkbox"
-                      :checked="multiHas(coding.guidance_on_use.explicit.types, opt.id)"
-                      @change="setMulti('guidance_on_use.explicit.types', opt.id, $event.target.checked)"
-                    />
-                    <span x-text="opt.label"></span>
-                  </label>
-                </template>
-              </div>
-              <h3 class="field-label">Implicit</h3>
-              <label class="search">Level
-                <select
-                  :value="coding.guidance_on_use.implicit.level || ''"
-                  @change="coding.guidance_on_use.implicit.level = $event.target.value || null"
-                >
-                  <option value="">—</option>
-                  <template x-for="opt in options('guidance_level')" :key="'igl-' + opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <p class="field-label">Types</p>
-              <div class="check-grid">
-                <template x-for="opt in options('guidance_type')" :key="'igt-' + opt.id">
-                  <label class="check">
-                    <input
-                      type="checkbox"
-                      :checked="multiHas(coding.guidance_on_use.implicit.types, opt.id)"
-                      @change="setMulti('guidance_on_use.implicit.types', opt.id, $event.target.checked)"
-                    />
-                    <span x-text="opt.label"></span>
-                  </label>
-                </template>
-              </div>
-              <label class="search">Notes (files / sources)
-                <textarea rows="2" x-model="coding.guidance_on_use.implicit.notes"></textarea>
-              </label>
-              <label class="search">Written for
-                <input type="text" x-model="coding.guidance_on_use.implicit.written_for" />
-              </label>
-              <label class="search">Not AI-specific contributing advice
-                <textarea rows="2" x-model="coding.guidance_on_use.implicit.not_ai_specific"></textarea>
-              </label>
-            </fieldset>
+                    <!-- Scope grid -->
+                    <template x-if="layer.storage === 'scope_map'">
+                      <div class="scope-grid">
+                        <template
+                          x-for="row in (layer.fields[0] && layer.fields[0].contribution_types) || []"
+                          :key="row.yaml_key"
+                        >
+                          <label class="search">
+                            <span x-text="row.label"></span>
+                            <select
+                              :value="getScope(dim.id, layer.id, row.yaml_key)"
+                              @change="setScope(dim.id, layer.id, row.yaml_key, $event.target.value)"
+                            >
+                              <template
+                                x-for="pos in (layer.fields[0] && layer.fields[0].positions) || []"
+                                :key="pos.id"
+                              >
+                                <option :value="pos.id" x-text="pos.label"></option>
+                              </template>
+                            </select>
+                          </label>
+                        </template>
+                      </div>
+                    </template>
 
-            <fieldset class="coding-section" @focusin="focusSection('accountability')">
-              <legend>
-                <button
-                  type="button"
-                  class="section-evidence-btn"
-                  @click="focusSection('accountability')"
-                  title="Show passage evidence for this section"
-                >Accountability</button>
-              </legend>
-              <h3 class="field-label">Explicit</h3>
-              <label class="search">Human responsibility
-                <select x-model="coding.accountability.explicit.human_responsibility">
-                  <template x-for="opt in options('human_responsibility')" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <label class="search">Disclosure
-                <select x-model="coding.accountability.explicit.disclosure">
-                  <template x-for="opt in options('disclosure')" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <p class="field-label">Disclosure format</p>
-              <div class="check-grid">
-                <template x-for="opt in disclosureFormats()" :key="opt.id">
-                  <label class="check">
-                    <input
-                      type="checkbox"
-                      :checked="multiHas(coding.accountability.explicit.disclosure_format, opt.id)"
-                      @change="setMulti('accountability.explicit.disclosure_format', opt.id, $event.target.checked)"
-                    />
-                    <span x-text="opt.label"></span>
-                  </label>
+                    <!-- Named fields object -->
+                    <template x-if="layer.storage === 'object'">
+                      <div>
+                        <template x-for="field in layer.fields" :key="field.id">
+                          <div class="coding-field">
+                            <template x-if="field.kind === 'single'">
+                              <label class="search">
+                                <span x-text="field.label"></span>
+                                <select
+                                  @change="setField(dim.id, layer.id, field.id, $event.target.value)"
+                                >
+                                  <option
+                                    value=""
+                                    :selected="getField(dim.id, layer.id, field.id) === ''"
+                                  >—</option>
+                                  <template x-for="opt in field.options" :key="opt.id">
+                                    <option
+                                      :value="opt.id"
+                                      :selected="getField(dim.id, layer.id, field.id) === opt.id"
+                                      x-text="opt.label"
+                                    ></option>
+                                  </template>
+                                </select>
+                              </label>
+                            </template>
+                            <template x-if="field.kind === 'multi'">
+                              <div>
+                                <p class="field-label" x-text="field.label"></p>
+                                <div class="check-grid">
+                                  <template x-for="opt in field.options" :key="opt.id">
+                                    <label class="check">
+                                      <input
+                                        type="checkbox"
+                                        :checked="multiHas(coding[dim.id][layer.id][field.id], opt.id)"
+                                        @change="setObjectMulti(dim.id, layer.id, field.id, opt.id, $event.target.checked)"
+                                      />
+                                      <span x-text="opt.label"></span>
+                                    </label>
+                                  </template>
+                                </div>
+                              </div>
+                            </template>
+                            <template x-if="field.kind === 'text'">
+                              <label class="search">
+                                <span x-text="field.label"></span>
+                                <textarea
+                                  rows="2"
+                                  x-model="coding[dim.id][layer.id][field.id]"
+                                ></textarea>
+                              </label>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                  </div>
                 </template>
-              </div>
-              <p class="field-label">Enforcement</p>
-              <div class="check-grid">
-                <template x-for="opt in options('enforcement')" :key="opt.id">
-                  <label class="check">
-                    <input
-                      type="checkbox"
-                      :checked="multiHas(coding.accountability.explicit.enforcement, opt.id)"
-                      @change="setMulti('accountability.explicit.enforcement', opt.id, $event.target.checked)"
-                    />
-                    <span x-text="opt.label"></span>
-                  </label>
-                </template>
-              </div>
-              <label class="search">New contributors
-                <select x-model="coding.accountability.explicit.new_contributors">
-                  <template x-for="opt in options('new_contributors')" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <h3 class="field-label">Implicit</h3>
-              <label class="search">Disclosure in practice
-                <select x-model="coding.accountability.implicit.disclosure_in_practice">
-                  <template x-for="opt in options('disclosure_in_practice')" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <label class="search">Notes (responsibility / new contributors / enforcement in practice)
-                <textarea rows="3" x-model="coding.accountability.implicit.notes"></textarea>
-              </label>
-            </fieldset>
-
-            <fieldset class="coding-section" @focusin="focusSection('context')">
-              <legend>
-                <button
-                  type="button"
-                  class="section-evidence-btn"
-                  @click="focusSection('context')"
-                  title="Show all passage comments (context has no passage dimension)"
-                >Context</button>
-              </legend>
-              <h3 class="field-label">Explicit</h3>
-              <label class="search">Governance
-                <select
-                  :value="coding.context.explicit.governance || ''"
-                  @change="coding.context.explicit.governance = $event.target.value || null"
-                >
-                  <option value="">—</option>
-                  <template x-for="opt in governances()" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <label class="search">Decision process
-                <input type="text" x-model="coding.context.explicit.decision_process" />
-              </label>
-              <label class="search">Domain
-                <input type="text" x-model="coding.context.explicit.domain" />
-              </label>
-              <label class="search">Project size
-                <input type="text" x-model="coding.context.explicit.project_size" />
-              </label>
-              <label class="search">Policy date
-                <input type="text" x-model="coding.context.explicit.policy_date" />
-              </label>
-              <label class="search">Policy location
-                <select
-                  :value="coding.context.explicit.policy_location || ''"
-                  @change="coding.context.explicit.policy_location = $event.target.value || null"
-                >
-                  <option value="">—</option>
-                  <template x-for="opt in policyLocations()" :key="opt.id">
-                    <option :value="opt.id" x-text="opt.label"></option>
-                  </template>
-                </select>
-              </label>
-              <label class="search">Notes
-                <textarea rows="2" x-model="coding.context.explicit.notes"></textarea>
-              </label>
-              <h3 class="field-label">Implicit</h3>
-              <label class="search">Contributors
-                <input type="text" x-model="coding.context.implicit.contributors" />
-              </label>
-              <label class="search">Who decides
-                <input type="text" x-model="coding.context.implicit.who_decides" />
-              </label>
-              <label class="search">Outside activity
-                <input type="text" x-model="coding.context.implicit.outside_activity" />
-              </label>
-              <label class="search">When AI began
-                <input type="text" x-model="coding.context.implicit.when_ai_began" />
-              </label>
-              <label class="search">AI file locations
-                <input type="text" x-model="coding.context.implicit.ai_file_locations" />
-              </label>
-              <label class="search">Notes
-                <textarea rows="2" x-model="coding.context.implicit.notes"></textarea>
-              </label>
-            </fieldset>
+              </fieldset>
+            </template>
 
             <div class="copy-yaml-block" id="copy-yaml">
               <div class="sidebar-head">

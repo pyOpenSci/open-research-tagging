@@ -1,6 +1,5 @@
 /**
- * Coding view: resolve ?project=, evidence pane, nested coding form (10c).
- * Copy YAML lands in 10d.
+ * Coding view: resolve ?project=, evidence pane, schema-driven form (12f).
  */
 (function (global) {
   "use strict";
@@ -23,10 +22,8 @@
       slug: null,
       project: null,
       comments: [],
-      /** "" = all comments; else codebook dimension key */
       evidenceDim: "",
-      /** Nested coding: block (mirrors project.yaml) */
-      coding: Form ? Form.emptyCoding() : null,
+      coding: null,
       copyStatus: "",
 
       async init() {
@@ -52,7 +49,8 @@
           this.comments = resolved.comments;
           if (Form) {
             this.coding = Form.prefillCoding(
-              resolved.project && resolved.project.coding
+              resolved.project && resolved.project.coding,
+              codebook
             );
           }
           this.loading = false;
@@ -60,6 +58,11 @@
           this.loading = false;
           this.error = String(err);
         }
+      },
+
+      get schemaDimensions() {
+        if (!Form || !this.codebook) return [];
+        return Form.schemaFrom(this.codebook).dimensions || [];
       },
 
       get evidenceDimensions() {
@@ -99,56 +102,80 @@
 
       focusSection(section) {
         if (!Form) return;
-        this.evidenceDim = Form.evidenceDimForSection(section);
-      },
-
-      options(dimension) {
-        return Form ? Form.valueOptions(this.codebook, dimension) : [];
-      },
-
-      scopeRows(layer) {
-        return Form ? Form.scopeTypeRows(this.codebook, layer || "explicit") : [];
-      },
-
-      scopePositions(layer) {
-        return Form
-          ? Form.scopePositionOptions(this.codebook, layer || "explicit")
-          : [];
-      },
-
-      disclosureFormats() {
-        return Form ? Form.disclosureFormatOptions() : [];
-      },
-
-      governances() {
-        return Form ? Form.governanceOptions() : [];
-      },
-
-      policyLocations() {
-        return Form && Form.policyLocationOptions
-          ? Form.policyLocationOptions()
-          : [];
+        this.evidenceDim = Form.evidenceDimForSection(section, this.codebook);
       },
 
       multiHas(list, id) {
         return (list || []).indexOf(id) >= 0;
       },
 
-      setMulti(path, id, on) {
-        if (!Form || !this.coding) return;
-        const parts = path.split(".");
-        let parent = this.coding;
-        for (let i = 0; i < parts.length - 1; i++) {
-          parent = parent[parts[i]];
+      /** Stable accessors for Alpine bindings on dynamic schema paths. */
+      getScalar(dimId, layerId) {
+        if (!this.coding || !this.coding[dimId]) return "";
+        const v = this.coding[dimId][layerId];
+        return v == null ? "" : String(v);
+      },
+
+      setScalar(dimId, layerId, value) {
+        if (!this.coding || !this.coding[dimId]) return;
+        this.coding[dimId][layerId] = value || null;
+        this.copyStatus = "";
+      },
+
+      getField(dimId, layerId, fieldId) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return "";
         }
-        const key = parts[parts.length - 1];
-        parent[key] = Form.toggleMulti(parent[key], id, on);
+        const v = this.coding[dimId][layerId][fieldId];
+        return v == null ? "" : String(v);
+      },
+
+      setField(dimId, layerId, fieldId, value) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return;
+        }
+        this.coding[dimId][layerId][fieldId] = value || null;
+        this.copyStatus = "";
+      },
+
+      getScope(dimId, layerId, yamlKey) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return "";
+        }
+        return this.coding[dimId][layerId][yamlKey] || "";
+      },
+
+      setScope(dimId, layerId, yamlKey, value) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return;
+        }
+        this.coding[dimId][layerId][yamlKey] = value;
+        this.copyStatus = "";
+      },
+
+      setScalarMulti(dimId, layerId, id, on) {
+        if (!Form || !this.coding) return;
+        this.coding[dimId][layerId] = Form.toggleMulti(
+          this.coding[dimId][layerId],
+          id,
+          on
+        );
+        this.copyStatus = "";
+      },
+
+      setObjectMulti(dimId, layerId, fieldId, id, on) {
+        if (!Form || !this.coding) return;
+        this.coding[dimId][layerId][fieldId] = Form.toggleMulti(
+          this.coding[dimId][layerId][fieldId],
+          id,
+          on
+        );
         this.copyStatus = "";
       },
 
       get yamlPreview() {
         if (!Form || !this.coding) return "";
-        return Form.emitCodingYaml(this.coding);
+        return Form.emitCodingYaml(this.coding, this.codebook);
       },
 
       async copyYaml() {

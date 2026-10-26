@@ -884,6 +884,767 @@
       "kind": "scope"
     }
   ],
+  "coding_schema": {
+    "dimensions": [
+      {
+        "id": "stance",
+        "label": "Stance",
+        "evidence_dimension": "stance",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Explicit",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "ban",
+                    "label": "Ban"
+                  },
+                  {
+                    "id": "discouraged",
+                    "label": "Discouraged"
+                  },
+                  {
+                    "id": "gate-restrict",
+                    "label": "Gate/restrict"
+                  },
+                  {
+                    "id": "permissive-with-conditions",
+                    "label": "Permissive with conditions"
+                  },
+                  {
+                    "id": "permissive",
+                    "label": "Permissive"
+                  },
+                  {
+                    "id": "no-policy",
+                    "label": "No policy"
+                  }
+                ],
+                "default": null
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Implicit",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "maintainers-use-ai-tools",
+                    "label": "Maintainers use of AI tools"
+                  },
+                  {
+                    "id": "outside-ai-assisted-accepted",
+                    "label": "External/outside AI-assisted work is accepted"
+                  },
+                  {
+                    "id": "outside-ai-assisted-turned-away",
+                    "label": "Outside AI-assisted work is turned away"
+                  },
+                  {
+                    "id": "defensive-instructions",
+                    "label": "Defensive instructions"
+                  },
+                  {
+                    "id": "no-signals",
+                    "label": "No signals"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "scope",
+        "label": "Scope",
+        "evidence_dimension": "scope",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "scope_map",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Scope",
+                "kind": "scope",
+                "options": [],
+                "contribution_types": [
+                  {
+                    "id": "code",
+                    "label": "Code",
+                    "yaml_key": "code"
+                  },
+                  {
+                    "id": "tests",
+                    "label": "Tests",
+                    "yaml_key": "tests"
+                  },
+                  {
+                    "id": "docs-and-text",
+                    "label": "Docs and text",
+                    "yaml_key": "docs_and_text"
+                  },
+                  {
+                    "id": "issues-and-pr-descriptions",
+                    "label": "Issues and PR descriptions",
+                    "yaml_key": "issues_and_pr_descriptions"
+                  },
+                  {
+                    "id": "review",
+                    "label": "Review",
+                    "yaml_key": "review"
+                  },
+                  {
+                    "id": "autonomous-agents",
+                    "label": "Autonomous agents",
+                    "yaml_key": "autonomous_agents"
+                  },
+                  {
+                    "id": "contribution-types-not-defined",
+                    "label": "Contribution types not defined",
+                    "yaml_key": "contribution_types_not_defined"
+                  }
+                ],
+                "positions": [
+                  {
+                    "id": "allowed",
+                    "label": "Allowed"
+                  },
+                  {
+                    "id": "restricted",
+                    "label": "Restricted"
+                  },
+                  {
+                    "id": "banned",
+                    "label": "Banned"
+                  },
+                  {
+                    "id": "not_addressed",
+                    "label": "Not Addressed"
+                  }
+                ],
+                "default_position": "not_addressed",
+                "default": null
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "scope_map",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Scope",
+                "kind": "scope",
+                "options": [],
+                "contribution_types": [
+                  {
+                    "id": "code",
+                    "label": "Code",
+                    "yaml_key": "code"
+                  },
+                  {
+                    "id": "comments",
+                    "label": "Comments",
+                    "yaml_key": "comments"
+                  },
+                  {
+                    "id": "tests",
+                    "label": "Tests",
+                    "yaml_key": "tests"
+                  },
+                  {
+                    "id": "docs-and-text",
+                    "label": "Docs and text",
+                    "yaml_key": "docs_and_text"
+                  },
+                  {
+                    "id": "issues-and-pr-descriptions",
+                    "label": "Issues and PR descriptions",
+                    "yaml_key": "issues_and_pr_descriptions"
+                  },
+                  {
+                    "id": "review",
+                    "label": "Review",
+                    "yaml_key": "review"
+                  },
+                  {
+                    "id": "autonomous-agents",
+                    "label": "Autonomous agents",
+                    "yaml_key": "autonomous_agents"
+                  }
+                ],
+                "positions": [
+                  {
+                    "id": "seen",
+                    "label": "Seen"
+                  },
+                  {
+                    "id": "not_seen",
+                    "label": "Not Seen"
+                  }
+                ],
+                "default_position": "not_seen",
+                "default": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stated_rationale",
+        "label": "Stated Rationale",
+        "evidence_dimension": "stated_rationale",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Explicit",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "code-quality",
+                    "label": "Code quality"
+                  },
+                  {
+                    "id": "maintainer-and-reviewer-burden",
+                    "label": "Maintainer and reviewer burden"
+                  },
+                  {
+                    "id": "security",
+                    "label": "Security"
+                  },
+                  {
+                    "id": "licensing-and-copyright",
+                    "label": "Licensing and copyright"
+                  },
+                  {
+                    "id": "environmental",
+                    "label": "Environmental"
+                  },
+                  {
+                    "id": "social-and-ethical",
+                    "label": "Social and ethical (trust, transparency, community norms)"
+                  },
+                  {
+                    "id": "contributor-learning-and-skill-development",
+                    "label": "Contributor learning and skill development"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other (specify in free text)"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Implicit",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "code-quality",
+                    "label": "Code quality"
+                  },
+                  {
+                    "id": "maintainer-and-reviewer-burden",
+                    "label": "Maintainer and reviewer burden"
+                  },
+                  {
+                    "id": "security",
+                    "label": "Security"
+                  },
+                  {
+                    "id": "licensing-and-copyright",
+                    "label": "Licensing and copyright"
+                  },
+                  {
+                    "id": "environmental",
+                    "label": "Environmental"
+                  },
+                  {
+                    "id": "social-and-ethical",
+                    "label": "Social and ethical (trust, transparency, community norms)"
+                  },
+                  {
+                    "id": "contributor-learning-and-skill-development",
+                    "label": "Contributor learning and skill development"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other (specify in free text)"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "guidance_on_use",
+        "label": "Guidance On Use",
+        "evidence_dimension": "guidance_level",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "level",
+                "label": "Level",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "restricts-only",
+                    "label": "Restricts only"
+                  },
+                  {
+                    "id": "some-guidance",
+                    "label": "Some guidance"
+                  },
+                  {
+                    "id": "substantive-guidance",
+                    "label": "Substantive guidance"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "types",
+                "label": "Types",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "scoping",
+                    "label": "Scoping (PR size limits, scoped tasks, issue-first)"
+                  },
+                  {
+                    "id": "design",
+                    "label": "Design (modularity, existing patterns, technical debt)"
+                  },
+                  {
+                    "id": "evaluation",
+                    "label": "Evaluation (understand, test, and explain output)"
+                  },
+                  {
+                    "id": "iteration",
+                    "label": "Iteration (human-AI cycles rather than one-shot)"
+                  },
+                  {
+                    "id": "learning",
+                    "label": "Learning (supports building skills or understanding)"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "level",
+                "label": "Level",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "restricts-only",
+                    "label": "Restricts only"
+                  },
+                  {
+                    "id": "some-guidance",
+                    "label": "Some guidance"
+                  },
+                  {
+                    "id": "substantive-guidance",
+                    "label": "Substantive guidance"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "types",
+                "label": "Types",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "scoping",
+                    "label": "Scoping (PR size limits, scoped tasks, issue-first)"
+                  },
+                  {
+                    "id": "design",
+                    "label": "Design (modularity, existing patterns, technical debt)"
+                  },
+                  {
+                    "id": "evaluation",
+                    "label": "Evaluation (understand, test, and explain output)"
+                  },
+                  {
+                    "id": "iteration",
+                    "label": "Iteration (human-AI cycles rather than one-shot)"
+                  },
+                  {
+                    "id": "learning",
+                    "label": "Learning (supports building skills or understanding)"
+                  }
+                ],
+                "default": []
+              },
+              {
+                "id": "notes",
+                "label": "Notes (files / sources)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "written_for",
+                "label": "Written for",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "not_ai_specific",
+                "label": "Not AI-specific contributing advice",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "accountability",
+        "label": "Accountability",
+        "evidence_dimension": "disclosure",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "human_responsibility",
+                "label": "Human Responsibility",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "yes",
+                    "label": "Yes \u2014 contributor is responsible for submitted work"
+                  },
+                  {
+                    "id": "no",
+                    "label": "No"
+                  },
+                  {
+                    "id": "not_stated",
+                    "label": "Not stated"
+                  }
+                ],
+                "default": "not_stated"
+              },
+              {
+                "id": "disclosure",
+                "label": "Disclosure",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "none",
+                    "label": "None"
+                  },
+                  {
+                    "id": "recommended",
+                    "label": "Recommended"
+                  },
+                  {
+                    "id": "required",
+                    "label": "Required"
+                  }
+                ],
+                "default": "none"
+              },
+              {
+                "id": "disclosure_format",
+                "label": "Disclosure Format",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "label-or-tag",
+                    "label": "Label or tag"
+                  },
+                  {
+                    "id": "free-text",
+                    "label": "Free text"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other"
+                  }
+                ],
+                "default": []
+              },
+              {
+                "id": "enforcement",
+                "label": "Enforcement",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "none-stated",
+                    "label": "None stated"
+                  },
+                  {
+                    "id": "pr-closed",
+                    "label": "PR closed"
+                  },
+                  {
+                    "id": "contributor-blocked",
+                    "label": "Contributor blocked"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other"
+                  }
+                ],
+                "default": []
+              },
+              {
+                "id": "new_contributors",
+                "label": "New Contributors",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "yes",
+                    "label": "Yes"
+                  },
+                  {
+                    "id": "no",
+                    "label": "No"
+                  },
+                  {
+                    "id": "not_stated",
+                    "label": "Not stated"
+                  }
+                ],
+                "default": "not_stated"
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "disclosure_in_practice",
+                "label": "Disclosure In Practice",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "none-seen",
+                    "label": "None seen"
+                  },
+                  {
+                    "id": "tool-defaults-only",
+                    "label": "Tool defaults only"
+                  },
+                  {
+                    "id": "deliberate",
+                    "label": "Deliberate"
+                  }
+                ],
+                "default": "none-seen"
+              },
+              {
+                "id": "notes",
+                "label": "Notes (responsibility / new contributors / enforcement in practice)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "context",
+        "label": "Context",
+        "evidence_dimension": "",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "project_size",
+                "label": "Project size (contributors, dependents, or downloads \u2014 note measure)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "governance",
+                "label": "Governance",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "solo",
+                    "label": "Solo"
+                  },
+                  {
+                    "id": "community",
+                    "label": "Community"
+                  },
+                  {
+                    "id": "foundation-backed",
+                    "label": "Foundation Backed"
+                  },
+                  {
+                    "id": "corporate-backed",
+                    "label": "Corporate Backed"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "decision_process",
+                "label": "Decision process (enhancement proposals or voting, where documented)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "domain",
+                "label": "Domain (e.g. scientific Python, core Python, plus subdomain)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "policy_date",
+                "label": "Policy date and revision history",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "policy_location",
+                "label": "Policy location",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "CONTRIBUTING",
+                    "label": "Contributing"
+                  },
+                  {
+                    "id": "standalone-file",
+                    "label": "Standalone File"
+                  },
+                  {
+                    "id": "governance-doc",
+                    "label": "Governance Doc"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "contributors",
+                "label": "Contributors (count bot/AI accounts apart from people; note source)\n",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "who_decides",
+                "label": "Who decides in practice (mergers vs authors in packaging metadata)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "outside_activity",
+                "label": "Outside activity (issues/PRs from outside, merge vs close, latency)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "when_ai_began",
+                "label": "When AI use began (first agent file / AI co-authored commit vs policy date)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "ai_file_locations",
+                "label": "AI file locations (paths; how far a contributor must look)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "scope_implicit": {
     "contribution_types": {
       "code": "Code",
