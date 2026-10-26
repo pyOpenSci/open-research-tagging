@@ -16,16 +16,18 @@ pytest.importorskip("pytest_playwright")
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SITE = REPO_ROOT / "site"
-COMMENTS_JSON = SITE / "data" / "comments.json"
-PROJECTS_JSON = SITE / "data" / "projects.json"
 
 pytestmark = pytest.mark.integration
 
 
 @pytest.fixture(scope="module")
-def fixture_meta():
-    comments = json.loads(COMMENTS_JSON.read_text(encoding="utf-8"))
-    projects = json.loads(PROJECTS_JSON.read_text(encoding="utf-8"))
+def fixture_meta(site_under_test: Path):
+    comments = json.loads(
+        (site_under_test / "data" / "comments.json").read_text(encoding="utf-8")
+    )
+    projects = json.loads(
+        (site_under_test / "data" / "projects.json").read_text(encoding="utf-8")
+    )
     assert comments["meta"]["is_fixture"] is True
     row0 = comments["data"][0]
     stance = projects["data"][0]["overall"]["stance"]["values"][0]
@@ -36,6 +38,17 @@ def fixture_meta():
         "matching_href": stance["links"]["matching"]["href"],
         "display_name": projects["data"][0]["display_name"],
     }
+
+
+def test_playwright_site_tree_is_temp_not_repo(site_under_test: Path):
+    """Fixture JSON lives under pytest temp — repo site/data is not rewritten."""
+    assert site_under_test.resolve() != SITE.resolve()
+    assert SITE.resolve() not in site_under_test.resolve().parents
+    payload = json.loads(
+        (site_under_test / "data" / "comments.json").read_text(encoding="utf-8")
+    )
+    assert payload["meta"]["is_fixture"] is True
+    assert payload["meta"]["count"] >= 1
 
 
 def test_comments_shows_fixture_banner_and_rows(page, site_base_url, fixture_meta):

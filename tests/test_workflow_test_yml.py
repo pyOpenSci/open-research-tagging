@@ -29,3 +29,6 @@ def test_test_workflow_exists_and_runs_pytest():
     assert "pytest" in joined
     assert "playwright" in joined.lower()
     assert 'python-version: "3.12"' in text or "python-version: '3.12'" in text
+    # Fixture JSON for Playwright is built in a temp site tree (conftest), not
+    # by rewriting committed site/data in this workflow.
+    assert "raw_comments.fixture.json" not in joined

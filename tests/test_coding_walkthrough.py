@@ -18,16 +18,16 @@ pytest.importorskip("playwright")
 pytest.importorskip("pytest_playwright")
 
 REPO = Path(__file__).resolve().parents[1]
-SITE = REPO / "site"
-PROJECTS_JSON = SITE / "data" / "projects.json"
 PROJECT_YAML = REPO / "projects" / "pyopensci" / "project.yaml"
 
 pytestmark = pytest.mark.integration
 
 
 @pytest.fixture(scope="module")
-def pyopensci_row():
-    payload = json.loads(PROJECTS_JSON.read_text(encoding="utf-8"))
+def pyopensci_row(site_under_test: Path):
+    payload = json.loads(
+        (site_under_test / "data" / "projects.json").read_text(encoding="utf-8")
+    )
     rows = [r for r in payload["data"] if r.get("slug") == "pyopensci"]
     assert rows, "expected pyopensci in projects.json"
     row = rows[0]
