@@ -6,7 +6,11 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-from open_research_tagging.codebook import Codebook
+from open_research_tagging.codebook import (
+    Codebook,
+    index_scope_labels,
+    resolve_dimension_path,
+)
 from open_research_tagging.tag_catalog import canonical_tag_entries
 
 
@@ -25,7 +29,7 @@ def emit_codebook_json(data: Mapping[str, Any]) -> dict[str, Any]:
         "contribution_types": dict(codebook._scope_types),
         "positions": dict(codebook._scope_positions),
     }
-    return {
+    payload: dict[str, Any] = {
         "version": codebook.version,
         "namespaces": namespaces_out,
         "values": values_out,
@@ -33,6 +37,24 @@ def emit_codebook_json(data: Mapping[str, Any]) -> dict[str, Any]:
         "filter_order": _filter_order(data),
         "tag_catalog": canonical_tag_entries(codebook),
     }
+    implicit_scope = _optional_scope_leaf(data, "scope.implicit")
+    if implicit_scope is not None:
+        payload["scope_implicit"] = implicit_scope
+    return payload
+
+
+def _optional_scope_leaf(
+    data: Mapping[str, Any], path: str
+) -> dict[str, dict[str, str]] | None:
+    """Emit a second scope block (e.g. implicit seen/not_seen) when present."""
+    try:
+        leaf = resolve_dimension_path(data["dimensions"], path)
+    except (KeyError, TypeError):
+        return None
+    if "contribution_types" not in leaf or "positions" not in leaf:
+        return None
+    types, positions = index_scope_labels(leaf)
+    return {"contribution_types": types, "positions": positions}
 
 
 def write_codebook_json(path: str | Path, data: Mapping[str, Any]) -> None:

@@ -1,5 +1,6 @@
 # Copy this folder to projects/<slug>/ and fill in.
 # Project-level codes (Stance, Accountability, Context, etc.).
+# Explicit = stated in policy docs; Implicit = practices / signals.
 # Use PR review comments for passage-level evidence — see codebook/COMMENTING.md.
 
 slug: example-project
@@ -16,35 +17,71 @@ provenance:
   notes: ""
 
 coding:
-  stance: null  # ban | discouraged | gate-restrict | permissive-with-conditions | permissive | no-policy
+  stance:
+    explicit: null  # ban | discouraged | gate-restrict | permissive-with-conditions | permissive | no-policy
+    implicit: []  # maintainers-use-ai-tools | outside-ai-assisted-accepted | …
 
   scope:
-    code: not_addressed  # allowed | restricted | banned | not_addressed
-    tests: not_addressed
-    docs_and_text: not_addressed
-    issues_and_pr_descriptions: not_addressed
-    review: not_addressed
-    autonomous_agents: not_addressed
-    contribution_types_not_defined: not_addressed
+    explicit:
+      code: not_addressed  # allowed | restricted | banned | not_addressed
+      tests: not_addressed
+      docs_and_text: not_addressed
+      issues_and_pr_descriptions: not_addressed
+      review: not_addressed
+      autonomous_agents: not_addressed
+      contribution_types_not_defined: not_addressed
+    implicit:
+      code: not_seen  # seen | not_seen
+      comments: not_seen
+      tests: not_seen
+      docs_and_text: not_seen
+      issues_and_pr_descriptions: not_seen
+      review: not_seen
+      autonomous_agents: not_seen
 
-  stated_rationale: []
-  # e.g. [code-quality, maintainer-and-reviewer-burden]
+  stated_rationale:
+    explicit: []
+    implicit: []
+  # e.g. explicit: [code-quality, maintainer-and-reviewer-burden]
 
   guidance_on_use:
-    level: null  # restricts-only | some-guidance | substantive-guidance
-    types: []  # scoping | design | evaluation | iteration | learning
+    explicit:
+      level: null  # restricts-only | some-guidance | substantive-guidance
+      types: []  # scoping | design | evaluation | iteration | learning
+    implicit:
+      level: null
+      types: []
+      notes: ""
+      written_for: ""
+      not_ai_specific: ""
 
   accountability:
-    human_responsibility: not_stated  # yes | no | not_stated
-    disclosure: none  # none | recommended | required
-    disclosure_format: []  # label-or-tag | free-text | other
-    enforcement: []  # none-stated | pr-closed | contributor-blocked | other
+    explicit:
+      human_responsibility: not_stated  # yes | no | not_stated
+      disclosure: none  # none | recommended | required
+      disclosure_format: []  # label-or-tag | free-text | other
+      enforcement: []  # none-stated | pr-closed | contributor-blocked | other
+      new_contributors: not_stated  # yes | no | not_stated
+    implicit:
+      disclosure_in_practice: none-seen  # none-seen | tool-defaults-only | deliberate
+      notes: ""
 
   context:
-    project_size: ""  # note measure and thresholds
-    governance: null  # solo | community | foundation-backed | corporate-backed
-    domain: ""
-    notes: ""
+    explicit:
+      project_size: ""  # note measure and thresholds
+      governance: null  # solo | community | foundation-backed | corporate-backed
+      decision_process: ""
+      domain: ""
+      policy_date: ""
+      policy_location: null
+      notes: ""
+    implicit:
+      contributors: ""
+      who_decides: ""
+      outside_activity: ""
+      when_ai_began: ""
+      ai_file_locations: ""
+      notes: ""
 
 files:
   - path: policy.md

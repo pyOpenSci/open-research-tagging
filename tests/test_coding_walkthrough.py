@@ -57,9 +57,9 @@ def test_coding_view_prefills_and_yaml_matches_python(
     page.wait_for_selector("#coding-ready", state="visible")
     page.wait_for_selector("#yaml-preview")
 
-    # Prefill: stance select shows seed value
+    # Prefill: stance.explicit select shows seed value
     stance_val = page.locator("#coding-form select").first.input_value()
-    assert stance_val == pyopensci_row["coding"]["stance"]
+    assert stance_val == pyopensci_row["coding"]["stance"]["explicit"]
 
     expected = emit_coding_block(pyopensci_row["coding"])
     preview = page.locator("#yaml-preview").input_value()
@@ -69,7 +69,10 @@ def test_coding_view_prefills_and_yaml_matches_python(
     # Parsed preview is a coding mapping process_projects can consume
     parsed = yaml.safe_load(preview)
     assert "coding" in parsed
-    assert parsed["coding"]["stance"] == pyopensci_row["coding"]["stance"]
+    assert (
+        parsed["coding"]["stance"]["explicit"]
+        == pyopensci_row["coding"]["stance"]["explicit"]
+    )
 
 
 def test_section_title_filters_evidence(page, site_base_url):
@@ -101,18 +104,19 @@ def test_form_edit_updates_yaml_preview(page, site_base_url, pyopensci_row):
     )
     page.wait_for_selector("#yaml-preview")
     before = page.locator("#yaml-preview").input_value()
-    assert pyopensci_row["coding"]["stance"] in before
+    stance_ex = pyopensci_row["coding"]["stance"]["explicit"]
+    assert stance_ex in before
 
-    # First select in form is stance
+    # First select in form is stance.explicit
     page.locator("#coding-form select").first.select_option("permissive")
     page.wait_for_function(
         """() => {
           const ta = document.getElementById('yaml-preview');
-          return ta && ta.value.includes('stance: permissive\\n');
+          return ta && ta.value.includes('explicit: permissive\\n');
         }"""
     )
     after = page.locator("#yaml-preview").input_value()
-    assert "stance: permissive\n" in after
+    assert "explicit: permissive\n" in after
     assert after != before
 
 

@@ -59,7 +59,7 @@ def test_scope_membership():
 
 def test_load_codebook_real_draft():
     codebook = load_codebook(REAL_CODEBOOK_PATH)
-    assert codebook.version == "draft-0.1"
+    assert codebook.version == "draft-0.2"
     assert codebook.label_for("stance", "ban") == "Ban"
     assert codebook.dimension_for_namespace("rationale") == "stated_rationale"
     assert codebook.has_scope_type("code") is True

@@ -2,7 +2,7 @@
 
 Use **PR review comments** on the Files tab (line or multi-line). Put codebook hashtags on their own lines at the top of the comment, then a short free-text note.
 
-**Exact hashtag strings come from the tag picker** — not from a hand-maintained list in this file. The codebook source is [codebook.yaml](codebook.yaml) (draft); the picker shows every valid tag the site and tag-check accept.
+**Exact hashtag strings come from the tag picker** — not from a hand-maintained list in this file. The codebook source is [codebook.yaml](codebook.yaml) (draft-0.2: Explicit / Implicit subsections). Passage hashtags target **Explicit** leaves; Implicit is coded on the coding view / `project.yaml`. The picker shows every valid passage tag the site and tag-check accept.
 
 ## Workflow
 

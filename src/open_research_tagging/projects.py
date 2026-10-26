@@ -205,6 +205,7 @@ def build_overall(
     """
     overall: dict[str, Any] = {}
     warnings: list[str] = []
+    coding = _coding_explicit_view(coding)
 
     stance = coding.get("stance")
     if stance:
@@ -362,6 +363,54 @@ def build_overall(
     return overall, warnings
 
 
+def _coding_explicit_view(coding: Mapping[str, Any]) -> dict[str, Any]:
+    """
+    Flatten draft-0.2 ``explicit`` subsections for the projects-page overall adapter.
+
+    Implicit codes stay on the raw ``coding`` passthrough; site chips still show
+    Explicit-only overall for now.
+    """
+    if not isinstance(coding, Mapping):
+        return {}
+    out: dict[str, Any] = {}
+
+    stance = coding.get("stance")
+    if isinstance(stance, Mapping):
+        if stance.get("explicit") not in (None, ""):
+            out["stance"] = stance["explicit"]
+    elif stance not in (None, ""):
+        out["stance"] = stance
+
+    scope = coding.get("scope")
+    if isinstance(scope, Mapping):
+        if isinstance(scope.get("explicit"), Mapping):
+            out["scope"] = scope["explicit"]
+        elif "explicit" not in scope and "implicit" not in scope:
+            out["scope"] = scope
+
+    rationale = coding.get("stated_rationale")
+    if isinstance(rationale, Mapping):
+        out["stated_rationale"] = rationale.get("explicit") or []
+    elif isinstance(rationale, list):
+        out["stated_rationale"] = rationale
+
+    guidance = coding.get("guidance_on_use")
+    if isinstance(guidance, Mapping):
+        if isinstance(guidance.get("explicit"), Mapping):
+            out["guidance_on_use"] = guidance["explicit"]
+        elif "level" in guidance or "types" in guidance:
+            out["guidance_on_use"] = guidance
+
+    acct = coding.get("accountability")
+    if isinstance(acct, Mapping):
+        if isinstance(acct.get("explicit"), Mapping):
+            out["accountability"] = acct["explicit"]
+        elif "disclosure" in acct or "human_responsibility" in acct:
+            out["accountability"] = acct
+
+    return out
+
+
 def build_project(
     path: str | Path,
     codebook: Codebook,
@@ -382,9 +431,13 @@ def build_project(
     provenance = data.get("provenance") or {}
     if not isinstance(provenance, Mapping):
         provenance = {}
-    context = coding.get("context") or {}
-    if not isinstance(context, Mapping):
-        context = {}
+    context_raw = coding.get("context") or {}
+    if not isinstance(context_raw, Mapping):
+        context_raw = {}
+    if isinstance(context_raw.get("explicit"), Mapping):
+        context = context_raw["explicit"]
+    else:
+        context = context_raw
     overall, warnings = build_overall(coding, slug, codebook, cidx)
     pb = cidx.get(slug) or {"all_ids": []}
     try:

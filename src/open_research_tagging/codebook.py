@@ -47,11 +47,11 @@ class Codebook:
             namespaces[str(namespace)] = NamespaceInfo(
                 dimension=dimension, kind=kind, label=label
             )
+            path = str(info.get("path") or dimension)
             if kind == "scope":
-                scope_body = _resolve_path(dimensions, dimension)
+                scope_body = _resolve_path(dimensions, path)
                 scope_types, scope_positions = _index_scope(scope_body)
                 continue
-            path = str(info.get("path") or dimension)
             leaf = _resolve_path(dimensions, path)
             values[dimension] = _index_values(leaf.get("values", []))
         return cls(
@@ -193,7 +193,10 @@ def _validate_namespace_entry(
         )
 
 
-def _resolve_path(dimensions: Mapping[str, Any], path: str) -> Mapping[str, Any]:
+def resolve_dimension_path(
+    dimensions: Mapping[str, Any], path: str
+) -> Mapping[str, Any]:
+    """Walk a dotted path under ``dimensions`` (e.g. ``scope.explicit``)."""
     node: Any = dimensions
     for part in path.split("."):
         if not isinstance(node, Mapping) or part not in node:
@@ -204,7 +207,12 @@ def _resolve_path(dimensions: Mapping[str, Any], path: str) -> Mapping[str, Any]
     return node
 
 
-def _index_values(values: list[Any]) -> dict[str, str]:
+# Back-compat for callers/tests that used the private name.
+_resolve_path = resolve_dimension_path
+
+
+def index_value_labels(values: list[Any]) -> dict[str, str]:
+    """Map value entry ids → labels."""
     indexed: dict[str, str] = {}
     for entry in values:
         entry_id = str(entry["id"])
@@ -215,10 +223,14 @@ def _index_values(values: list[Any]) -> dict[str, str]:
     return indexed
 
 
-def _index_scope(
+_index_values = index_value_labels
+
+
+def index_scope_labels(
     body: Mapping[str, Any],
 ) -> tuple[dict[str, str], dict[str, str]]:
-    types = _index_values(list(body["contribution_types"]))
+    """Index contribution_types and positions from a scope leaf body."""
+    types = index_value_labels(list(body["contribution_types"]))
     positions: dict[str, str] = {}
     for item in body["positions"]:
         if isinstance(item, str):
@@ -230,6 +242,9 @@ def _index_scope(
                 label if isinstance(label, str) and label.strip() else entry_id
             )
     return types, positions
+
+
+_index_scope = index_scope_labels
 
 
 def _titleize_id(entry_id: str) -> str:

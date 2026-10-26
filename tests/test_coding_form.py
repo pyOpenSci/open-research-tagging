@@ -66,14 +66,16 @@ def test_empty_coding_defaults_and_prefill():
     out = _run_node(
         r"""
 const empty = F.emptyCoding();
-if (empty.stance !== null) throw new Error('stance');
-if (!empty.scope || empty.scope.code !== 'not_addressed') throw new Error('scope');
-if (!Array.isArray(empty.stated_rationale) || empty.stated_rationale.length !== 0) {
+if (empty.stance.explicit !== null) throw new Error('stance');
+if (!empty.scope.explicit || empty.scope.explicit.code !== 'not_addressed') {
+  throw new Error('scope');
+}
+if (!Array.isArray(empty.stated_rationale.explicit) || empty.stated_rationale.explicit.length !== 0) {
   throw new Error('rationale');
 }
-if (empty.guidance_on_use.level !== null) throw new Error('glevel');
-if (empty.accountability.disclosure !== 'none') throw new Error('disclosure');
-if (empty.context.notes !== '') throw new Error('notes');
+if (empty.guidance_on_use.explicit.level !== null) throw new Error('glevel');
+if (empty.accountability.explicit.disclosure !== 'none') throw new Error('disclosure');
+if (empty.context.explicit.notes !== '') throw new Error('notes');
 
 const raw = {
   stance: 'permissive-with-conditions',
@@ -89,17 +91,17 @@ const raw = {
   context: { governance: 'community', domain: 'sci', project_size: 'big', notes: 'n' },
 };
 const filled = F.prefillCoding(raw);
-if (filled.stance !== 'permissive-with-conditions') throw new Error('pref stance');
-if (filled.scope.code !== 'restricted') throw new Error('pref scope');
-if (filled.scope.docs_and_text !== 'restricted') throw new Error('pref docs');
-if (filled.stated_rationale[0] !== 'security') throw new Error('pref rat');
-if (filled.accountability.disclosure_format[0] !== 'free-text') throw new Error('pref df');
-if (filled.context.notes !== 'n') throw new Error('pref notes');
+if (filled.stance.explicit !== 'permissive-with-conditions') throw new Error('pref stance');
+if (filled.scope.explicit.code !== 'restricted') throw new Error('pref scope');
+if (filled.scope.explicit.docs_and_text !== 'restricted') throw new Error('pref docs');
+if (filled.stated_rationale.explicit[0] !== 'security') throw new Error('pref rat');
+if (filled.accountability.explicit.disclosure_format[0] !== 'free-text') throw new Error('pref df');
+if (filled.context.explicit.notes !== 'n') throw new Error('pref notes');
 
 const fromNull = F.prefillCoding(null);
-if (fromNull.stance !== null) throw new Error('null pref');
+if (fromNull.stance.explicit !== null) throw new Error('null pref');
 const fromEmpty = F.prefillCoding({});
-if (fromEmpty.accountability.disclosure !== 'none') throw new Error('empty pref');
+if (fromEmpty.accountability.explicit.disclosure !== 'none') throw new Error('empty pref');
 console.log('ok');
 """
     )

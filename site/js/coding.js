@@ -106,12 +106,14 @@
         return Form ? Form.valueOptions(this.codebook, dimension) : [];
       },
 
-      scopeRows() {
-        return Form ? Form.scopeTypeRows(this.codebook) : [];
+      scopeRows(layer) {
+        return Form ? Form.scopeTypeRows(this.codebook, layer || "explicit") : [];
       },
 
-      scopePositions() {
-        return Form ? Form.scopePositionOptions(this.codebook) : [];
+      scopePositions(layer) {
+        return Form
+          ? Form.scopePositionOptions(this.codebook, layer || "explicit")
+          : [];
       },
 
       disclosureFormats() {
@@ -120,6 +122,12 @@
 
       governances() {
         return Form ? Form.governanceOptions() : [];
+      },
+
+      policyLocations() {
+        return Form && Form.policyLocationOptions
+          ? Form.policyLocationOptions()
+          : [];
       },
 
       multiHas(list, id) {

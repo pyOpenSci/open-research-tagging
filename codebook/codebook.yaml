@@ -1,176 +1,359 @@
 # Draft codebook for coding open-source AI contribution policies.
-# Not final — for demo use. Adapted from Leah's draft; Stance adapted from RedMonk.
+# Not final. Explicit = stated in policy docs; Implicit = practices / signals.
+# See EVOLUTION-NOTES.md when changing shape (what else must update).
 
-version: draft-0.1
+version: draft-0.2
 status: draft
 
 dimensions:
 
   stance:
-    select: single
     description: >
-      The policy's overall position on AI-generated contributions.
-    values:
-      - id: ban
-        label: Ban
-        description: AI-generated contributions prohibited
-      - id: discouraged
-        label: Discouraged
-        description: Allowed but advised against, with no enforceable limit
-      - id: gate-restrict
-        label: Gate/restrict
-        description: Allowed only under limits (PR gating, pre-approval, issue-first, etc.)
-      - id: permissive-with-conditions
-        label: Permissive with conditions
-        description: Allowed, with stated requirements
-      - id: permissive
-        label: Permissive
-        description: Allowed, no stated requirements
-      - id: no-policy
-        label: No policy
-        description: No written policy found after the search protocol
+      The project's position on AI-generated contributions — what the policy
+      says (explicit) and what practices suggest (implicit).
+    explicit:
+      select: single
+      description: >
+        The policy's overall position on AI-generated contributions.
+      values:
+        - id: ban
+          label: Ban
+          description: AI-generated contributions prohibited
+        - id: discouraged
+          label: Discouraged
+          description: Allowed but advised against, with no enforceable limit
+        - id: gate-restrict
+          label: Gate/restrict
+          description: >
+            Allowed only under limits (for example, PR gating, pre-approval,
+            issue-first)
+        - id: permissive-with-conditions
+          label: Permissive with conditions
+          description: Allowed, with stated requirements
+        - id: permissive
+          label: Permissive
+          description: Allowed, no stated requirements
+        - id: no-policy
+          label: No policy
+          description: No written policy found after the search protocol
+    implicit:
+      select: multi
+      description: >
+        What the project's practices and activities suggest about how AI is
+        used. Record counts and links, never a stance. A project can have
+        "No policy" explicitly and still show maintainer AI use and accepted
+        outside AI-assisted work (permissive in practice).
+      values:
+        - id: maintainers-use-ai-tools
+          label: Maintainers use of AI tools
+          description: >
+            Agent files they committed, or AI co-author lines and footers on
+            their commits, PRs and issues.
+        - id: outside-ai-assisted-accepted
+          label: External/outside AI-assisted work is accepted
+          description: >
+            PRs from non-maintainers that carry AI attribution have been merged.
+        - id: outside-ai-assisted-turned-away
+          label: Outside AI-assisted work is turned away
+          description: >
+            PRs or issues closed, labeled, or answered because of AI use.
+        - id: defensive-instructions
+          label: Defensive instructions
+          description: >
+            Agent files or templates aimed at other people's agents, for
+            example telling them not to open PRs.
+        - id: no-signals
+          label: No signals
+          description: None of the above after the implicit search.
 
   scope:
-    select: multi
     description: >
-      For each contribution type, code the position:
-      allowed, restricted, banned, or not_addressed.
-    contribution_types:
-      - id: code
-        label: Code
-      - id: tests
-        label: Tests
-      - id: docs-and-text
-        label: Docs and text
-      - id: issues-and-pr-descriptions
-        label: Issues and PR descriptions
-      - id: review
-        label: Review
-      - id: autonomous-agents
-        label: Autonomous agents
-      - id: contribution-types-not-defined
-        label: Contribution types not defined
-    positions:
-      - allowed
-      - restricted
-      - banned
-      - not_addressed
+      Whether the project supports AI contributors of certain types — stated
+      positions (explicit) and what shows up in practice (implicit).
+    explicit:
+      select: multi
+      description: >
+        For each contribution type, code the position: allowed, restricted,
+        banned, or not addressed. From policy docs, contributing guidelines,
+        etc.
+      contribution_types:
+        - id: code
+          label: Code
+        - id: tests
+          label: Tests
+        - id: docs-and-text
+          label: Docs and text
+        - id: issues-and-pr-descriptions
+          label: Issues and PR descriptions
+        - id: review
+          label: Review
+        - id: autonomous-agents
+          label: Autonomous agents
+        - id: contribution-types-not-defined
+          label: Contribution types not defined
+      positions:
+        - allowed
+        - restricted
+        - banned
+        - not_addressed
+    implicit:
+      select: multi
+      description: >
+        For each type, record whether AI use shows up in practice (seen or
+        not seen), with one or two example links. Agent-file task lists also
+        show where maintainers expect AI to help.
+      contribution_types:
+        - id: code
+          label: Code
+          description: >
+            AI co-author lines or footers on merged commits that change source
+            files.
+        - id: comments
+          label: Comments
+          description: >
+            Comments in the code that point to an AI-contributed piece of code.
+        - id: tests
+          label: Tests
+          description: The same, on commits that change only tests.
+        - id: docs-and-text
+          label: Docs and text
+          description: >
+            The same, on docs-only commits, plus agent files written for the
+            docs.
+        - id: issues-and-pr-descriptions
+          label: Issues and PR descriptions
+          description: Issues and PRs that say a tool drafted or filed them.
+        - id: review
+          label: Review
+          description: >
+            AI bots as PR reviewers, such as copilot-pull-request-reviewer[bot].
+        - id: autonomous-agents
+          label: Autonomous agents
+          description: >
+            Bot accounts that open issues or PRs or push commits, and AI steps
+            in .github/workflows.
+      positions:
+        - seen
+        - not_seen
 
   stated_rationale:
-    select: multi
     description: >
-      Only code rationales the policy states (not inferred).
-    values:
-      - id: code-quality
-        label: Code quality
-      - id: maintainer-and-reviewer-burden
-        label: Maintainer and reviewer burden
-      - id: security
-        label: Security
-      - id: licensing-and-copyright
-        label: Licensing and copyright
-      - id: environmental
-        label: Environmental
-      - id: social-and-ethical
-        label: Social and ethical (trust, transparency, community norms)
-      - id: contributor-learning-and-skill-development
-        label: Contributor learning and skill development
-      - id: other
-        label: Other (specify in free text)
+      The social / stated reasoning that defends why they made the policy.
+      Only code what is stated; do not infer from a rule alone.
+    explicit:
+      select: multi
+      description: Only code rationales the policy states.
+      values:
+        - id: code-quality
+          label: Code quality
+        - id: maintainer-and-reviewer-burden
+          label: Maintainer and reviewer burden
+        - id: security
+          label: Security
+        - id: licensing-and-copyright
+          label: Licensing and copyright
+        - id: environmental
+          label: Environmental
+        - id: social-and-ethical
+          label: Social and ethical (trust, transparency, community norms)
+        - id: contributor-learning-and-skill-development
+          label: Contributor learning and skill development
+        - id: other
+          label: Other (specify in free text)
+    implicit:
+      select: multi
+      description: >
+        The same codes, for reasons maintainers give outside the policy.
+        Record the source next to each code (interview, policy discussion,
+        agent-file PR, talk/blog/social). Don't infer a reason from a rule
+        or a file alone.
+      values:
+        - id: code-quality
+          label: Code quality
+        - id: maintainer-and-reviewer-burden
+          label: Maintainer and reviewer burden
+        - id: security
+          label: Security
+        - id: licensing-and-copyright
+          label: Licensing and copyright
+        - id: environmental
+          label: Environmental
+        - id: social-and-ethical
+          label: Social and ethical (trust, transparency, community norms)
+        - id: contributor-learning-and-skill-development
+          label: Contributor learning and skill development
+        - id: other
+          label: Other (specify in free text)
 
   guidance_on_use:
-    level:
-      select: single
-      description: Does the policy only restrict, or does it guide how to use AI well?
-      values:
-        - id: restricts-only
-          label: Restricts only
-        - id: some-guidance
-          label: Some guidance
-        - id: substantive-guidance
-          label: Substantive guidance
-    types:
-      select: multi
-      description: Type of guidance offered (when present).
-      values:
-        - id: scoping
-          label: Scoping (PR size limits, scoped tasks, issue-first)
-        - id: design
-          label: Design (modularity, existing patterns, technical debt)
-        - id: evaluation
-          label: Evaluation (understand, test, and explain output)
-        - id: iteration
-          label: Iteration (human-AI cycles rather than one-shot)
-        - id: learning
-          label: Learning (supports building skills or understanding)
+    description: >
+      Does the project only restrict AI use, or guide how to use AI well?
+    explicit:
+      level:
+        select: single
+        description: Does the policy only restrict, or does it guide how to use AI well?
+        values:
+          - id: restricts-only
+            label: Restricts only
+          - id: some-guidance
+            label: Some guidance
+          - id: substantive-guidance
+            label: Substantive guidance
+      types:
+        select: multi
+        description: Type of guidance offered (when present).
+        values:
+          - id: scoping
+            label: Scoping (PR size limits, scoped tasks, issue-first)
+          - id: design
+            label: Design (modularity, existing patterns, technical debt)
+          - id: evaluation
+            label: Evaluation (understand, test, and explain output)
+          - id: iteration
+            label: Iteration (human-AI cycles rather than one-shot)
+          - id: learning
+            label: Learning (supports building skills or understanding)
+    implicit:
+      description: >
+        Guidance written for the agent instead of the person (agent files and
+        skills). Code the same level and types; note which file each came from
+        and who the file is written for. Contributing advice that isn't about
+        AI still applies — record it marked as not AI-specific.
+      level:
+        select: single
+        values:
+          - id: restricts-only
+            label: Restricts only
+          - id: some-guidance
+            label: Some guidance
+          - id: substantive-guidance
+            label: Substantive guidance
+      types:
+        select: multi
+        values:
+          - id: scoping
+            label: Scoping (PR size limits, scoped tasks, issue-first)
+          - id: design
+            label: Design (modularity, existing patterns, technical debt)
+          - id: evaluation
+            label: Evaluation (understand, test, and explain output)
+          - id: iteration
+            label: Iteration (human-AI cycles rather than one-shot)
+          - id: learning
+            label: Learning (supports building skills or understanding)
 
   accountability:
-    human_responsibility:
-      select: single
-      values:
-        # Quoted: bare yes/no are YAML booleans.
-        - id: "yes"
-          label: Yes — contributor is responsible for submitted work
-        - id: "no"
-          label: No
-        - id: not_stated
-          label: Not stated
-    disclosure:
-      select: single
-      values:
-        - id: none
-          label: None
-        - id: recommended
-          label: Recommended
-        - id: required
-          label: Required
-    disclosure_format:
-      select: multi
-      values:
-        - id: label-or-tag
-          label: Label or tag
-        - id: free-text
-          label: Free text
-        - id: other
-          label: Other
-    enforcement:
-      select: multi
-      values:
-        - id: none-stated
-          label: None stated
-        - id: pr-closed
-          label: PR closed
-        - id: contributor-blocked
-          label: Contributor blocked
-        - id: other
-          label: Other
+    description: Human responsibility, disclosure, and enforcement.
+    explicit:
+      human_responsibility:
+        select: single
+        values:
+          # Quoted: bare yes/no are YAML booleans.
+          - id: "yes"
+            label: "Yes — contributor is responsible for submitted work"
+          - id: "no"
+            label: "No"
+          - id: not_stated
+            label: Not stated
+      disclosure:
+        select: single
+        values:
+          - id: none
+            label: None
+          - id: recommended
+            label: Recommended
+          - id: required
+            label: Required
+      disclosure_format:
+        select: multi
+        values:
+          - id: label-or-tag
+            label: Label or tag
+          - id: free-text
+            label: Free text
+          - id: other
+            label: Other
+      enforcement:
+        select: multi
+        values:
+          - id: none-stated
+            label: None stated
+          - id: pr-closed
+            label: PR closed
+          - id: contributor-blocked
+            label: Contributor blocked
+          - id: other
+            label: Other
+      new_contributors:
+        select: single
+        description: Different rules for new contributors.
+        values:
+          - id: "yes"
+            label: "Yes"
+          - id: "no"
+            label: "No"
+          - id: not_stated
+            label: Not stated
+    implicit:
+      disclosure_in_practice:
+        select: single
+        description: >
+          none seen; tool defaults only (e.g. Claude co-author line/footer);
+          or deliberate markers someone chose.
+        values:
+          - id: none-seen
+            label: None seen
+          - id: tool-defaults-only
+            label: Tool defaults only
+          - id: deliberate
+            label: Deliberate
+      # Free-text notes cover disclosure-without-prompt, human responsibility
+      # in practice, new contributors in practice, and enforcement in practice.
 
   context:
     description: >
-      Project-level context. Define size measures and thresholds in notes as needed.
-    fields:
-      - id: project_size
-        label: Project size (contributors, dependents, or downloads — note measure)
-      - id: governance
-        label: Governance
-        values:
-          - solo
-          - community
-          - foundation-backed
-          - corporate-backed
-      - id: domain
-        label: Domain (e.g. scientific Python, core Python, plus subdomain)
-      - id: policy_date
-        label: Policy date and revision history
-      - id: policy_location
-        label: Policy location
-        values:
-          - CONTRIBUTING
-          - standalone-file
-          - governance-doc
-          - other
+      When AI was introduced formally, project size, governance, domain, and
+      policy location — documents (explicit) vs history (implicit).
+    explicit:
+      fields:
+        - id: project_size
+          label: Project size (contributors, dependents, or downloads — note measure)
+        - id: governance
+          label: Governance
+          values:
+            - solo
+            - community
+            - foundation-backed
+            - corporate-backed
+        - id: decision_process
+          label: Decision process (enhancement proposals or voting, where documented)
+        - id: domain
+          label: Domain (e.g. scientific Python, core Python, plus subdomain)
+        - id: policy_date
+          label: Policy date and revision history
+        - id: policy_location
+          label: Policy location
+          values:
+            - CONTRIBUTING
+            - standalone-file
+            - governance-doc
+            - other
+    implicit:
+      fields:
+        - id: contributors
+          label: >
+            Contributors (count bot/AI accounts apart from people; note source)
+        - id: who_decides
+          label: Who decides in practice (mergers vs authors in packaging metadata)
+        - id: outside_activity
+          label: Outside activity (issues/PRs from outside, merge vs close, latency)
+        - id: when_ai_began
+          label: When AI use began (first agent file / AI co-authored commit vs policy date)
+        - id: ai_file_locations
+          label: AI file locations (paths; how far a contributor must look)
 
-# Tag conventions for PR review comments (see COMMENTING.md)
+# Tag conventions for PR review comments (see COMMENTING.md).
+# Passage tags target Explicit leaves; Implicit is overall-coding for now.
 comment_tags:
   stance: "#stance/<value-id>"
   scope: "#scope/<contribution-type>:<position>"
@@ -181,47 +364,80 @@ comment_tags:
   human_responsibility: "#human-responsibility/<value-id>"
   enforcement: "#enforcement/<value-id>"
 
-# Hashtag namespace → lookup dimension id. Optional path = where values live under dimensions.
+# Hashtag namespace → lookup dimension id. Optional path = where values live.
 namespaces:
   stance:
     dimension: stance
+    path: stance.explicit
     kind: value
     label: Stance
+  stance-implicit:
+    dimension: stance_implicit
+    path: stance.implicit
+    kind: value
+    label: Stance (implicit)
   rationale:
     dimension: stated_rationale
+    path: stated_rationale.explicit
     kind: value
     label: Stated rationale
+  rationale-implicit:
+    dimension: rationale_implicit
+    path: stated_rationale.implicit
+    kind: value
+    label: Stated rationale (implicit)
   guidance-level:
     dimension: guidance_level
-    path: guidance_on_use.level
+    path: guidance_on_use.explicit.level
     kind: value
     label: Guidance level
   guidance:
     dimension: guidance_type
-    path: guidance_on_use.types
+    path: guidance_on_use.explicit.types
     kind: value
     label: Guidance type
+  guidance-level-implicit:
+    dimension: guidance_level_implicit
+    path: guidance_on_use.implicit.level
+    kind: value
+    label: Guidance level (implicit)
+  guidance-implicit:
+    dimension: guidance_type_implicit
+    path: guidance_on_use.implicit.types
+    kind: value
+    label: Guidance type (implicit)
   disclosure:
     dimension: disclosure
-    path: accountability.disclosure
+    path: accountability.explicit.disclosure
     kind: value
     label: Disclosure
   human-responsibility:
     dimension: human_responsibility
-    path: accountability.human_responsibility
+    path: accountability.explicit.human_responsibility
     kind: value
     label: Human responsibility
   enforcement:
     dimension: enforcement
-    path: accountability.enforcement
+    path: accountability.explicit.enforcement
     kind: value
     label: Enforcement
+  new-contributors:
+    dimension: new_contributors
+    path: accountability.explicit.new_contributors
+    kind: value
+    label: New contributors
+  disclosure-in-practice:
+    dimension: disclosure_in_practice
+    path: accountability.implicit.disclosure_in_practice
+    kind: value
+    label: Disclosure in practice
   scope:
     dimension: scope
+    path: scope.explicit
     kind: scope
     label: Scope
 
-# UI chip / filter column order (dimension ids)
+# UI chip / filter column order (passage / overall display dims — Explicit for now)
 filter_order:
   - stance
   - stated_rationale

@@ -113,9 +113,9 @@ def test_build_project_row(tmp_path: Path):
     assert row["context"]["governance"] == "community"
     assert row["overall"]["stance"]["values"][0]["id"] == "allow"
     assert row["coding_warnings"] == []
-    # Raw nested coding for coding-view form pre-fill (10c)
-    assert row["coding"]["stance"] == "allow"
-    assert row["coding"]["context"]["domain"] == "test"
+    # Normalized nested coding for coding-view form pre-fill (10c / 12e)
+    assert row["coding"]["stance"]["explicit"] == "allow"
+    assert row["coding"]["context"]["explicit"]["domain"] == "test"
 
 
 def test_build_project_coerces_yaml_yes_bool_in_coding(tmp_path: Path):
@@ -129,7 +129,9 @@ def test_build_project_coerces_yaml_yes_bool_in_coding(tmp_path: Path):
     )
     row = build_project(yaml_path, _codebook(), {}, repo_root=tmp_path)
     assert row is not None
-    assert row["coding"]["accountability"]["human_responsibility"] == "yes"
+    assert (
+        row["coding"]["accountability"]["explicit"]["human_responsibility"] == "yes"
+    )
 
 
 def test_build_project_skips_underscore_slug(tmp_path: Path):

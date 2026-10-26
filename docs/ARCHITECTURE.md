@@ -35,7 +35,7 @@ Two kinds of judgment, stored in different places:
 | **Overall** | `projects/<slug>/project.yaml` (`coding:` block) | How do we code this policy as a whole? |
 | **Passage** | Hashtags on PR review comments | What does this line or paragraph evidence? |
 
-The **codebook** (`codebook/codebook.yaml`) is the shared vocabulary: stable string **ids** for codes, human **labels** for display. The browser gets generated `site/data/codebook.json` so there is not a second hand-edited codebook.
+The **codebook** (`codebook/codebook.yaml`, draft-0.2) is the shared vocabulary: stable string **ids** for codes, human **labels** for display. Each research dimension has **Explicit** (stated in policy docs) and **Implicit** (practices / signals) subsections. Passage hashtags and projects-page filters target Explicit leaves for now; Implicit is set on the coding view / `project.yaml`. The browser gets generated `site/data/codebook.json` so there is not a second hand-edited codebook. When the YAML shape changes, see [`codebook/EVOLUTION-NOTES.md`](../codebook/EVOLUTION-NOTES.md) for what else usually needs a hand update.
 
 ## End-to-end data flow
 
@@ -115,7 +115,7 @@ Joining overall codes to passage evidence:
 2. Read that project’s `coding:` block from `project.yaml`.
 3. For each overall code, attach codebook labels and links into the comment browser (“all on this dimension” / “exact code”).
 
-Practical details: scope `not_addressed` is omitted from the sparse table; unknown overall ids still show and are flagged; YAML scope keys may use underscores while hashtags use hyphens — matching normalizes that. The YAML→site field map is an explicit adapter for the known nesting (not a generic “any codebook dimension → form” engine).
+Practical details: scope `not_addressed` is omitted from the sparse table; unknown overall ids still show and are flagged; YAML scope keys may use underscores while hashtags use hyphens — matching normalizes that. The YAML→site field map is an explicit adapter for the known nesting (not a generic “any codebook dimension → form” engine). For draft-0.2, `build_overall` flattens each dimension’s **Explicit** subsection into the projects-table chips; Implicit stays on the nested `coding` passthrough for the coding view.
 
 ```bash
 python -m open_research_tagging.process_projects \
@@ -243,8 +243,7 @@ Site JS (under `site/js/`): `codebook.js`, `chips.js`, `comments_filters.js`, `c
 
 *Skippable checklist — detail lands in main sections when each task ships.*
 
-- README expansion for cold onboarding (**12c**); optional screengrab GIFs
-- Formal parity walkthrough (**12d**)
 - Codebook content swap (**12e**); seed retire when ready (**12f**); org Pages cutover (**12g**)
 - Optional Tests CI Playwright install speedup (**12h**)
 - Optional mutation spot-check (**Phase 13**)
+- Optional README screengrab GIFs (deferred; see plan open questions)

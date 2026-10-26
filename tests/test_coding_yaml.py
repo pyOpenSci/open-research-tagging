@@ -1,4 +1,4 @@
-"""Emit coding: YAML block for coding-view Copy (10d). Python is the contract."""
+"""Emit coding: YAML block for coding-view Copy (10d / 12e). Python is the contract."""
 
 from __future__ import annotations
 
@@ -16,36 +16,82 @@ FORM_JS = REPO / "site" / "js" / "coding_form.js"
 CODING_HTML = REPO / "site" / "coding.html"
 
 SAMPLE = {
-    "stance": "permissive-with-conditions",
-    "scope": {
-        "code": "restricted",
-        "tests": "restricted",
-        "docs_and_text": "restricted",
-        "issues_and_pr_descriptions": "restricted",
-        "review": "not_addressed",
-        "autonomous_agents": "not_addressed",
-        "contribution_types_not_defined": "not_addressed",
+    "stance": {
+        "explicit": "permissive-with-conditions",
+        "implicit": ["outside-ai-assisted-accepted"],
     },
-    "stated_rationale": [
-        "code-quality",
-        "maintainer-and-reviewer-burden",
-        "social-and-ethical",
-    ],
+    "scope": {
+        "explicit": {
+            "code": "restricted",
+            "tests": "restricted",
+            "docs_and_text": "restricted",
+            "issues_and_pr_descriptions": "restricted",
+            "review": "not_addressed",
+            "autonomous_agents": "not_addressed",
+            "contribution_types_not_defined": "not_addressed",
+        },
+        "implicit": {
+            "code": "seen",
+            "comments": "not_seen",
+            "tests": "not_seen",
+            "docs_and_text": "not_seen",
+            "issues_and_pr_descriptions": "not_seen",
+            "review": "not_seen",
+            "autonomous_agents": "not_seen",
+        },
+    },
+    "stated_rationale": {
+        "explicit": [
+            "code-quality",
+            "maintainer-and-reviewer-burden",
+            "social-and-ethical",
+        ],
+        "implicit": [],
+    },
     "guidance_on_use": {
-        "level": "substantive-guidance",
-        "types": ["scoping", "design", "evaluation", "iteration"],
+        "explicit": {
+            "level": "substantive-guidance",
+            "types": ["scoping", "design", "evaluation", "iteration"],
+        },
+        "implicit": {
+            "level": None,
+            "types": [],
+            "notes": "",
+            "written_for": "",
+            "not_ai_specific": "",
+        },
     },
     "accountability": {
-        "human_responsibility": "yes",
-        "disclosure": "required",
-        "disclosure_format": ["free-text"],
-        "enforcement": ["contributor-blocked", "other"],
+        "explicit": {
+            "human_responsibility": "yes",
+            "disclosure": "required",
+            "disclosure_format": ["free-text"],
+            "enforcement": ["contributor-blocked", "other"],
+            "new_contributors": "not_stated",
+        },
+        "implicit": {
+            "disclosure_in_practice": "none-seen",
+            "notes": "",
+        },
     },
     "context": {
-        "project_size": "Peer-review org for scientific Python packages; size not coded for demo",
-        "governance": "community",
-        "domain": "scientific Python / peer review",
-        "notes": "Foundation-adjacent community; policy co-developed with community input.",
+        "explicit": {
+            "project_size": "Peer-review org for scientific Python packages; size not coded for demo",
+            "governance": "community",
+            "decision_process": "",
+            "domain": "scientific Python / peer review",
+            "policy_date": "",
+            "policy_location": "standalone-file",
+            "notes": "Foundation-adjacent community; policy co-developed with community input.",
+        },
+        "implicit": {
+            "contributors": "",
+            "who_decides": "",
+            "outside_activity": "",
+            "when_ai_began": "",
+            "ai_file_locations": "",
+            "notes": "",
+        },
     },
 }
 
@@ -56,9 +102,8 @@ def test_emit_coding_block_starts_with_coding_key():
     assert "provenance:" not in text
     assert "files:" not in text
     parsed = yaml.safe_load(text)
-    assert parsed["coding"]["stance"] == "permissive-with-conditions"
-    # Quoted yes stays a string (or bool — coerce handles either)
-    hr = parsed["coding"]["accountability"]["human_responsibility"]
+    assert parsed["coding"]["stance"]["explicit"] == "permissive-with-conditions"
+    hr = parsed["coding"]["accountability"]["explicit"]["human_responsibility"]
     assert hr in ("yes", True)
 
 
@@ -66,31 +111,52 @@ def test_emit_coding_block_empty_and_none():
     text = emit_coding_block(None)
     assert text.startswith("coding:\n")
     parsed = yaml.safe_load(text)
-    assert parsed["coding"]["stance"] is None
-    assert parsed["coding"]["stated_rationale"] == []
+    assert parsed["coding"]["stance"]["explicit"] is None
+    assert parsed["coding"]["stated_rationale"]["explicit"] == []
     assert emit_coding_block({}) == text
 
 
 def test_emit_round_trips_yaml_shape():
     text = emit_coding_block(SAMPLE)
     coding = yaml.safe_load(text)["coding"]
-    assert coding["scope"]["code"] == "restricted"
-    assert coding["guidance_on_use"]["types"] == [
+    assert coding["scope"]["explicit"]["code"] == "restricted"
+    assert coding["scope"]["implicit"]["code"] == "seen"
+    assert coding["guidance_on_use"]["explicit"]["types"] == [
         "scoping",
         "design",
         "evaluation",
         "iteration",
     ]
-    assert coding["context"]["governance"] == "community"
-    # Empty list still present for paste into template-shaped files
+    assert coding["context"]["explicit"]["governance"] == "community"
     empty = yaml.safe_load(emit_coding_block({}))["coding"]
-    assert empty["stated_rationale"] == []
-    assert empty["accountability"]["disclosure"] == "none"
+    assert empty["stated_rationale"]["explicit"] == []
+    assert empty["accountability"]["explicit"]["disclosure"] == "none"
+
+
+def test_lift_flat_draft_01_coding():
+    """Older flat coding still emits under explicit."""
+    flat = {
+        "stance": "permissive",
+        "stated_rationale": ["security"],
+        "scope": {"code": "allowed"},
+        "guidance_on_use": {"level": "some-guidance", "types": ["design"]},
+        "accountability": {
+            "human_responsibility": "yes",
+            "disclosure": "required",
+        },
+        "context": {"governance": "solo", "domain": "x"},
+    }
+    coding = yaml.safe_load(emit_coding_block(flat))["coding"]
+    assert coding["stance"]["explicit"] == "permissive"
+    assert coding["stated_rationale"]["explicit"] == ["security"]
+    assert coding["scope"]["explicit"]["code"] == "allowed"
+    assert coding["guidance_on_use"]["explicit"]["level"] == "some-guidance"
 
 
 def test_coding_page_wires_copy_yaml():
     html = CODING_HTML.read_text(encoding="utf-8")
     assert "copy-yaml" in html or "copyYaml" in html or "Copy YAML" in html
+    assert "Explicit" in html and "Implicit" in html
     src = FORM_JS.read_text(encoding="utf-8")
     assert "emitCodingYaml" in src
 

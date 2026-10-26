@@ -1,14 +1,24 @@
 {
-  "version": "draft-0.1",
+  "version": "draft-0.2",
   "namespaces": {
     "stance": {
       "dimension": "stance",
       "label": "Stance",
       "kind": "value"
     },
+    "stance-implicit": {
+      "dimension": "stance_implicit",
+      "label": "Stance (implicit)",
+      "kind": "value"
+    },
     "rationale": {
       "dimension": "stated_rationale",
       "label": "Stated rationale",
+      "kind": "value"
+    },
+    "rationale-implicit": {
+      "dimension": "rationale_implicit",
+      "label": "Stated rationale (implicit)",
       "kind": "value"
     },
     "guidance-level": {
@@ -19,6 +29,16 @@
     "guidance": {
       "dimension": "guidance_type",
       "label": "Guidance type",
+      "kind": "value"
+    },
+    "guidance-level-implicit": {
+      "dimension": "guidance_level_implicit",
+      "label": "Guidance level (implicit)",
+      "kind": "value"
+    },
+    "guidance-implicit": {
+      "dimension": "guidance_type_implicit",
+      "label": "Guidance type (implicit)",
       "kind": "value"
     },
     "disclosure": {
@@ -36,6 +56,16 @@
       "label": "Enforcement",
       "kind": "value"
     },
+    "new-contributors": {
+      "dimension": "new_contributors",
+      "label": "New contributors",
+      "kind": "value"
+    },
+    "disclosure-in-practice": {
+      "dimension": "disclosure_in_practice",
+      "label": "Disclosure in practice",
+      "kind": "value"
+    },
     "scope": {
       "dimension": "scope",
       "label": "Scope",
@@ -51,7 +81,24 @@
       "permissive": "Permissive",
       "no-policy": "No policy"
     },
+    "stance_implicit": {
+      "maintainers-use-ai-tools": "Maintainers use of AI tools",
+      "outside-ai-assisted-accepted": "External/outside AI-assisted work is accepted",
+      "outside-ai-assisted-turned-away": "Outside AI-assisted work is turned away",
+      "defensive-instructions": "Defensive instructions",
+      "no-signals": "No signals"
+    },
     "stated_rationale": {
+      "code-quality": "Code quality",
+      "maintainer-and-reviewer-burden": "Maintainer and reviewer burden",
+      "security": "Security",
+      "licensing-and-copyright": "Licensing and copyright",
+      "environmental": "Environmental",
+      "social-and-ethical": "Social and ethical (trust, transparency, community norms)",
+      "contributor-learning-and-skill-development": "Contributor learning and skill development",
+      "other": "Other (specify in free text)"
+    },
+    "rationale_implicit": {
       "code-quality": "Code quality",
       "maintainer-and-reviewer-burden": "Maintainer and reviewer burden",
       "security": "Security",
@@ -73,6 +120,18 @@
       "iteration": "Iteration (human-AI cycles rather than one-shot)",
       "learning": "Learning (supports building skills or understanding)"
     },
+    "guidance_level_implicit": {
+      "restricts-only": "Restricts only",
+      "some-guidance": "Some guidance",
+      "substantive-guidance": "Substantive guidance"
+    },
+    "guidance_type_implicit": {
+      "scoping": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "design": "Design (modularity, existing patterns, technical debt)",
+      "evaluation": "Evaluation (understand, test, and explain output)",
+      "iteration": "Iteration (human-AI cycles rather than one-shot)",
+      "learning": "Learning (supports building skills or understanding)"
+    },
     "disclosure": {
       "none": "None",
       "recommended": "Recommended",
@@ -80,7 +139,7 @@
     },
     "human_responsibility": {
       "yes": "Yes \u2014 contributor is responsible for submitted work",
-      "no": "no",
+      "no": "No",
       "not_stated": "Not stated"
     },
     "enforcement": {
@@ -88,6 +147,16 @@
       "pr-closed": "PR closed",
       "contributor-blocked": "Contributor blocked",
       "other": "Other"
+    },
+    "new_contributors": {
+      "yes": "Yes",
+      "no": "No",
+      "not_stated": "Not stated"
+    },
+    "disclosure_in_practice": {
+      "none-seen": "None seen",
+      "tool-defaults-only": "Tool defaults only",
+      "deliberate": "Deliberate"
     }
   },
   "scope": {
@@ -140,6 +209,30 @@
       "dimension": "disclosure",
       "dimension_label": "Disclosure",
       "namespace": "disclosure",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#disclosure-in-practice/deliberate",
+      "label": "Deliberate",
+      "dimension": "disclosure_in_practice",
+      "dimension_label": "Disclosure in practice",
+      "namespace": "disclosure-in-practice",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#disclosure-in-practice/none-seen",
+      "label": "None seen",
+      "dimension": "disclosure_in_practice",
+      "dimension_label": "Disclosure in practice",
+      "namespace": "disclosure-in-practice",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#disclosure-in-practice/tool-defaults-only",
+      "label": "Tool defaults only",
+      "dimension": "disclosure_in_practice",
+      "dimension_label": "Disclosure in practice",
+      "namespace": "disclosure-in-practice",
       "kind": "value"
     },
     {
@@ -215,6 +308,46 @@
       "kind": "value"
     },
     {
+      "hashtag": "#guidance-implicit/design",
+      "label": "Design (modularity, existing patterns, technical debt)",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/evaluation",
+      "label": "Evaluation (understand, test, and explain output)",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/iteration",
+      "label": "Iteration (human-AI cycles rather than one-shot)",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/learning",
+      "label": "Learning (supports building skills or understanding)",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/scoping",
+      "label": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
       "hashtag": "#guidance-level/restricts-only",
       "label": "Restricts only",
       "dimension": "guidance_level",
@@ -239,8 +372,32 @@
       "kind": "value"
     },
     {
+      "hashtag": "#guidance-level-implicit/restricts-only",
+      "label": "Restricts only",
+      "dimension": "guidance_level_implicit",
+      "dimension_label": "Guidance level (implicit)",
+      "namespace": "guidance-level-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-level-implicit/some-guidance",
+      "label": "Some guidance",
+      "dimension": "guidance_level_implicit",
+      "dimension_label": "Guidance level (implicit)",
+      "namespace": "guidance-level-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-level-implicit/substantive-guidance",
+      "label": "Substantive guidance",
+      "dimension": "guidance_level_implicit",
+      "dimension_label": "Guidance level (implicit)",
+      "namespace": "guidance-level-implicit",
+      "kind": "value"
+    },
+    {
       "hashtag": "#human-responsibility/no",
-      "label": "no",
+      "label": "No",
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
@@ -260,6 +417,30 @@
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#new-contributors/no",
+      "label": "No",
+      "dimension": "new_contributors",
+      "dimension_label": "New contributors",
+      "namespace": "new-contributors",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#new-contributors/not_stated",
+      "label": "Not stated",
+      "dimension": "new_contributors",
+      "dimension_label": "New contributors",
+      "namespace": "new-contributors",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#new-contributors/yes",
+      "label": "Yes",
+      "dimension": "new_contributors",
+      "dimension_label": "New contributors",
+      "namespace": "new-contributors",
       "kind": "value"
     },
     {
@@ -327,6 +508,70 @@
       "kind": "value"
     },
     {
+      "hashtag": "#rationale-implicit/code-quality",
+      "label": "Code quality",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/contributor-learning-and-skill-development",
+      "label": "Contributor learning and skill development",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/environmental",
+      "label": "Environmental",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/licensing-and-copyright",
+      "label": "Licensing and copyright",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/maintainer-and-reviewer-burden",
+      "label": "Maintainer and reviewer burden",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/other",
+      "label": "Other (specify in free text)",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/security",
+      "label": "Security",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/social-and-ethical",
+      "label": "Social and ethical (trust, transparency, community norms)",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
       "hashtag": "#stance/ban",
       "label": "Ban",
       "dimension": "stance",
@@ -372,6 +617,46 @@
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/defensive-instructions",
+      "label": "Defensive instructions",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/maintainers-use-ai-tools",
+      "label": "Maintainers use of AI tools",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/no-signals",
+      "label": "No signals",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/outside-ai-assisted-accepted",
+      "label": "External/outside AI-assisted work is accepted",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/outside-ai-assisted-turned-away",
+      "label": "Outside AI-assisted work is turned away",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
       "kind": "value"
     },
     {
@@ -598,5 +883,20 @@
       "namespace": "scope",
       "kind": "scope"
     }
-  ]
+  ],
+  "scope_implicit": {
+    "contribution_types": {
+      "code": "Code",
+      "comments": "Comments",
+      "tests": "Tests",
+      "docs-and-text": "Docs and text",
+      "issues-and-pr-descriptions": "Issues and PR descriptions",
+      "review": "Review",
+      "autonomous-agents": "Autonomous agents"
+    },
+    "positions": {
+      "seen": "Seen",
+      "not_seen": "Not Seen"
+    }
+  }
 }
