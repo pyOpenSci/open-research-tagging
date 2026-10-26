@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes the pipeline, browse site, tag picker, and coding view (through plan **10f**). CI starts with `.github/workflows/test.yml` (pytest + Playwright on push/PR); remaining Actions are Phase **11b–11f**.
+**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11b** (`test.yml` + `check-comment-tags.yml`). Remaining Actions are Phase **11c–11f**.
 
 ## What this system is
 
@@ -139,6 +139,8 @@ python -m open_research_tagging.check_tags --body '#Design'      # debug only
 
 **Draft-codebook CI policy:** the Actions status check **fails only on malformed tags** (bare `#Word`, or `#…` that does not parse as `#namespace/value`). Well-formed tags with unknown namespace/value/scope ids are still printed (and may get a reply). They keep `needs_tag_review` on the site after refresh, but they do **not** fail the PR check until we tighten the policy later.
 
+**Workflow:** `.github/workflows/check-comment-tags.yml` — on Files-tab review comment create/edit, run `--from-event --reply --soft`; on PR open/sync, run `--pr N` (hard-fail malformed only). No `paths:` filter yet; revisit if code PRs get noisy replies.
+
 ### Static site (shared assets + comment browser)
 
 - `site/css/site.css` — shared chrome (nav, sidebar, chips, tables, quote UI)
@@ -187,5 +189,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Tag-check / update-comments / deploy-pages workflows; personal Pages go-live (Phase **11b–11f**)
+- update-comments / deploy-pages workflows; personal Pages go-live (Phase **11c–11f**)
 - Seed/parity sign-off, codebook swap, org cutover (Phase 12)

@@ -18,6 +18,8 @@ pytest
 
 On push to `main` and on pull requests, GitHub Actions runs `pytest` (including Playwright site tests). Locally: `pip install -e ".[dev]"`, `playwright install chromium`, then `pytest`.
 
+**Check comment tags** (`.github/workflows/check-comment-tags.yml`): replies on Files-tab review comments with tag issues; PR status check scans all review comments. See draft policy below.
+
 ## Draft-codebook tag-check policy
 
 While the codebook is still changing, `python -m open_research_tagging.check_tags` **hard-fails the PR check only on malformed tags** (e.g. bare `#Design`, unparseable `#…`). Well-formed but unknown ids (e.g. `#stance/not-in-codebook-yet`) are still reported (and can get a reply / `needs_tag_review` on the site) but do **not** fail the status check. Use `--soft` to always exit 0.

@@ -1,0 +1,61 @@
+# Flag malformed codebook hashtags on PR review comments.
+# - Replies when a bad tag is posted/edited on the Files tab (--soft: never fail the reply job)
+# - PR status check fails only on malformed tags (draft codebook policy from 7c);
+#   unknown-but-well-formed ids are reported but do not fail the check
+# Content vs code PR noise: no paths: filter yet — revisit if code PRs get noisy replies
+
+name: Check comment tags
+
+on:
+  pull_request_review_comment:
+    types: [created, edited]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  reply-on-comment:
+    if: github.event_name == 'pull_request_review_comment'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Validate this review comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+        run: >
+          python -m open_research_tagging.check_tags
+          --from-event --reply --soft
+
+  scan-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Scan all review comments on this PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: >
+          python -m open_research_tagging.check_tags
+          --pr "${{ github.event.pull_request.number }}"
