@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11b** (`test.yml` + `check-comment-tags.yml`). Remaining Actions are Phase **11c–11f**.
+**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11c** (`test.yml`, `check-comment-tags.yml`, `update-comments.yml`). Remaining: deploy-pages-only workflow, PR template, personal Pages go-live (**11d–11f**).
 
 ## What this system is
 
@@ -97,6 +97,7 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 |--------|------|
 | `codebook.py` | Validate, load, index codebook YAML |
 | `codebook_emit.py` | Write `site/data/codebook.json` (includes `tag_catalog`) |
+| `emit_codebook.py` | Maintainer/Actions CLI → `codebook.json` |
 | `tag_catalog.py` | Canonical hashtag list for the tag picker |
 | `coding_yaml.py` | Emit paste-ready `coding:` YAML (coding-view Copy) |
 
@@ -124,6 +125,8 @@ python -m open_research_tagging.fetch_comments --owner ORG --repo NAME
 ```
 
 Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, comments }`). Offline work keeps using `raw_comments.fixture.json` instead.
+
+**Refresh + Pages:** `.github/workflows/update-comments.yml` (cron + manual) runs fetch → process_comments → emit_codebook → process_projects, commits `comments.json` / `projects.json` / `codebook.json` if changed, then deploys `site/` to Pages in the same job (token pushes do not chain other workflows).
 
 ### Tag-check (Actions)
 
@@ -189,5 +192,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- update-comments / deploy-pages workflows; personal Pages go-live (Phase **11c–11f**)
+- Standalone deploy-pages on `site/**` push; PR template; personal Pages go-live (Phase **11d–11f**)
 - Seed/parity sign-off, codebook swap, org cutover (Phase 12)

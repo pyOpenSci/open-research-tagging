@@ -1,0 +1,74 @@
+# Fetch PR review comments, refresh site/data JSON, commit, and deploy Pages.
+# Runs daily and on manual dispatch.
+#
+# Note: pushes made with GITHUB_TOKEN do not trigger other workflows, so this
+# workflow deploys Pages itself after refreshing data.
+
+name: Update comment data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 14:00 UTC daily (~10:00 America/New_York)
+    - cron: "0 14 * * *"
+
+concurrency:
+  group: update-comment-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  refresh-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Fetch PR review comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python -m open_research_tagging.fetch_comments
+
+      - name: Process comments
+        run: python -m open_research_tagging.process_comments
+
+      - name: Emit codebook.json
+        run: python -m open_research_tagging.emit_codebook
+
+      - name: Process projects
+        run: python -m open_research_tagging.process_projects
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data/comments.json site/data/projects.json site/data/codebook.json
+          git diff --staged --quiet || git commit -m "chore: refresh PR review comment data"
+          git push
+
+      # Deploy from this job (GITHUB_TOKEN pushes do not start deploy-pages.yml)
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site/ artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
