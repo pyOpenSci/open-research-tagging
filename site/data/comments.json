@@ -1,131 +1,17 @@
 {
   "meta": {
-    "source_file": "site/data/raw_comments.fixture.json",
+    "source_file": "site/data/raw_comments.json",
     "count": 7,
-    "is_fixture": true,
+    "is_fixture": false,
     "codebook_version": "draft-0.1"
   },
   "data": [
     {
-      "id": 1001,
-      "body": "#stance/permissive-with-conditions\n#disclosure/required\n#human-responsibility/yes\n#guidance/evaluation\n\nDisclosure required; meaningful human review expected before submission.",
-      "quote": "We expect that all code and documentation submitted to our peer review process should have meaningful human review, intervention, judgment, and context. We understand that the use of current Generative AI tools is often tightly woven into development workflows, making disclosure challenging. But **we still require disclosure** to support both transparency and to allow reviewers and editors to understand what they are reviewing.",
+      "id": 4378693606,
+      "body": "#rationale/maintainer-and-reviewer-burden\n#rationale/social-and-ethical",
+      "quote": "* **Acknowledge the widespread use of Generative AI tools** (LLMs) and promote transparency and responsible use that ensures better software outputs that support sound open source development practices.\n* **Ensure equitable balance of effort in peer review** \u2014 authors are responsible for human review of AI-generated content before submission; our volunteer reviewers are not responsible for identifying and/or correcting machine-generated errors or issues.\n* **Protect volunteer reviewers** from being the first line of review for generated code.\n* Give reviewers and editors the information they need to make informed decisions about what they choose to review.\n* **Support and promote packages that follow sustainable software practices** that enable future discovery and uphold the foundational principles of scientific open source.\n* Raise awareness of the broader challenges Generative AI presents to the scientific open source community.\n* Promote transparency and privacy in user data",
       "quote_source": "paragraph",
-      "diff_hunk": "@@ -28,6 +28,6 @@\n ## Generative AI and open source development\n \n We understand and support your use of Generative AI tools to improve software development workflows and to make your developer workflows more efficient. We want you to use them thoughtfully and effectively, and in ways that improve both the open source ecosystem and your development trajectory.\n \n+We expect that all code and documentation submitted to our peer review process should have meaningful human review, intervention, judgment, and context. We understand that the use of current Generative AI tools is often tightly woven into development workflows, making disclosure challenging. But **we still require disclosure** to support both transparency and to allow reviewers and editors to understand what they are reviewing.\n",
-      "tags": [
-        {
-          "raw": "#stance/permissive-with-conditions",
-          "namespace": "stance",
-          "value": "permissive-with-conditions",
-          "dimension": "stance",
-          "dimension_label": "Stance",
-          "kind": "value",
-          "value_label": "Permissive with conditions",
-          "display": "Stance: Permissive with conditions",
-          "filter_key": "stance:permissive-with-conditions"
-        },
-        {
-          "raw": "#disclosure/required",
-          "namespace": "disclosure",
-          "value": "required",
-          "dimension": "disclosure",
-          "dimension_label": "Disclosure",
-          "kind": "value",
-          "value_label": "Required",
-          "display": "Disclosure: Required",
-          "filter_key": "disclosure:required"
-        },
-        {
-          "raw": "#human-responsibility/yes",
-          "namespace": "human-responsibility",
-          "value": "yes",
-          "dimension": "human_responsibility",
-          "dimension_label": "Human responsibility",
-          "kind": "value",
-          "value_label": "Yes \u2014 contributor is responsible for submitted work",
-          "display": "Human responsibility: Yes \u2014 contributor is responsible for submitted work",
-          "filter_key": "human_responsibility:yes"
-        },
-        {
-          "raw": "#guidance/evaluation",
-          "namespace": "guidance",
-          "value": "evaluation",
-          "dimension": "guidance_type",
-          "dimension_label": "Guidance type",
-          "kind": "value",
-          "value_label": "Evaluation (understand, test, and explain output)",
-          "display": "Guidance type: Evaluation (understand, test, and explain output)",
-          "filter_key": "guidance_type:evaluation"
-        }
-      ],
-      "tag_strings": [
-        "#stance/permissive-with-conditions",
-        "#disclosure/required",
-        "#human-responsibility/yes",
-        "#guidance/evaluation"
-      ],
-      "displays": [
-        "Stance: Permissive with conditions",
-        "Disclosure: Required",
-        "Human responsibility: Yes \u2014 contributor is responsible for submitted work",
-        "Guidance type: Evaluation (understand, test, and explain output)"
-      ],
-      "filter_keys": [
-        "stance:permissive-with-conditions",
-        "disclosure:required",
-        "human_responsibility:yes",
-        "guidance_type:evaluation"
-      ],
-      "parse_warnings": [],
-      "needs_tag_review": false,
-      "codes": {
-        "stance": [
-          {
-            "value": "permissive-with-conditions",
-            "filter_key": "stance:permissive-with-conditions",
-            "display": "Stance: Permissive with conditions"
-          }
-        ],
-        "disclosure": [
-          {
-            "value": "required",
-            "filter_key": "disclosure:required",
-            "display": "Disclosure: Required"
-          }
-        ],
-        "human_responsibility": [
-          {
-            "value": "yes",
-            "filter_key": "human_responsibility:yes",
-            "display": "Human responsibility: Yes \u2014 contributor is responsible for submitted work"
-          }
-        ],
-        "guidance_type": [
-          {
-            "value": "evaluation",
-            "filter_key": "guidance_type:evaluation",
-            "display": "Guidance type: Evaluation (understand, test, and explain output)"
-          }
-        ]
-      },
-      "path": "projects/pyopensci/generative-ai-policy.md",
-      "project": "pyopensci",
-      "start_line": 31,
-      "line": 31,
-      "side": "RIGHT",
-      "user": "demo-coder",
-      "pr_number": 1,
-      "html_url": "https://github.com/example/open-research-tagging-demo/pull/1#discussion_r1001",
-      "commit_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "created_at": "2026-10-13T16:00:00Z",
-      "updated_at": "2026-10-13T16:00:00Z"
-    },
-    {
-      "id": 1002,
-      "body": "#rationale/maintainer-and-reviewer-burden\n#guidance-level/substantive-guidance\n\nExplicit goal: reviewers are not first-line QA for generated code.",
-      "quote": "* **Ensure equitable balance of effort in peer review** \u2014 authors are responsible for human review of AI-generated content before submission; our volunteer reviewers are not responsible for identifying and/or correcting machine-generated errors or issues.\n* **Protect volunteer reviewers** from being the first line of review for generated code.",
-      "quote_source": "selection",
-      "diff_hunk": "@@ -6,6 +6,6 @@\n The Generative AI policy below was co-developed by the pyOpenSci community. Its goals are:\n \n * **Acknowledge the widespread use of Generative AI tools** (LLMs) and promote transparency and responsible use that ensures better software outputs that support sound open source development practices.\n+* **Ensure equitable balance of effort in peer review** \u2014 authors are responsible for human review of AI-generated content before submission; our volunteer reviewers are not responsible for identifying and/or correcting machine-generated errors or issues.\n+* **Protect volunteer reviewers** from being the first line of review for generated code.\n",
+      "diff_hunk": "",
       "tags": [
         {
           "raw": "#rationale/maintainer-and-reviewer-burden",
@@ -137,362 +23,6 @@
           "value_label": "Maintainer and reviewer burden",
           "display": "Stated rationale: Maintainer and reviewer burden",
           "filter_key": "stated_rationale:maintainer-and-reviewer-burden"
-        },
-        {
-          "raw": "#guidance-level/substantive-guidance",
-          "namespace": "guidance-level",
-          "value": "substantive-guidance",
-          "dimension": "guidance_level",
-          "dimension_label": "Guidance level",
-          "kind": "value",
-          "value_label": "Substantive guidance",
-          "display": "Guidance level: Substantive guidance",
-          "filter_key": "guidance_level:substantive-guidance"
-        }
-      ],
-      "tag_strings": [
-        "#rationale/maintainer-and-reviewer-burden",
-        "#guidance-level/substantive-guidance"
-      ],
-      "displays": [
-        "Stated rationale: Maintainer and reviewer burden",
-        "Guidance level: Substantive guidance"
-      ],
-      "filter_keys": [
-        "stated_rationale:maintainer-and-reviewer-burden",
-        "guidance_level:substantive-guidance"
-      ],
-      "parse_warnings": [],
-      "needs_tag_review": false,
-      "codes": {
-        "stated_rationale": [
-          {
-            "value": "maintainer-and-reviewer-burden",
-            "filter_key": "stated_rationale:maintainer-and-reviewer-burden",
-            "display": "Stated rationale: Maintainer and reviewer burden"
-          }
-        ],
-        "guidance_level": [
-          {
-            "value": "substantive-guidance",
-            "filter_key": "guidance_level:substantive-guidance",
-            "display": "Guidance level: Substantive guidance"
-          }
-        ]
-      },
-      "path": "projects/pyopensci/generative-ai-policy.md",
-      "project": "pyopensci",
-      "start_line": 9,
-      "line": 10,
-      "side": "RIGHT",
-      "user": "demo-coder",
-      "pr_number": 1,
-      "html_url": "https://github.com/example/open-research-tagging-demo/pull/1#discussion_r1002",
-      "commit_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "created_at": "2026-10-13T16:01:00Z",
-      "updated_at": "2026-10-13T16:01:00Z"
-    },
-    {
-      "id": 1003,
-      "body": "#scope/issues-and-pr-descriptions:restricted\n#enforcement/contributor-blocked\n\nReview communication should be human-written; spam/automated burden can lead to blocks.",
-      "quote": "* We prefer that all communication in our software review issues are written by a human. We embrace the use of LLMs for translation and grammar correction. We prefer honest interactions over ones that prioritize perfect language and grammar. Use as little aid from an LLM as possible.\n* We will block accounts that spam our repositories or burden our volunteers with repeated, automated comments that aren't directly related to and in support of productive conversations in a review.",
-      "quote_source": "selection",
-      "diff_hunk": "@@ -35,6 +35,6 @@\n ## Communication in review issues\n \n+* We prefer that all communication in our software review issues are written by a human. We embrace the use of LLMs for translation and grammar correction. We prefer honest interactions over ones that prioritize perfect language and grammar. Use as little aid from an LLM as possible.\n+* We will block accounts that spam our repositories or burden our volunteers with repeated, automated comments that aren't directly related to and in support of productive conversations in a review.\n",
-      "tags": [
-        {
-          "raw": "#scope/issues-and-pr-descriptions:restricted",
-          "namespace": "scope",
-          "value": "issues-and-pr-descriptions",
-          "qualifier": "restricted",
-          "dimension": "scope",
-          "dimension_label": "Scope",
-          "kind": "scope",
-          "contribution_type": "issues-and-pr-descriptions",
-          "contribution_type_label": "Issues and PR descriptions",
-          "position": "restricted",
-          "position_label": "Restricted",
-          "value_label": "Issues and PR descriptions: Restricted",
-          "display": "Scope: Issues and PR descriptions \u2192 Restricted",
-          "filter_key": "scope:issues-and-pr-descriptions:restricted"
-        },
-        {
-          "raw": "#enforcement/contributor-blocked",
-          "namespace": "enforcement",
-          "value": "contributor-blocked",
-          "dimension": "enforcement",
-          "dimension_label": "Enforcement",
-          "kind": "value",
-          "value_label": "Contributor blocked",
-          "display": "Enforcement: Contributor blocked",
-          "filter_key": "enforcement:contributor-blocked"
-        }
-      ],
-      "tag_strings": [
-        "#scope/issues-and-pr-descriptions:restricted",
-        "#enforcement/contributor-blocked"
-      ],
-      "displays": [
-        "Scope: Issues and PR descriptions \u2192 Restricted",
-        "Enforcement: Contributor blocked"
-      ],
-      "filter_keys": [
-        "scope:issues-and-pr-descriptions:restricted",
-        "enforcement:contributor-blocked"
-      ],
-      "parse_warnings": [],
-      "needs_tag_review": false,
-      "codes": {
-        "scope": [
-          {
-            "contribution_type": "issues-and-pr-descriptions",
-            "position": "restricted",
-            "filter_key": "scope:issues-and-pr-descriptions:restricted",
-            "display": "Scope: Issues and PR descriptions \u2192 Restricted"
-          }
-        ],
-        "enforcement": [
-          {
-            "value": "contributor-blocked",
-            "filter_key": "enforcement:contributor-blocked",
-            "display": "Enforcement: Contributor blocked"
-          }
-        ]
-      },
-      "path": "projects/pyopensci/generative-ai-policy.md",
-      "project": "pyopensci",
-      "start_line": 37,
-      "line": 38,
-      "side": "RIGHT",
-      "user": "demo-coder",
-      "pr_number": 1,
-      "html_url": "https://github.com/example/open-research-tagging-demo/pull/1#discussion_r1003",
-      "commit_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "created_at": "2026-10-13T16:02:00Z",
-      "updated_at": "2026-10-13T16:02:00Z"
-    },
-    {
-      "id": 1004,
-      "body": "#scope/code:restricted\n#guidance/scoping\n#guidance/iteration\n#rationale/code-quality\n\nShort-lived / rapid generation timelines face higher scrutiny; iterative public history required.",
-      "quote": "* **Development History Timeline:** Projects should have at least **3-6 months of public development history**, with evidence of releases, public issues, and pull requests that reflect **iterative, thoughtful development** rather than rapid and recent code generation.\n* If the human effort put into the package is less than the effort required to review it, please don't submit the package.\n* Software should be developed openly, rather than developed in private and then moved to a public repository with an OSI-approved license to meet minimal open source requirements.\n* **Development History Approach:** We encourage thoughtful development history and patterns, including tightly scoped commits with clear commit messages that follow iterative development best practices, rather than large commits that address multiple issues in a package and affect large volumes of files throughout the package. These workflows signal careful design and development, and changes to a codebase that could be reviewed by a human.\n* Projects with very short, rapid development timelines (weeks to a few months) will face higher scrutiny by our review teams than those that have a significant development history (more than 6 months)\n* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.\n* We particularly value **work that builds upon or extends existing tools rather than reinventing solutions** where quality alternatives already exist.",
-      "quote_source": "paragraph",
-      "diff_hunk": "@@ -40,4 +40,4 @@\n ## Package development and design approach\n \n+* **Development History Timeline:** Projects should have at least **3-6 months of public development history**, with evidence of releases, public issues, and pull requests that reflect **iterative, thoughtful development** rather than rapid and recent code generation.\n",
-      "tags": [
-        {
-          "raw": "#scope/code:restricted",
-          "namespace": "scope",
-          "value": "code",
-          "qualifier": "restricted",
-          "dimension": "scope",
-          "dimension_label": "Scope",
-          "kind": "scope",
-          "contribution_type": "code",
-          "contribution_type_label": "Code",
-          "position": "restricted",
-          "position_label": "Restricted",
-          "value_label": "Code: Restricted",
-          "display": "Scope: Code \u2192 Restricted",
-          "filter_key": "scope:code:restricted"
-        },
-        {
-          "raw": "#guidance/scoping",
-          "namespace": "guidance",
-          "value": "scoping",
-          "dimension": "guidance_type",
-          "dimension_label": "Guidance type",
-          "kind": "value",
-          "value_label": "Scoping (PR size limits, scoped tasks, issue-first)",
-          "display": "Guidance type: Scoping (PR size limits, scoped tasks, issue-first)",
-          "filter_key": "guidance_type:scoping"
-        },
-        {
-          "raw": "#guidance/iteration",
-          "namespace": "guidance",
-          "value": "iteration",
-          "dimension": "guidance_type",
-          "dimension_label": "Guidance type",
-          "kind": "value",
-          "value_label": "Iteration (human-AI cycles rather than one-shot)",
-          "display": "Guidance type: Iteration (human-AI cycles rather than one-shot)",
-          "filter_key": "guidance_type:iteration"
-        },
-        {
-          "raw": "#rationale/code-quality",
-          "namespace": "rationale",
-          "value": "code-quality",
-          "dimension": "stated_rationale",
-          "dimension_label": "Stated rationale",
-          "kind": "value",
-          "value_label": "Code quality",
-          "display": "Stated rationale: Code quality",
-          "filter_key": "stated_rationale:code-quality"
-        }
-      ],
-      "tag_strings": [
-        "#scope/code:restricted",
-        "#guidance/scoping",
-        "#guidance/iteration",
-        "#rationale/code-quality"
-      ],
-      "displays": [
-        "Scope: Code \u2192 Restricted",
-        "Guidance type: Scoping (PR size limits, scoped tasks, issue-first)",
-        "Guidance type: Iteration (human-AI cycles rather than one-shot)",
-        "Stated rationale: Code quality"
-      ],
-      "filter_keys": [
-        "scope:code:restricted",
-        "guidance_type:scoping",
-        "guidance_type:iteration",
-        "stated_rationale:code-quality"
-      ],
-      "parse_warnings": [],
-      "needs_tag_review": false,
-      "codes": {
-        "scope": [
-          {
-            "contribution_type": "code",
-            "position": "restricted",
-            "filter_key": "scope:code:restricted",
-            "display": "Scope: Code \u2192 Restricted"
-          }
-        ],
-        "guidance_type": [
-          {
-            "value": "scoping",
-            "filter_key": "guidance_type:scoping",
-            "display": "Guidance type: Scoping (PR size limits, scoped tasks, issue-first)"
-          },
-          {
-            "value": "iteration",
-            "filter_key": "guidance_type:iteration",
-            "display": "Guidance type: Iteration (human-AI cycles rather than one-shot)"
-          }
-        ],
-        "stated_rationale": [
-          {
-            "value": "code-quality",
-            "filter_key": "stated_rationale:code-quality",
-            "display": "Stated rationale: Code quality"
-          }
-        ]
-      },
-      "path": "projects/pyopensci/generative-ai-policy.md",
-      "project": "pyopensci",
-      "start_line": 42,
-      "line": 42,
-      "side": "RIGHT",
-      "user": "coworker",
-      "pr_number": 1,
-      "html_url": "https://github.com/example/open-research-tagging-demo/pull/1#discussion_r1004",
-      "commit_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "created_at": "2026-10-13T16:03:00Z",
-      "updated_at": "2026-10-13T16:03:00Z"
-    },
-    {
-      "id": 1005,
-      "body": "#guidance/design\n#guidance-level/substantive-guidance\n\nAsks for design tradeoffs and ecosystem situating \u2014 guidance beyond restriction.",
-      "quote": "* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.",
-      "quote_source": "selection",
-      "diff_hunk": "@@ -45,6 +45,6 @@\n * Projects with very short, rapid development timelines (weeks to a few months) will face higher scrutiny by our review teams than those that have a significant development history (more than 6 months)\n+* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n+* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n+* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.\n",
-      "tags": [
-        {
-          "raw": "#guidance/design",
-          "namespace": "guidance",
-          "value": "design",
-          "dimension": "guidance_type",
-          "dimension_label": "Guidance type",
-          "kind": "value",
-          "value_label": "Design (modularity, existing patterns, technical debt)",
-          "display": "Guidance type: Design (modularity, existing patterns, technical debt)",
-          "filter_key": "guidance_type:design"
-        },
-        {
-          "raw": "#guidance-level/substantive-guidance",
-          "namespace": "guidance-level",
-          "value": "substantive-guidance",
-          "dimension": "guidance_level",
-          "dimension_label": "Guidance level",
-          "kind": "value",
-          "value_label": "Substantive guidance",
-          "display": "Guidance level: Substantive guidance",
-          "filter_key": "guidance_level:substantive-guidance"
-        }
-      ],
-      "tag_strings": [
-        "#guidance/design",
-        "#guidance-level/substantive-guidance"
-      ],
-      "displays": [
-        "Guidance type: Design (modularity, existing patterns, technical debt)",
-        "Guidance level: Substantive guidance"
-      ],
-      "filter_keys": [
-        "guidance_type:design",
-        "guidance_level:substantive-guidance"
-      ],
-      "parse_warnings": [],
-      "needs_tag_review": false,
-      "codes": {
-        "guidance_type": [
-          {
-            "value": "design",
-            "filter_key": "guidance_type:design",
-            "display": "Guidance type: Design (modularity, existing patterns, technical debt)"
-          }
-        ],
-        "guidance_level": [
-          {
-            "value": "substantive-guidance",
-            "filter_key": "guidance_level:substantive-guidance",
-            "display": "Guidance level: Substantive guidance"
-          }
-        ]
-      },
-      "path": "projects/pyopensci/generative-ai-policy.md",
-      "project": "pyopensci",
-      "start_line": 47,
-      "line": 49,
-      "side": "RIGHT",
-      "user": "coworker",
-      "pr_number": 1,
-      "html_url": "https://github.com/example/open-research-tagging-demo/pull/1#discussion_r1005",
-      "commit_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "created_at": "2026-10-13T16:04:00Z",
-      "updated_at": "2026-10-13T16:04:00Z"
-    },
-    {
-      "id": 2001,
-      "body": "#scope/docs-and-text:restricted\n#disclosure/required\n#rationale/social-and-ethical\n\nChecklist asks which parts were generated and at what scale \u2014 free-text disclosure.",
-      "quote": "- **Which parts** of the submission were generated (e.g., documentation, tests, code). In addition to a general description, please specifically indicate any substantial portions of code (classes, modules, subpackages) that were wholly or primarily generated by AI.\n\n\n- **The approximate scale** of the generated portions (e.g., \"all of the tests were generated and then checked by a human,\" \"small routines were generated and copied into the code\").\n\n\n- **How the generative AI was used** (e.g., line completion, help with translation, queried separately and integrated, agentic workflow).",
-      "quote_source": "selection",
-      "diff_hunk": "@@ -8,8 +8,8 @@\n If you checked the first box above, please describe the tools and frameworks that you used below including:\n \n+- **Which parts** of the submission were generated (e.g., documentation, tests, code). In addition to a general description, please specifically indicate any substantial portions of code (classes, modules, subpackages) that were wholly or primarily generated by AI.\n+\n+- **The approximate scale** of the generated portions (e.g., \"all of the tests were generated and then checked by a human,\" \"small routines were generated and copied into the code\").\n+\n+- **How the generative AI was used** (e.g., line completion, help with translation, queried separately and integrated, agentic workflow).\n",
-      "tags": [
-        {
-          "raw": "#scope/docs-and-text:restricted",
-          "namespace": "scope",
-          "value": "docs-and-text",
-          "qualifier": "restricted",
-          "dimension": "scope",
-          "dimension_label": "Scope",
-          "kind": "scope",
-          "contribution_type": "docs-and-text",
-          "contribution_type_label": "Docs and text",
-          "position": "restricted",
-          "position_label": "Restricted",
-          "value_label": "Docs and text: Restricted",
-          "display": "Scope: Docs and text \u2192 Restricted",
-          "filter_key": "scope:docs-and-text:restricted"
-        },
-        {
-          "raw": "#disclosure/required",
-          "namespace": "disclosure",
-          "value": "required",
-          "dimension": "disclosure",
-          "dimension_label": "Disclosure",
-          "kind": "value",
-          "value_label": "Required",
-          "display": "Disclosure: Required",
-          "filter_key": "disclosure:required"
         },
         {
           "raw": "#rationale/social-and-ethical",
@@ -507,39 +37,26 @@
         }
       ],
       "tag_strings": [
-        "#scope/docs-and-text:restricted",
-        "#disclosure/required",
+        "#rationale/maintainer-and-reviewer-burden",
         "#rationale/social-and-ethical"
       ],
       "displays": [
-        "Scope: Docs and text \u2192 Restricted",
-        "Disclosure: Required",
+        "Stated rationale: Maintainer and reviewer burden",
         "Stated rationale: Social and ethical (trust, transparency, community norms)"
       ],
       "filter_keys": [
-        "scope:docs-and-text:restricted",
-        "disclosure:required",
+        "stated_rationale:maintainer-and-reviewer-burden",
         "stated_rationale:social-and-ethical"
       ],
       "parse_warnings": [],
       "needs_tag_review": false,
       "codes": {
-        "scope": [
-          {
-            "contribution_type": "docs-and-text",
-            "position": "restricted",
-            "filter_key": "scope:docs-and-text:restricted",
-            "display": "Scope: Docs and text \u2192 Restricted"
-          }
-        ],
-        "disclosure": [
-          {
-            "value": "required",
-            "filter_key": "disclosure:required",
-            "display": "Disclosure: Required"
-          }
-        ],
         "stated_rationale": [
+          {
+            "value": "maintainer-and-reviewer-burden",
+            "filter_key": "stated_rationale:maintainer-and-reviewer-burden",
+            "display": "Stated rationale: Maintainer and reviewer burden"
+          },
           {
             "value": "social-and-ethical",
             "filter_key": "stated_rationale:social-and-ethical",
@@ -547,89 +64,267 @@
           }
         ]
       },
-      "path": "projects/pyopensci/gen-ai-checklist.md",
+      "path": "projects/pyopensci/generative-ai-policy.md",
       "project": "pyopensci",
-      "start_line": 10,
-      "line": 16,
+      "start_line": 9,
+      "line": 9,
       "side": "RIGHT",
-      "user": "demo-coder",
-      "pr_number": 2,
-      "html_url": "https://github.com/example/open-research-tagging-demo/pull/2#discussion_r2001",
-      "commit_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "created_at": "2026-10-13T17:00:00Z",
-      "updated_at": "2026-10-13T17:00:00Z"
+      "user": "shaunagm",
+      "pr_number": 1,
+      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4378693606",
+      "commit_id": "ab1114bd037b866a8df2d33c2c56d9b4c8b41ba1",
+      "created_at": "2026-10-26T14:52:40Z",
+      "updated_at": "2026-10-26T14:52:40Z"
     },
     {
-      "id": 2002,
-      "body": "#guidance/evaluation\n#human-responsibility/yes\n\nAll code carefully reviewed and understood by submitting authors.",
-      "quote": "```markdown\n- [ ] This package has a public development history spanning 3-6 months, with commits distributed over time that reflect **iterative, thoughtful development.**\n- [ ] All code in this package has been **carefully reviewed by a human**. Its implementation is also understood by the authors submitting the package.\n- [ ] All communication on this issue will be written by a human (someone on your maintainer team). We embrace the use of LLMs for translation and grammar correction. We prefer honest interactions over ones that prioritize perfect language and grammar.  Use as little aid from a LLM as possible.\n- [ ] **Generative AI tools were used to develop and maintain this package.**",
+      "id": 4378707992,
+      "body": "#MadeUpTag",
+      "quote": "## Communication in review issues",
       "quote_source": "paragraph",
-      "diff_hunk": "@@ -1,4 +1,4 @@\n ```markdown\n - [ ] This package has a public development history spanning 3-6 months, with commits distributed over time that reflect **iterative, thoughtful development.**\n+- [ ] All code in this package has been **carefully reviewed by a human**. Its implementation is also understood by the authors submitting the package.\n",
+      "diff_hunk": "",
+      "tags": [],
+      "tag_strings": [],
+      "displays": [],
+      "filter_keys": [],
+      "parse_warnings": [
+        "#MadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md"
+      ],
+      "needs_tag_review": true,
+      "codes": {},
+      "path": "projects/pyopensci/generative-ai-policy.md",
+      "project": "pyopensci",
+      "start_line": 35,
+      "line": 35,
+      "side": "RIGHT",
+      "user": "shaunagm",
+      "pr_number": 1,
+      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4378707992",
+      "commit_id": "ab1114bd037b866a8df2d33c2c56d9b4c8b41ba1",
+      "created_at": "2026-10-26T14:53:58Z",
+      "updated_at": "2026-10-26T14:53:58Z"
+    },
+    {
+      "id": 4378846166,
+      "body": "#AnotherMadeUpTag",
+      "quote": "* We prefer that all communication in our software review issues are written by a human. We embrace the use of LLMs for translation and grammar correction. We prefer honest interactions over ones that prioritize perfect language and grammar. Use as little aid from an LLM as possible.\n* We will block accounts that spam our repositories or burden our volunteers with repeated, automated comments that aren't directly related to and in support of productive conversations in a review.\n\n## Package development and design approach",
+      "quote_source": "paragraph",
+      "diff_hunk": "",
+      "tags": [],
+      "tag_strings": [],
+      "displays": [],
+      "filter_keys": [],
+      "parse_warnings": [
+        "#AnotherMadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md"
+      ],
+      "needs_tag_review": true,
+      "codes": {},
+      "path": "projects/pyopensci/generative-ai-policy.md",
+      "project": "pyopensci",
+      "start_line": 39,
+      "line": 39,
+      "side": "RIGHT",
+      "user": "shaunagm",
+      "pr_number": 1,
+      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4378846166",
+      "commit_id": "ab1114bd037b866a8df2d33c2c56d9b4c8b41ba1",
+      "created_at": "2026-10-26T15:06:11Z",
+      "updated_at": "2026-10-26T15:06:11Z"
+    },
+    {
+      "id": 4378893594,
+      "body": "#YetAnotherMadeUpTag",
+      "quote": "* **Development History Timeline:** Projects should have at least **3-6 months of public development history**, with evidence of releases, public issues, and pull requests that reflect **iterative, thoughtful development** rather than rapid and recent code generation.\n* If the human effort put into the package is less than the effort required to review it, please don't submit the package.\n* Software should be developed openly, rather than developed in private and then moved to a public repository with an OSI-approved license to meet minimal open source requirements.\n* **Development History Approach:** We encourage thoughtful development history and patterns, including tightly scoped commits with clear commit messages that follow iterative development best practices, rather than large commits that address multiple issues in a package and affect large volumes of files throughout the package. These workflows signal careful design and development, and changes to a codebase that could be reviewed by a human.\n* Projects with very short, rapid development timelines (weeks to a few months) will face higher scrutiny by our review teams than those that have a significant development history (more than 6 months)\n* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.\n* We particularly value **work that builds upon or extends existing tools rather than reinventing solutions** where quality alternatives already exist.",
+      "quote_source": "paragraph",
+      "diff_hunk": "",
+      "tags": [],
+      "tag_strings": [],
+      "displays": [],
+      "filter_keys": [],
+      "parse_warnings": [
+        "#YetAnotherMadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md"
+      ],
+      "needs_tag_review": true,
+      "codes": {},
+      "path": "projects/pyopensci/generative-ai-policy.md",
+      "project": "pyopensci",
+      "start_line": 47,
+      "line": 47,
+      "side": "RIGHT",
+      "user": "shaunagm",
+      "pr_number": 1,
+      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4378893594",
+      "commit_id": "ab1114bd037b866a8df2d33c2c56d9b4c8b41ba1",
+      "created_at": "2026-10-26T15:10:28Z",
+      "updated_at": "2026-10-26T15:10:28Z"
+    },
+    {
+      "id": 4378923899,
+      "body": "#HowManyMadeUpTagsDoINeed",
+      "quote": "* **Development History Timeline:** Projects should have at least **3-6 months of public development history**, with evidence of releases, public issues, and pull requests that reflect **iterative, thoughtful development** rather than rapid and recent code generation.\n* If the human effort put into the package is less than the effort required to review it, please don't submit the package.\n* Software should be developed openly, rather than developed in private and then moved to a public repository with an OSI-approved license to meet minimal open source requirements.\n* **Development History Approach:** We encourage thoughtful development history and patterns, including tightly scoped commits with clear commit messages that follow iterative development best practices, rather than large commits that address multiple issues in a package and affect large volumes of files throughout the package. These workflows signal careful design and development, and changes to a codebase that could be reviewed by a human.\n* Projects with very short, rapid development timelines (weeks to a few months) will face higher scrutiny by our review teams than those that have a significant development history (more than 6 months)\n* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.\n* We particularly value **work that builds upon or extends existing tools rather than reinventing solutions** where quality alternatives already exist.",
+      "quote_source": "paragraph",
+      "diff_hunk": "",
+      "tags": [],
+      "tag_strings": [],
+      "displays": [],
+      "filter_keys": [],
+      "parse_warnings": [
+        "#HowManyMadeUpTagsDoINeed looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md"
+      ],
+      "needs_tag_review": true,
+      "codes": {},
+      "path": "projects/pyopensci/generative-ai-policy.md",
+      "project": "pyopensci",
+      "start_line": 45,
+      "line": 45,
+      "side": "RIGHT",
+      "user": "shaunagm",
+      "pr_number": 1,
+      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4378923899",
+      "commit_id": "ab1114bd037b866a8df2d33c2c56d9b4c8b41ba1",
+      "created_at": "2026-10-26T15:13:06Z",
+      "updated_at": "2026-10-26T15:13:06Z"
+    },
+    {
+      "id": 4379064088,
+      "body": "#OneMoreMadeUpTag",
+      "quote": "* **Development History Timeline:** Projects should have at least **3-6 months of public development history**, with evidence of releases, public issues, and pull requests that reflect **iterative, thoughtful development** rather than rapid and recent code generation.\n* If the human effort put into the package is less than the effort required to review it, please don't submit the package.\n* Software should be developed openly, rather than developed in private and then moved to a public repository with an OSI-approved license to meet minimal open source requirements.\n* **Development History Approach:** We encourage thoughtful development history and patterns, including tightly scoped commits with clear commit messages that follow iterative development best practices, rather than large commits that address multiple issues in a package and affect large volumes of files throughout the package. These workflows signal careful design and development, and changes to a codebase that could be reviewed by a human.\n* Projects with very short, rapid development timelines (weeks to a few months) will face higher scrutiny by our review teams than those that have a significant development history (more than 6 months)\n* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.\n* We particularly value **work that builds upon or extends existing tools rather than reinventing solutions** where quality alternatives already exist.",
+      "quote_source": "paragraph",
+      "diff_hunk": "",
+      "tags": [],
+      "tag_strings": [],
+      "displays": [],
+      "filter_keys": [],
+      "parse_warnings": [
+        "#OneMoreMadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md"
+      ],
+      "needs_tag_review": true,
+      "codes": {},
+      "path": "projects/pyopensci/generative-ai-policy.md",
+      "project": "pyopensci",
+      "start_line": 49,
+      "line": 49,
+      "side": "RIGHT",
+      "user": "shaunagm",
+      "pr_number": 1,
+      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4379064088",
+      "commit_id": "e5c7cdc9f9a41b4cda5160e6318ed4047a7ac04a",
+      "created_at": "2026-10-26T15:25:09Z",
+      "updated_at": "2026-10-26T15:25:09Z"
+    },
+    {
+      "id": 4379066957,
+      "body": "\u26a0\ufe0f **Tag format check** \u2014 this review comment has hashtags that won't be picked up by the research site.\n\n- #OneMoreMadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md\n\nExpected shape:\n```\n#disclosure/required\n#stance/permissive-with-conditions\n\nOptional free-text note\u2026\n```\n\nGuide: https://github.com/shaunagm/open-research-tagging/blob/main/codebook/COMMENTING.md",
+      "quote": "* **Development History Timeline:** Projects should have at least **3-6 months of public development history**, with evidence of releases, public issues, and pull requests that reflect **iterative, thoughtful development** rather than rapid and recent code generation.\n* If the human effort put into the package is less than the effort required to review it, please don't submit the package.\n* Software should be developed openly, rather than developed in private and then moved to a public repository with an OSI-approved license to meet minimal open source requirements.\n* **Development History Approach:** We encourage thoughtful development history and patterns, including tightly scoped commits with clear commit messages that follow iterative development best practices, rather than large commits that address multiple issues in a package and affect large volumes of files throughout the package. These workflows signal careful design and development, and changes to a codebase that could be reviewed by a human.\n* Projects with very short, rapid development timelines (weeks to a few months) will face higher scrutiny by our review teams than those that have a significant development history (more than 6 months)\n* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.\n* We particularly value **work that builds upon or extends existing tools rather than reinventing solutions** where quality alternatives already exist.",
+      "quote_source": "paragraph",
+      "diff_hunk": "",
       "tags": [
         {
-          "raw": "#guidance/evaluation",
-          "namespace": "guidance",
-          "value": "evaluation",
-          "dimension": "guidance_type",
-          "dimension_label": "Guidance type",
+          "raw": "#namespace/value",
+          "namespace": "namespace",
+          "value": "value",
+          "dimension": "namespace",
+          "dimension_label": "Namespace",
           "kind": "value",
-          "value_label": "Evaluation (understand, test, and explain output)",
-          "display": "Guidance type: Evaluation (understand, test, and explain output)",
-          "filter_key": "guidance_type:evaluation"
+          "value_label": "Value",
+          "display": "Namespace: Value",
+          "filter_key": "namespace:value"
         },
         {
-          "raw": "#human-responsibility/yes",
-          "namespace": "human-responsibility",
-          "value": "yes",
-          "dimension": "human_responsibility",
-          "dimension_label": "Human responsibility",
+          "raw": "#disclosure/required",
+          "namespace": "disclosure",
+          "value": "required",
+          "dimension": "disclosure",
+          "dimension_label": "Disclosure",
           "kind": "value",
-          "value_label": "Yes \u2014 contributor is responsible for submitted work",
-          "display": "Human responsibility: Yes \u2014 contributor is responsible for submitted work",
-          "filter_key": "human_responsibility:yes"
+          "value_label": "Required",
+          "display": "Disclosure: Required",
+          "filter_key": "disclosure:required"
+        },
+        {
+          "raw": "#disclosure/required",
+          "namespace": "disclosure",
+          "value": "required",
+          "dimension": "disclosure",
+          "dimension_label": "Disclosure",
+          "kind": "value",
+          "value_label": "Required",
+          "display": "Disclosure: Required",
+          "filter_key": "disclosure:required"
+        },
+        {
+          "raw": "#stance/permissive-with-conditions",
+          "namespace": "stance",
+          "value": "permissive-with-conditions",
+          "dimension": "stance",
+          "dimension_label": "Stance",
+          "kind": "value",
+          "value_label": "Permissive with conditions",
+          "display": "Stance: Permissive with conditions",
+          "filter_key": "stance:permissive-with-conditions"
         }
       ],
       "tag_strings": [
-        "#guidance/evaluation",
-        "#human-responsibility/yes"
+        "#namespace/value",
+        "#disclosure/required",
+        "#disclosure/required",
+        "#stance/permissive-with-conditions"
       ],
       "displays": [
-        "Guidance type: Evaluation (understand, test, and explain output)",
-        "Human responsibility: Yes \u2014 contributor is responsible for submitted work"
+        "Namespace: Value",
+        "Disclosure: Required",
+        "Disclosure: Required",
+        "Stance: Permissive with conditions"
       ],
       "filter_keys": [
-        "guidance_type:evaluation",
-        "human_responsibility:yes"
+        "namespace:value",
+        "disclosure:required",
+        "disclosure:required",
+        "stance:permissive-with-conditions"
       ],
-      "parse_warnings": [],
-      "needs_tag_review": false,
+      "parse_warnings": [
+        "#OneMoreMadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md",
+        "#namespace/value uses unknown namespace 'namespace'. Known namespaces: disclosure, enforcement, guidance, guidance-level, human-responsibility, rationale, scope, stance"
+      ],
+      "needs_tag_review": true,
       "codes": {
-        "guidance_type": [
+        "namespace": [
           {
-            "value": "evaluation",
-            "filter_key": "guidance_type:evaluation",
-            "display": "Guidance type: Evaluation (understand, test, and explain output)"
+            "value": "value",
+            "filter_key": "namespace:value",
+            "display": "Namespace: Value"
           }
         ],
-        "human_responsibility": [
+        "disclosure": [
           {
-            "value": "yes",
-            "filter_key": "human_responsibility:yes",
-            "display": "Human responsibility: Yes \u2014 contributor is responsible for submitted work"
+            "value": "required",
+            "filter_key": "disclosure:required",
+            "display": "Disclosure: Required"
+          },
+          {
+            "value": "required",
+            "filter_key": "disclosure:required",
+            "display": "Disclosure: Required"
+          }
+        ],
+        "stance": [
+          {
+            "value": "permissive-with-conditions",
+            "filter_key": "stance:permissive-with-conditions",
+            "display": "Stance: Permissive with conditions"
           }
         ]
       },
-      "path": "projects/pyopensci/gen-ai-checklist.md",
+      "path": "projects/pyopensci/generative-ai-policy.md",
       "project": "pyopensci",
-      "start_line": 3,
-      "line": 3,
+      "start_line": 49,
+      "line": 49,
       "side": "RIGHT",
-      "user": "coworker",
-      "pr_number": 2,
-      "html_url": "https://github.com/example/open-research-tagging-demo/pull/2#discussion_r2002",
-      "commit_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-      "created_at": "2026-10-13T17:01:00Z",
-      "updated_at": "2026-10-13T17:01:00Z"
+      "user": "github-actions[bot]",
+      "pr_number": 1,
+      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4379066957",
+      "commit_id": "e5c7cdc9f9a41b4cda5160e6318ed4047a7ac04a",
+      "created_at": "2026-10-26T15:25:26Z",
+      "updated_at": "2026-10-26T15:25:26Z"
     }
   ]
 }

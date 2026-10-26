@@ -76,7 +76,7 @@
                   "label": "All stance comments",
                   "count": 1,
                   "comment_ids": [
-                    1001
+                    4379066957
                   ],
                   "href": "index.html?project=pyopensci&dimension=stance"
                 },
@@ -86,7 +86,7 @@
                   "label": "Permissive with conditions",
                   "count": 1,
                   "comment_ids": [
-                    1001
+                    4379066957
                   ],
                   "href": "index.html?project=pyopensci&filter=stance:permissive-with-conditions"
                 }
@@ -105,11 +105,9 @@
                 "dimension_label": "Stated rationale",
                 "all": {
                   "label": "All stated rationale comments",
-                  "count": 3,
+                  "count": 1,
                   "comment_ids": [
-                    1002,
-                    1004,
-                    2001
+                    4378693606
                   ],
                   "href": "index.html?project=pyopensci&dimension=stated_rationale"
                 },
@@ -117,10 +115,8 @@
                 "value_label": "Code quality",
                 "matching": {
                   "label": "Code quality",
-                  "count": 1,
-                  "comment_ids": [
-                    1004
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=stated_rationale:code-quality"
                 }
               }
@@ -134,11 +130,9 @@
                 "dimension_label": "Stated rationale",
                 "all": {
                   "label": "All stated rationale comments",
-                  "count": 3,
+                  "count": 1,
                   "comment_ids": [
-                    1002,
-                    1004,
-                    2001
+                    4378693606
                   ],
                   "href": "index.html?project=pyopensci&dimension=stated_rationale"
                 },
@@ -148,7 +142,7 @@
                   "label": "Maintainer and reviewer burden",
                   "count": 1,
                   "comment_ids": [
-                    1002
+                    4378693606
                   ],
                   "href": "index.html?project=pyopensci&filter=stated_rationale:maintainer-and-reviewer-burden"
                 }
@@ -163,11 +157,9 @@
                 "dimension_label": "Stated rationale",
                 "all": {
                   "label": "All stated rationale comments",
-                  "count": 3,
+                  "count": 1,
                   "comment_ids": [
-                    1002,
-                    1004,
-                    2001
+                    4378693606
                   ],
                   "href": "index.html?project=pyopensci&dimension=stated_rationale"
                 },
@@ -177,7 +169,7 @@
                   "label": "Social and ethical (trust, transparency, community norms)",
                   "count": 1,
                   "comment_ids": [
-                    2001
+                    4378693606
                   ],
                   "href": "index.html?project=pyopensci&filter=stated_rationale:social-and-ethical"
                 }
@@ -196,22 +188,16 @@
                 "dimension_label": "Guidance level",
                 "all": {
                   "label": "All guidance level comments",
-                  "count": 2,
-                  "comment_ids": [
-                    1002,
-                    1005
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=guidance_level"
                 },
                 "value": "substantive-guidance",
                 "value_label": "Substantive guidance",
                 "matching": {
                   "label": "Substantive guidance",
-                  "count": 2,
-                  "comment_ids": [
-                    1002,
-                    1005
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=guidance_level:substantive-guidance"
                 }
               }
@@ -229,23 +215,16 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 4,
-                  "comment_ids": [
-                    1001,
-                    1004,
-                    1005,
-                    2002
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "scoping",
                 "value_label": "Scoping (PR size limits, scoped tasks, issue-first)",
                 "matching": {
                   "label": "Scoping (PR size limits, scoped tasks, issue-first)",
-                  "count": 1,
-                  "comment_ids": [
-                    1004
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=guidance_type:scoping"
                 }
               }
@@ -259,23 +238,16 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 4,
-                  "comment_ids": [
-                    1001,
-                    1004,
-                    1005,
-                    2002
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "design",
                 "value_label": "Design (modularity, existing patterns, technical debt)",
                 "matching": {
                   "label": "Design (modularity, existing patterns, technical debt)",
-                  "count": 1,
-                  "comment_ids": [
-                    1005
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=guidance_type:design"
                 }
               }
@@ -289,24 +261,16 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 4,
-                  "comment_ids": [
-                    1001,
-                    1004,
-                    1005,
-                    2002
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "evaluation",
                 "value_label": "Evaluation (understand, test, and explain output)",
                 "matching": {
                   "label": "Evaluation (understand, test, and explain output)",
-                  "count": 2,
-                  "comment_ids": [
-                    1001,
-                    2002
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=guidance_type:evaluation"
                 }
               }
@@ -320,23 +284,16 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 4,
-                  "comment_ids": [
-                    1001,
-                    1004,
-                    1005,
-                    2002
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "iteration",
                 "value_label": "Iteration (human-AI cycles rather than one-shot)",
                 "matching": {
                   "label": "Iteration (human-AI cycles rather than one-shot)",
-                  "count": 1,
-                  "comment_ids": [
-                    1004
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=guidance_type:iteration"
                 }
               }
@@ -354,22 +311,16 @@
                 "dimension_label": "Human responsibility",
                 "all": {
                   "label": "All human responsibility comments",
-                  "count": 2,
-                  "comment_ids": [
-                    1001,
-                    2002
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=human_responsibility"
                 },
                 "value": "yes",
                 "value_label": "Yes \u2014 contributor is responsible for submitted work",
                 "matching": {
                   "label": "Yes \u2014 contributor is responsible for submitted work",
-                  "count": 2,
-                  "comment_ids": [
-                    1001,
-                    2002
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=human_responsibility:yes"
                 }
               }
@@ -387,10 +338,9 @@
                 "dimension_label": "Disclosure",
                 "all": {
                   "label": "All disclosure comments",
-                  "count": 2,
+                  "count": 1,
                   "comment_ids": [
-                    1001,
-                    2001
+                    4379066957
                   ],
                   "href": "index.html?project=pyopensci&dimension=disclosure"
                 },
@@ -398,10 +348,9 @@
                 "value_label": "Required",
                 "matching": {
                   "label": "Required",
-                  "count": 2,
+                  "count": 1,
                   "comment_ids": [
-                    1001,
-                    2001
+                    4379066957
                   ],
                   "href": "index.html?project=pyopensci&filter=disclosure:required"
                 }
@@ -420,20 +369,16 @@
                 "dimension_label": "Enforcement",
                 "all": {
                   "label": "All enforcement comments",
-                  "count": 1,
-                  "comment_ids": [
-                    1003
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=enforcement"
                 },
                 "value": "contributor-blocked",
                 "value_label": "Contributor blocked",
                 "matching": {
                   "label": "Contributor blocked",
-                  "count": 1,
-                  "comment_ids": [
-                    1003
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=enforcement:contributor-blocked"
                 }
               }
@@ -447,10 +392,8 @@
                 "dimension_label": "Enforcement",
                 "all": {
                   "label": "All enforcement comments",
-                  "count": 1,
-                  "comment_ids": [
-                    1003
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=enforcement"
                 },
                 "value": "other",
@@ -478,20 +421,14 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 3,
-                  "comment_ids": [
-                    1003,
-                    1004,
-                    2001
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
                   "label": "Code \u2192 Restricted",
-                  "count": 1,
-                  "comment_ids": [
-                    1004
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&scope_type=code&scope_position=restricted"
                 }
               }
@@ -507,12 +444,8 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 3,
-                  "comment_ids": [
-                    1003,
-                    1004,
-                    2001
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
@@ -534,20 +467,14 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 3,
-                  "comment_ids": [
-                    1003,
-                    1004,
-                    2001
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
                   "label": "Docs and text \u2192 Restricted",
-                  "count": 1,
-                  "comment_ids": [
-                    2001
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&scope_type=docs-and-text&scope_position=restricted"
                 }
               }
@@ -563,20 +490,14 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 3,
-                  "comment_ids": [
-                    1003,
-                    1004,
-                    2001
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
                   "label": "Issues and PR descriptions \u2192 Restricted",
-                  "count": 1,
-                  "comment_ids": [
-                    1003
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&scope_type=issues-and-pr-descriptions&scope_position=restricted"
                 }
               }
