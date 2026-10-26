@@ -63,11 +63,11 @@
 
     <div id="coding-ready" x-show="!loading && !error && state === 'ready'">
       <p class="meta-row">
-        <strong x-text="project.display_name"></strong>
-        · <code x-text="project.slug"></code>
+        <strong x-text="project && project.display_name"></strong>
+        · <code x-text="project && project.slug"></code>
         · <span x-text="comments.length + ' comments'"></span>
         ·
-        <a :href="project.comments_href || ('index.html?project=' + project.slug)">
+        <a :href="(project && project.comments_href) || ('index.html?project=' + (project && project.slug))">
           Browse comments
         </a>
       </p>

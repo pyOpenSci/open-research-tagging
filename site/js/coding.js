@@ -36,7 +36,6 @@
             fetchJson("data/projects.json"),
             fetchJson("data/comments.json"),
           ]);
-          this.codebook = codebook;
           this.allProjects = projectsPayload.data || [];
           const resolved = Resolve.resolveCodingView(
             params,
@@ -47,12 +46,16 @@
           this.slug = resolved.slug;
           this.project = resolved.project;
           this.comments = resolved.comments;
+          // Prefill coding BEFORE assigning codebook. schemaDimensions is derived
+          // from codebook; if codebook is set first, Alpine renders the form while
+          // coding is still null and the bindings throw (empty form).
           if (Form) {
             this.coding = Form.prefillCoding(
               resolved.project && resolved.project.coding,
               codebook
             );
           }
+          this.codebook = codebook;
           this.loading = false;
         } catch (err) {
           this.loading = false;
