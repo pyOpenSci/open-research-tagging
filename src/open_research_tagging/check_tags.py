@@ -18,7 +18,13 @@ from typing import Any
 
 from open_research_tagging.codebook import Codebook, load_codebook
 from open_research_tagging.fetch_comments import FetchConfigError, resolve_owner_repo
-from open_research_tagging.github_client import Getter, Poster, github_post, paginate
+from open_research_tagging.github_client import (
+    Getter,
+    GitHubHTTPError,
+    Poster,
+    github_post,
+    paginate,
+)
 from open_research_tagging.tags import TagWarning, collect_tag_warnings, parse_and_enrich
 
 API = "https://api.github.com"
@@ -101,14 +107,22 @@ def fetch_pr_review_comments(
 def reply_to_review_comment(
     owner: str,
     repo: str,
+    pull_number: int,
     comment_id: int,
     body: str,
     token: str,
     *,
     poster: Poster | None = None,
 ) -> None:
-    """POST a reply on a pull request review comment."""
-    url = f"{API}/repos/{owner}/{repo}/pulls/comments/{comment_id}/replies"
+    """POST a reply on a pull request review comment.
+
+    GitHub requires pull_number in the path:
+    POST /repos/{owner}/{repo}/pulls/{pull_number}/comments/{comment_id}/replies
+    """
+    url = (
+        f"{API}/repos/{owner}/{repo}/pulls/{pull_number}"
+        f"/comments/{comment_id}/replies"
+    )
     github_post(url, token, {"body": body}, poster=poster)
 
 
@@ -189,15 +203,34 @@ def main(
                     except FetchConfigError as exc:
                         print(str(exc), file=sys.stderr)
                         return 2
-                    reply_to_review_comment(
-                        owner,
-                        repo,
-                        int(comment["id"]),
-                        format_reply([w.message for w in warns]),
-                        token,
-                        poster=poster,
-                    )
-                    print(f"Replied on review comment {comment['id']}")
+                    pr = event.get("pull_request") or {}
+                    pull_number = pr.get("number") if isinstance(pr, dict) else None
+                    if pull_number is None:
+                        print(
+                            "pull_request.number missing from event; "
+                            "cannot post reply",
+                            file=sys.stderr,
+                        )
+                        if not args.soft:
+                            return 2
+                    else:
+                        try:
+                            reply_to_review_comment(
+                                owner,
+                                repo,
+                                int(pull_number),
+                                int(comment["id"]),
+                                format_reply([w.message for w in warns]),
+                                token,
+                                poster=poster,
+                            )
+                            print(
+                                f"Replied on review comment {comment['id']}"
+                            )
+                        except GitHubHTTPError as exc:
+                            print(str(exc), file=sys.stderr)
+                            if not args.soft:
+                                return 1
     elif args.pr is not None:
         try:
             owner, repo = resolve_owner_repo(

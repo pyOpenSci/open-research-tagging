@@ -404,13 +404,13 @@ a { color: var(--accent); }
 }
 .empty { color: var(--muted); font-size: 0.8rem; }
 
-/* Tag picker: narrow column for use beside GitHub (≤25vw) */
+/* Tag picker: narrow column for use beside GitHub; width follows the window */
 body.tags-page {
   background: var(--bg);
 }
 body.tags-page .page.tag-picker {
-  max-width: min(25vw, 22rem);
-  min-width: 16rem;
+  width: 100%;
+  max-width: 22rem;
   margin: 0;
   padding: 0.75rem 0.65rem 1.5rem;
 }

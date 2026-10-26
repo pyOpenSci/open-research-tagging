@@ -133,7 +133,7 @@ def test_github_post_uses_injected_poster():
         return {"ok": True}, {}
 
     body, _headers = github_post(
-        "https://api.github.com/repos/o/r/pulls/comments/1/replies",
+        "https://api.github.com/repos/o/r/pulls/1/comments/1/replies",
         "secret",
         {"body": "hi"},
         poster=fake_poster,

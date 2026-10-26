@@ -25,6 +25,14 @@ def test_check_comment_tags_workflow_wiring():
     jobs = data["jobs"]
     assert "reply-on-comment" in jobs
     assert "scan-pr" in jobs
+    default_ref = "${{ github.event.repository.default_branch }}"
+    for job_name in ("reply-on-comment", "scan-pr"):
+        steps = jobs[job_name]["steps"]
+        checkout = next(
+            s for s in steps if str(s.get("uses") or "").startswith("actions/checkout")
+        )
+        # Content PRs may lag main; checker tooling comes from the default branch.
+        assert (checkout.get("with") or {}).get("ref") == default_ref
     reply_runs = "\n".join(
         str(s.get("run") or "") for s in jobs["reply-on-comment"]["steps"]
     )
