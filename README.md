@@ -44,6 +44,6 @@ One-time on the GitHub remote (personal/test host first; org cutover later):
 2. Push workflows on `main` (or merge a PR that adds `.github/workflows/`).
 3. Run **Actions → Update comment data → Run workflow** once (or wait for the daily cron) so live comments refresh into `site/data/`.
 4. Open the Pages URL and smoke-check: comments browser, projects overview, **tag picker**, **coding view** (`coding.html?project=<slug>`).
-5. Record the public URL here when known: *(set in Phase 11f)*.
+5. Personal/test Pages URL: https://shaunagm.github.io/open-research-tagging/ (org URL later in **12g**).
 
 **Coder path:** tag picker → paste on Files-tab review comments → refresh site data → coding view → Copy YAML into `project.yaml`. PR checklist: [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
