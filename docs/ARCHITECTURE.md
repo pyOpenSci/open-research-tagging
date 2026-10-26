@@ -1,12 +1,28 @@
 # Architecture
 
-How open-research-tagging fits together.
+How open-research-tagging fits together: pipeline, static site, coder helpers, and GitHub Actions.
 
-**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11e** (workflows + PR template + enable-Pages checklist). Remaining: personal/test Pages go-live (**11f**).
+## Contents
+
+- [What this system is](#what-this-system-is)
+- [Mental model](#mental-model)
+- [End-to-end data flow](#end-to-end-data-flow)
+- [Codebook](#codebook)
+- [Passage tags](#passage-tags)
+- [Comments → `comments.json`](#comments--commentsjson)
+- [Projects → `projects.json`](#projects--projectsjson)
+- [Static site](#static-site)
+- [Coder helpers](#coder-helpers)
+- [Emit drift](#emit-drift)
+- [GitHub Actions](#github-actions)
+- [Fixture vs live site JSON](#fixture-vs-live-site-json)
+- [How we keep this document current](#how-we-keep-this-document-current)
+- [Reference: module map](#reference-module-map)
+- [Reference: still ahead (Phase 12+)](#reference-still-ahead-phase-12)
 
 ## What this system is
 
-Researchers study how open-source projects treat AI-generated contributions. Policy text is copied into this repository under `projects/<slug>/`. Coders leave **PR review comments** on those files, using codebook hashtags. Scripts will turn those comments into JSON; a static site will let people browse and filter them.
+Researchers study how open-source projects treat AI-generated contributions. Policy text lives under `projects/<slug>/`. Coders leave **PR review comments** (Files tab) with codebook hashtags. Maintainer/Actions scripts turn those comments into JSON; a **static** site lets people browse and filter them.
 
 GitHub is the editor. The site is read-only. There is no app server.
 
@@ -16,82 +32,193 @@ Two kinds of judgment, stored in different places:
 
 | Layer | Where | Question it answers |
 |-------|--------|---------------------|
-| **Overall** | `projects/<slug>/project.yaml` | How do we code this policy as a whole? |
+| **Overall** | `projects/<slug>/project.yaml` (`coding:` block) | How do we code this policy as a whole? |
 | **Passage** | Hashtags on PR review comments | What does this line or paragraph evidence? |
 
-The **codebook** (`codebook/codebook.yaml`) is the shared vocabulary: stable string **ids** for codes, human **labels** for display. The browser gets a generated `site/data/codebook.json` so we do not maintain two hand-edited codebooks.
+The **codebook** (`codebook/codebook.yaml`) is the shared vocabulary: stable string **ids** for codes, human **labels** for display. The browser gets generated `site/data/codebook.json` so there is not a second hand-edited codebook.
 
-## What’s built so far
+## End-to-end data flow
 
-### Codebook
+```text
+projects/<slug>/ + project.yaml     codebook.yaml
+        |                                |
+        |                         emit codebook.json
+        |                                |
+GitHub PR Files (#tags)                  |
+        |                                |
+        v fetch                          |
+   raw_comments.json                     |
+        |                                |
+        v process_comments <-------------+
+   comments.json
+        |
+        v process_projects
+   projects.json
+        |
+   projects.html <---> index.html
+         |                  |
+    tags.html          coding.html
+    (stage hashtags    (form → copy coding: YAML
+     → paste on PR)     → paste into project.yaml)
+```
+
+## Codebook
 
 - Load and validate YAML shape (required fields, unique ids within each list).
 - Index for lookups by dimension, namespace, and value id (`Codebook` in `codebook.py`).
-- Emit browser JSON (`codebook_emit.py` → `site/data/codebook.json`).
-- `namespaces` in the YAML map hashtag namespaces (e.g. `rationale`) to dimension ids (e.g. `stated_rationale`), including optional `path` for nested leaves.
+- Emit browser JSON (`codebook_emit.py` / `emit_codebook` CLI → `site/data/codebook.json`), including a **`tag_catalog`** of every valid hashtag string.
+- YAML `namespaces` map hashtag namespaces (e.g. `rationale`) to dimension ids (e.g. `stated_rationale`), including optional `path` for nested leaves.
 
-### Tags on comments
+While the codebook is still a draft, CI **hard-fails only on malformed tags** (see [Tag-check](#tag-check)); unknown-but-well-formed ids stay soft.
+
+## Passage tags
 
 Pipeline for a comment body:
 
-1. **Parse** — find `#namespace/value`, `#namespace:value` (colon slip), and `#scope/type:position`.
+1. **Parse** — `#namespace/value`, `#namespace:value` (colon slip), and `#scope/type:position`.
 2. **Enrich** — attach dimension, labels, `display`, and `filter_key` from the codebook. Unknown values still get a humanized fallback label so nothing disappears silently.
 3. **Warn** — bare `#Word` tokens, unknown namespaces/values, bad scope type/position. Any warnings set `needs_tag_review` on the normalized row.
 
-### Comment provenance (refs)
+## Comments → `comments.json`
 
-From a raw GitHub review-comment object we derive:
+### Provenance (refs)
+
+From a raw GitHub review-comment object:
 
 - **project** — first folder under `projects/`, or none for `_template` / paths outside `projects/`
 - **pr_number**, **user**, **html_url**, **path**
 
 ### Quotes (passage preview)
 
-For the UI excerpt of what was tagged:
-
 1. If the file still exists in the workspace, read it. Multi-line comments use those exact lines; a single-line comment expands to the surrounding paragraph (until blank lines).
 2. If the file is missing, clean GitHub’s `diff_hunk` (drop patch headers and pure deletions).
 3. If neither works, store no quote; the comment can still exist without a preview.
 
-### Normalize → `comments.json`
+### Normalize
 
-`normalize` combines refs, tags, warnings, and quote into one site row. Malformed or unknown tags stay on the row with `parse_warnings` and `needs_tag_review: true` — nothing is dropped. `process_comments` **skips** review comments whose login ends in `[bot]` (e.g. tag-check replies from `github-actions[bot]`), so bot text that quotes bad hashtags does not show up as research evidence or `needs_tag_review` noise.
-
-Maintainers / Actions run:
+`normalize` combines refs, tags, warnings, and quote into one site row. Malformed or unknown tags stay on the row with `parse_warnings` and `needs_tag_review: true` — nothing is dropped. `process_comments` **skips** review comments whose login ends in `[bot]` (e.g. tag-check replies from `github-actions[bot]`), so bot text that quotes bad hashtags does not become research evidence.
 
 ```bash
-python -m open_research_tagging.process_comments --in site/data/raw_comments.json --out site/data/comments.json
+python -m open_research_tagging.process_comments \
+  --in site/data/raw_comments.json --out site/data/comments.json
 ```
 
 Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixture` (true when the input filename contains `fixture`), and `codebook_version`. Raw input is a JSON list or `{ "comments": [...] }`; already-processed `{ meta, data }` is rejected.
 
-**Offline vs live site JSON:** `site/data/raw_comments.fixture.json` is a committed dump of demo-shaped review comments (no network). Regenerating with `process_comments` from that file yields `is_fixture: true` and dense pyOpenSci evidence. **Update comment data** fetches live PR review comments into gitignored `raw_comments.json`, processes, **commits** `comments.json` / `projects.json` (often `is_fixture: false`, only whatever is tagged on this remote), and deploys Pages — so the public site on `main` can diverge from the fixture after a refresh. That is expected: Pages = live GitHub. Playwright does **not** rewrite repo `site/data/`; it copies `site/` into a **temp directory**, regenerates fixture-shaped JSON there, and serves that tree (`site_under_test` / `site_base_url` in `tests/conftest.py`). With `projects/pyopensci/` present, fixture quotes usually resolve from local policy files (`paragraph` / `selection`) instead of `diff_hunk`.
+## Projects → `projects.json`
 
-### Projects on disk
+Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips folder names starting with `_`. The development seed is **pyOpenSci** (`projects/pyopensci/`).
 
-Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips any slug whose folder name starts with `_`, so `_template` never becomes a `projects.json` row. The first real seed is **pyOpenSci** (`projects/pyopensci/`): policy markdown plus a filled `project.yaml`, joined with the comment fixture into committed `site/data/projects.json`.
+Joining overall codes to passage evidence:
 
-**Putting overall codes next to passage evidence**
-
-Remember the two layers: **overall** codes live in `project.yaml` (how we code the policy as a whole); **passage** tags live on PR comments (evidence on specific lines).
-
-For the projects page we need both in one place. The pipeline:
-
-1. Look through all normalized comments and, for each project, remember which comment ids mention which dimension or specific code (the comment index).
+1. Index normalized comments per project (by dimension and `filter_key`).
 2. Read that project’s `coding:` block from `project.yaml`.
-3. For each overall code, attach human labels from the codebook and links into the comment browser — “all comments on this dimension” and “comments that match this exact code.”
+3. For each overall code, attach codebook labels and links into the comment browser (“all on this dimension” / “exact code”).
 
-A few practical details: scope entries marked `not_addressed` are skipped so the table stays sparse; if `project.yaml` uses an id the current codebook doesn’t know, we still show it and flag it for review rather than dropping it. Scope keys in YAML sometimes use underscores (`docs_and_text`) while hashtags use hyphens (`docs-and-text`); we normalize that when matching. The mapping from YAML fields to site fields is hand-written for the known layout — we are not auto-generating it from every codebook dimension.
-
-Maintainers / Actions emit the joined file with:
+Practical details: scope `not_addressed` is omitted from the sparse table; unknown overall ids still show and are flagged; YAML scope keys may use underscores while hashtags use hyphens — matching normalizes that. The YAML→site field map is an explicit adapter for the known nesting (not a generic “any codebook dimension → form” engine).
 
 ```bash
-python -m open_research_tagging.process_projects --comments site/data/comments.json --out site/data/projects.json
+python -m open_research_tagging.process_projects \
+  --comments site/data/comments.json --out site/data/projects.json
 ```
 
-Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_version`. Each row carries processed `overall` (table + filters) and raw nested `coding` (coding-view form pre-fill). Missing comments file → empty index and a warning (project rows still emit).
+Each row carries processed `overall` (projects table) and raw nested `coding` (coding-view pre-fill). YAML 1.1 bare `yes`/`no` normalize to string ids so JSON does not store booleans. Missing comments file → empty index and a warning (project rows still emit).
 
-## Module map
+## Static site
+
+Shared chrome under `site/` (Alpine.js + DataTables from CDN). Local preview: `cd site && python3 -m http.server 8000` → http://localhost:8000/
+
+| Page | Role |
+|------|------|
+| `index.html` | Comment browser (filters, quotes, deep links) |
+| `projects.html` | Overall codes + evidence links into the browser |
+| `tags.html` | Passage **tag picker** (search / stage / Copy hashtags) |
+| `coding.html?project=<slug>` | Overall **coding view** (evidence + form + Copy YAML) |
+
+**Comment browser URL params** (same shapes the projects join emits):
+
+| Param | Effect |
+| --- | --- |
+| `project` | Restrict to that project slug |
+| `dimension` | Any comment tagged on that dimension |
+| `filter` | Exact `filter_key` (e.g. `stance:allow` or `scope:code:restricted`) |
+| `scope_type` / `scope_position` | Scope match (full pair or partial) |
+| `needs_tag_review=1` | Only rows flagged for tag review |
+
+Also in-page: text search, project/PR selects, dimension chips, Clear. Fixture banner when `comments.json` `meta.is_fixture` is true.
+
+Browse / helper regression: Playwright tests under `tests/test_site_integration.py`, `test_tag_picker_paste.py`, `test_coding_walkthrough.py` (need `playwright install chromium` and network for CDNs). They serve a **temp** copy of `site/` filled from the offline fixture — see [Fixture vs live](#fixture-vs-live-site-json).
+
+## Coder helpers
+
+Documented for researchers in [`codebook/COMMENTING.md`](../codebook/COMMENTING.md) and the PR template.
+
+| Need | Tool |
+|------|------|
+| Tag a **passage** | Tag picker → Copy → Files-tab review comment (hashtags at top, then a short note). Prefer **Add single comment** or **Submit** the review — unsubmitted “Start a review” drafts often cannot receive bot replies. |
+| Set **overall** codes | Coding view → walk evidence → **Copy YAML** → paste over `coding:` in `project.yaml`. Do not invent overall YAML by pasting random hashtags into the file. |
+
+Exact hashtag strings come from the picker / `tag_catalog`, not a second hand-maintained table in the docs.
+
+## Emit drift
+
+Tag picker copy-text and coding-view **Copy YAML** run in the browser; canonical strings and YAML shape are defined and tested in **Python** (`tag_catalog.py`, `coding_yaml.py`). Two implementations can drift.
+
+**v1 approach:** Python goldens / helpers are the contract; Playwright paste/preview tests check the browser against that contract. Do not invent a third source of truth or a shared JS/Python runtime unless drift becomes chronic.
+
+## GitHub Actions
+
+| Workflow | When | What |
+|----------|------|------|
+| `test.yml` | Push to `main`, PRs | `pytest` (incl. Playwright) |
+| `check-comment-tags.yml` | Review comment create/edit; PR open/sync | Soft reply on bad tags; PR scan hard-fails **malformed** only |
+| `update-comments.yml` | Daily cron + manual | Fetch → process → emit codebook → process projects → **commit** JSON → deploy Pages |
+| `deploy-pages.yml` | `site/**` on `main`, or manual | Publish `site/` to Pages |
+
+Personal/test Pages URL: https://shaunagm.github.io/open-research-tagging/ (org host later).
+
+### Tag-check
+
+```bash
+python -m open_research_tagging.check_tags --from-event --reply --soft
+python -m open_research_tagging.check_tags --pr N
+```
+
+- **Reply job** (`--soft`): always green; posts a bot reply when tags look wrong.
+- **Scan job**: fails the PR check only on **malformed** tags while the codebook is draft. Well-formed unknown ids are reported (and may get a reply / `needs_tag_review` after refresh) but do not fail the check.
+- Checkout uses the **default branch** (not the PR head) so content PRs that lag `main` still run the published checker. Note: `pull_request_review_comment` still **selects the workflow YAML** from the PR merge ref — a PR opened before a workflow fix must update its branch (merge/rebase `main`) once to pick up new workflow files.
+- Replies require a **submitted**, top-level review comment (see COMMENTING.md).
+
+### Fetch and refresh quirks
+
+```bash
+python -m open_research_tagging.fetch_comments   # needs GITHUB_TOKEN / GITHUB_REPOSITORY
+```
+
+Writes gitignored `site/data/raw_comments.json`. Pushes made with `GITHUB_TOKEN` do **not** start other workflows, so `update-comments.yml` deploys Pages in the same job after committing. That commit can land while you are committing locally — `git pull --rebase` then push is normal.
+
+No `paths:` filter on tag-check yet; revisit if code-review `#…` noise on non-`projects/` PRs becomes a problem.
+
+## Fixture vs live site JSON
+
+| | Offline fixture | Live (Pages / `main` after refresh) |
+|--|-----------------|--------------------------------------|
+| Raw input | `site/data/raw_comments.fixture.json` | Fetched PR review comments |
+| After process | `is_fixture: true`, dense demo/pyOpenSci tags | `is_fixture: false`, whatever is tagged on this remote |
+| Consumers | Playwright temp site; local experiments | Public Pages; committed `comments.json` / `projects.json` |
+
+**Update comment data** replaces committed site JSON with live data and deploys — expected that the public browser then shows GitHub, not the old demo fixture. Playwright copies `site/` into a **temp directory**, regenerates fixture-shaped JSON there, and serves that tree (`site_under_test` / `site_base_url` in `tests/conftest.py`) so tests do not rewrite or depend on the last live refresh.
+
+With `projects/pyopensci/` present, fixture quotes usually resolve from local policy files (`paragraph` / `selection`) instead of `diff_hunk`.
+
+## How we keep this document current
+
+- When a plan task changes how pieces fit together, update the matching section here in the same handoff (small diffs).
+- Prefer extending this file over replacing it with a from-scratch draft at the end of a phase.
+
+## Reference: module map
+
+*Skippable inventory — package root `src/open_research_tagging/`.*
 
 | Module | Role |
 |--------|------|
@@ -100,97 +227,24 @@ Output shape: `{ meta, data }` with `count`, `comments_source`, and `codebook_ve
 | `emit_codebook.py` | Maintainer/Actions CLI → `codebook.json` |
 | `tag_catalog.py` | Canonical hashtag list for the tag picker |
 | `coding_yaml.py` | Emit paste-ready `coding:` YAML (coding-view Copy) |
-
-| `tags.py` | Parse, enrich, warn on hashtags; group codes by dimension |
-| `comments.py` | Refs, `normalize`, load/write `comments.json` payload |
+| `tags.py` | Parse, enrich, warn on hashtags |
+| `comments.py` | Refs, `normalize`, load/write `comments.json` |
 | `quotes.py` | Local file or diff_hunk quote resolution |
 | `process_comments.py` | Maintainer/Actions CLI for normalize + write |
-| `projects.py` | Discover/load YAML; comment index; build rows; write payload |
+| `projects.py` | Discover/load YAML; comment index; build rows |
 | `process_projects.py` | Maintainer/Actions CLI for `projects.json` |
 | `github_client.py` | Shared GET/POST + Link pagination (injectable for tests) |
 | `fetch_comments.py` | Maintainer/Actions CLI → `raw_comments.json` |
 | `check_tags.py` | Tag-check library + Actions CLI |
 
-Package root: `src/open_research_tagging/`.
+Site JS (under `site/js/`): `codebook.js`, `chips.js`, `comments_filters.js`, `comments.js`, `projects_filters.js`, `projects.js`, `tags_stage.js`, `tags.js`, `coding_resolve.js`, `coding_form.js`, `coding.js`.
 
-### GitHub HTTP (shared)
+## Reference: still ahead (Phase 12+)
 
-`github_client` builds auth headers and GETs JSON from the GitHub API, following `Link: rel="next"` for pagination. Fetch and tag-check share this module. Tests inject a `getter` (or stub `urlopen`) so CI never calls the live API. Stdlib only for v1; a fuller client (e.g. PyGithub) can replace this later if the thin wrapper stops being enough.
+*Skippable checklist — detail lands in main sections when each task ships.*
 
-**Fetch:** maintainers / Actions run:
-
-```bash
-python -m open_research_tagging.fetch_comments --owner ORG --repo NAME
-# or set GITHUB_REPOSITORY=owner/repo (and optional GITHUB_TOKEN)
-```
-
-Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, comments }`). Offline work keeps using `raw_comments.fixture.json` instead.
-
-**Refresh + Pages:** `.github/workflows/update-comments.yml` (cron + manual) runs fetch → process_comments → emit_codebook → process_projects, commits `comments.json` / `projects.json` / `codebook.json` if changed, then deploys `site/` to Pages in the same job (token pushes do not chain other workflows). `.github/workflows/deploy-pages.yml` publishes `site/` on `main` pushes that touch `site/**` (or manual dispatch).
-
-### Tag-check (Actions)
-
-`check_body` / `format_reply` share normalize’s warning rules. Maintainers / Actions run:
-
-```bash
-python -m open_research_tagging.check_tags --from-event --reply   # review-comment event
-python -m open_research_tagging.check_tags --pr N                # scan a PR
-python -m open_research_tagging.check_tags --body '#Design'      # debug only
-```
-
-`--reply` posts on the review comment (skips `*[bot]`). `--soft` prints issues but exits 0. GitHub’s create-reply API only works on **submitted**, top-level review comments — pending comments in an unfinished “Start a review” draft often 404; coders should use Add single comment or submit the review (see `codebook/COMMENTING.md`).
-
-**Draft-codebook CI policy:** the Actions status check **fails only on malformed tags** (bare `#Word`, or `#…` that does not parse as `#namespace/value`). Well-formed tags with unknown namespace/value/scope ids are still printed (and may get a reply). They keep `needs_tag_review` on the site after refresh, but they do **not** fail the PR check until we tighten the policy later.
-
-**Workflow:** `.github/workflows/check-comment-tags.yml` — on Files-tab review comment create/edit, run `--from-event --reply --soft`; on PR open/sync, run `--pr N` (hard-fail malformed only). Both jobs check out the **default branch** (not the PR head) so content PRs that lag `main` still get the published checker. No `paths:` filter yet; revisit if code PRs get noisy replies.
-
-### Static site (shared assets + comment browser)
-
-- `site/css/site.css` — shared chrome (nav, sidebar, chips, tables, quote UI)
-- `site/js/codebook.js` — loads `data/codebook.json`; builds filter dimensions from `filter_order` + namespace labels (**no** hardcoded filter-dimension list)
-- `site/js/chips.js` — chip/details helpers
-- `site/js/comments_filters.js` — pure URL parse + row matching + chip/scope option helpers (OR within a dimension, AND across; scope full/partial keys)
-- `site/js/comments.js` — Alpine `commentBrowser` component + DataTables cell renderers
-- `site/js/projects_filters.js` — pure overall-code filter matching (`projectMatchesFilters`, `codesPresent`)
-- `site/js/projects.js` — Alpine `projectsOverview` + DataTables (code pills with evidence hover links)
-- `index.html` — comment browser; `projects.html` — overall-codes table + codebook-driven chip filters (no hardcoded `FILTER_DIMS`)
-- UI library: **Alpine.js** (CDN) for declarative filter chrome / tag picker; jQuery + DataTables for sortable tables
-- `site/tags.html` + `js/tags.js` — passage tag picker (catalog + search + stage + **Copy** hashtags). Narrow layout for use beside GitHub.
-- `site/js/tags_stage.js` — pure match/filter/stage helpers + `stagedToCopyText` (hashtags only, one per line)
-- `tag_catalog.py` — Python canonical hashtag list (value tags + every `#scope/type:position` pair); embedded at emit time so the browser does not invent strings
-- `codebook/COMMENTING.md` — coder workflow (picker → stage/copy → Files-tab paste). Exact strings come from the picker / `tag_catalog`, not a second markdown table
-- Paste-shape check: `tests/test_tag_picker_paste.py` (Playwright stage → comment body → `parse_tags` clean)
-- `site/coding.html` + `js/coding.js` / `coding_resolve.js` / `coding_form.js` — coding view: `?project=` resolve, evidence pane, nested form, and **Copy YAML** (`coding:` block only). Prefills from each projects.json row’s raw `coding` passthrough.
-- `coding_yaml.py` — Python contract for the paste-ready `coding:` fragment; browser `emitCodingYaml` must match (emit-drift).
-- Evidence filter: empty select = all project comments; a dimension key keeps comments that have ≥1 tag on that dimension (dims with no passage tags show an empty list until you switch to All). Click a section title (or focus into the section) to set that evidence filter; Context resets to all comments (no passage dimension).
-- `projects.json` rows include both processed `overall` (projects table) and normalized nested `coding` (coding-view pre-fill). Normalization maps YAML 1.1 bare `yes`/`no` to string ids so JSON does not store booleans.
-- Coding walkthrough tests: `tests/test_coding_walkthrough.py` (Playwright) — projects → coding view, prefill, section evidence filter, preview ≡ Python `emit_coding_block`.
-
-**Comment browser URL params** (same deep-link shapes the projects join emits):
-
-| Param | Effect |
-| --- | --- |
-| `project` | Restrict to that project slug |
-| `dimension` | Any comment tagged on that dimension (`dimension-any:…`, or scope partial `*:*`) |
-| `filter` | Exact `filter_key` (e.g. `stance:allow` or `scope:code:restricted`) |
-| `scope_type` / `scope_position` | Scope match (full pair or partial) |
-| `needs_tag_review=1` | Only rows flagged for tag review |
-
-Also filters in-page: text search, project/PR selects, dimension chips, Clear. Fixture banner when `comments.json` `meta.is_fixture` is true.
-
-Local preview: `cd site && python3 -m http.server 8000` then open http://localhost:8000/
-
-**Browse parity tests:** `tests/test_site_integration.py` (Playwright + Chromium) serves `site/` and checks fixture banner, URL filters, projects chips/evidence links, and nav. Needs network for CDN Alpine/jQuery/DataTables. One-time: `playwright install chromium`.
-
-## How we keep this document current
-
-- When a plan task changes how pieces fit together, update the matching section here in the same handoff (small diffs).
-- Do not wait for a final “docs phase” to explain new behavior.
-- Later polish (full site, Actions, coder helpers) extends this file; it should not replace it with a first draft from scratch.
-
-## Not built yet
-
-*Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
-
-- Personal/test Pages go-live on the remote (Phase **11f**)
-- Seed/parity sign-off, codebook swap, org cutover (Phase 12)
+- README expansion for cold onboarding (**12c**); optional screengrab GIFs
+- Formal parity walkthrough (**12d**)
+- Codebook content swap (**12e**); seed retire when ready (**12f**); org Pages cutover (**12g**)
+- Optional Tests CI Playwright install speedup (**12h**)
+- Optional mutation spot-check (**Phase 13**)
