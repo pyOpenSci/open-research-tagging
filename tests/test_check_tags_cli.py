@@ -64,12 +64,13 @@ def test_cli_from_event_with_reply(
     monkeypatch: pytest.MonkeyPatch,
 ):
     event = {
+        "pull_request": {"number": 7},
         "comment": {
             "id": 99,
             "body": "#Design",
-            "html_url": "https://github.com/o/r/pull/1#discussion_r99",
+            "html_url": "https://github.com/o/r/pull/7#discussion_r99",
             "user": {"login": "alice"},
-        }
+        },
     }
     event_path = tmp_path / "event.json"
     event_path.write_text(json.dumps(event), encoding="utf-8")
@@ -94,8 +95,46 @@ def test_cli_from_event_with_reply(
     )
     assert code == 1
     assert len(posted) == 1
-    assert posted[0][0].endswith("/pulls/comments/99/replies")
+    assert posted[0][0].endswith("/pulls/7/comments/99/replies")
     assert "Tag format check" in posted[0][1]["body"]
+
+
+def test_cli_from_event_soft_survives_reply_http_error(
+    tmp_path: Path,
+    codebook_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """--soft must exit 0 even if the reply POST fails (workflow promise)."""
+    from open_research_tagging.github_client import GitHubHTTPError
+
+    event = {
+        "pull_request": {"number": 7},
+        "comment": {
+            "id": 99,
+            "body": "#Design",
+            "user": {"login": "alice"},
+        },
+    }
+    event_path = tmp_path / "event.json"
+    event_path.write_text(json.dumps(event), encoding="utf-8")
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(event_path))
+    monkeypatch.setenv("GITHUB_REPOSITORY", "o/r")
+    monkeypatch.setenv("GITHUB_TOKEN", "tok")
+
+    def poster(url: str, headers: dict, data: bytes | None):
+        raise GitHubHTTPError(404, url, '{"message":"Not Found"}')
+
+    code = main(
+        [
+            "--from-event",
+            "--reply",
+            "--soft",
+            "--codebook",
+            str(codebook_path),
+        ],
+        poster=poster,
+    )
+    assert code == 0
 
 
 def test_cli_from_event_skips_bot_reply(
