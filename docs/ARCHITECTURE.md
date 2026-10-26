@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11c** (`test.yml`, `check-comment-tags.yml`, `update-comments.yml`). Remaining: deploy-pages-only workflow, PR template, personal Pages go-live (**11d–11f**).
+**Status:** describes the pipeline, browse site, tag picker, coding view, and CI through **11d** (tests, tag-check, update-comments, deploy-pages). Remaining: PR template + personal Pages go-live (**11e–11f**).
 
 ## What this system is
 
@@ -126,7 +126,7 @@ python -m open_research_tagging.fetch_comments --owner ORG --repo NAME
 
 Writes gitignored `site/data/raw_comments.json` (`{ source, endpoint, count, comments }`). Offline work keeps using `raw_comments.fixture.json` instead.
 
-**Refresh + Pages:** `.github/workflows/update-comments.yml` (cron + manual) runs fetch → process_comments → emit_codebook → process_projects, commits `comments.json` / `projects.json` / `codebook.json` if changed, then deploys `site/` to Pages in the same job (token pushes do not chain other workflows).
+**Refresh + Pages:** `.github/workflows/update-comments.yml` (cron + manual) runs fetch → process_comments → emit_codebook → process_projects, commits `comments.json` / `projects.json` / `codebook.json` if changed, then deploys `site/` to Pages in the same job (token pushes do not chain other workflows). `.github/workflows/deploy-pages.yml` publishes `site/` on `main` pushes that touch `site/**` (or manual dispatch).
 
 ### Tag-check (Actions)
 
@@ -192,5 +192,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- Standalone deploy-pages on `site/**` push; PR template; personal Pages go-live (Phase **11d–11f**)
+- PR template + enable-Pages checklist; personal Pages go-live (Phase **11e–11f**)
 - Seed/parity sign-off, codebook swap, org cutover (Phase 12)

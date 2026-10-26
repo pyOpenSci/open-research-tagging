@@ -20,7 +20,9 @@ On push to `main` and on pull requests, GitHub Actions runs `pytest` (including 
 
 **Check comment tags** (`.github/workflows/check-comment-tags.yml`): replies on Files-tab review comments with tag issues; PR status check scans all review comments. See draft policy below.
 
-**Update comment data** (`.github/workflows/update-comments.yml`): daily + manual dispatch — fetch review comments, reprocess site JSON (including `codebook.json`), commit, and deploy Pages in one job. Requires Pages source = GitHub Actions (see Phase **11f**).
+**Update comment data** (`.github/workflows/update-comments.yml`): daily + manual dispatch — fetch review comments, reprocess site JSON (including `codebook.json`), commit, and deploy Pages in one job.
+
+**Deploy Pages** (`.github/workflows/deploy-pages.yml`): publishes `site/` when `site/**` changes on `main`, or via manual dispatch. Requires Pages source = GitHub Actions (Phase **11f**).
 
 ## Draft-codebook tag-check policy
 
