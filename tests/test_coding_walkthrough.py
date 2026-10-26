@@ -57,11 +57,18 @@ def test_coding_view_prefills_and_yaml_matches_python(
     page.wait_for_selector("#coding-ready", state="visible")
     page.wait_for_selector("#yaml-preview")
 
+    expected = emit_coding_block(pyopensci_row["coding"])
+    page.wait_for_function(
+        """(needle) => {
+          const ta = document.getElementById('yaml-preview');
+          return ta && ta.value.includes(needle);
+        }""",
+        arg=pyopensci_row["coding"]["stance"]["explicit"],
+    )
     # Prefill: stance.explicit select shows seed value
     stance_val = page.locator("#coding-form select").first.input_value()
     assert stance_val == pyopensci_row["coding"]["stance"]["explicit"]
 
-    expected = emit_coding_block(pyopensci_row["coding"])
     preview = page.locator("#yaml-preview").input_value()
     assert preview == expected
     assert preview.startswith("coding:\n")

@@ -156,7 +156,7 @@ def test_lift_flat_draft_01_coding():
 def test_coding_page_wires_copy_yaml():
     html = CODING_HTML.read_text(encoding="utf-8")
     assert "copy-yaml" in html or "copyYaml" in html or "Copy YAML" in html
-    assert "Explicit" in html and "Implicit" in html
+    assert "schemaDimensions" in html
     src = FORM_JS.read_text(encoding="utf-8")
     assert "emitCodingYaml" in src
 
@@ -164,6 +164,12 @@ def test_coding_page_wires_copy_yaml():
 def _run_js_emit(coding: dict) -> str:
     if not FORM_JS.is_file():
         pytest.fail(f"missing {FORM_JS}")
+    from open_research_tagging.codebook import load_codebook_file
+    from open_research_tagging.codebook_emit import emit_codebook_json
+
+    codebook = emit_codebook_json(
+        load_codebook_file(REPO / "codebook" / "codebook.yaml")
+    )
     script = f"""
 const fs = require('fs');
 const vm = require('vm');
@@ -174,7 +180,8 @@ vm.createContext(sandbox);
 vm.runInContext(code, sandbox);
 const F = sandbox.OrtCodingForm;
 if (!F || !F.emitCodingYaml) throw new Error('emitCodingYaml missing');
-const text = F.emitCodingYaml({json.dumps(coding)});
+const codebook = {json.dumps(codebook)};
+const text = F.emitCodingYaml({json.dumps(coding)}, codebook);
 process.stdout.write(text);
 """
     proc = subprocess.run(
