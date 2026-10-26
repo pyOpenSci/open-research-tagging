@@ -2,7 +2,7 @@
 
 How open-research-tagging fits together.
 
-**Status:** describes the pipeline, browse site, tag picker, and coding view (through plan **10f** walkthrough). CI/Actions are still ahead (Phase 11).
+**Status:** describes the pipeline, browse site, tag picker, and coding view (through plan **10f**). CI starts with `.github/workflows/test.yml` (pytest + Playwright on push/PR); remaining Actions are Phase **11b–11f**.
 
 ## What this system is
 
@@ -187,5 +187,5 @@ Local preview: `cd site && python3 -m http.server 8000` then open http://localho
 
 *Skippable checklist of upcoming pieces — detail will land here when those tasks ship.*
 
-- CI/Actions (Phase 11); seed/parity sign-off (Phase 12)
-- GitHub Actions (tests, tag check, Pages refresh; wire Playwright into CI when Actions land)
+- Tag-check / update-comments / deploy-pages workflows; personal Pages go-live (Phase **11b–11f**)
+- Seed/parity sign-off, codebook swap, org cutover (Phase 12)
