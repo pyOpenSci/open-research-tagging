@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from open_research_tagging.codebook import Codebook, load_codebook
+from open_research_tagging.comments import is_bot_login
 from open_research_tagging.fetch_comments import FetchConfigError, resolve_owner_repo
 from open_research_tagging.github_client import (
     Getter,
@@ -84,10 +85,6 @@ def format_reply(
         ]
     )
     return "\n".join(lines)
-
-
-def is_bot_login(login: str | None) -> bool:
-    return bool(login) and str(login).endswith("[bot]")
 
 
 def fetch_pr_review_comments(

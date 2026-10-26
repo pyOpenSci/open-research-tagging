@@ -55,7 +55,7 @@ For the UI excerpt of what was tagged:
 
 ### Normalize → `comments.json`
 
-`normalize` combines refs, tags, warnings, and quote into one site row. Malformed or unknown tags stay on the row with `parse_warnings` and `needs_tag_review: true` — nothing is dropped.
+`normalize` combines refs, tags, warnings, and quote into one site row. Malformed or unknown tags stay on the row with `parse_warnings` and `needs_tag_review: true` — nothing is dropped. `process_comments` **skips** review comments whose login ends in `[bot]` (e.g. tag-check replies from `github-actions[bot]`), so bot text that quotes bad hashtags does not show up as research evidence or `needs_tag_review` noise.
 
 Maintainers / Actions run:
 
@@ -138,7 +138,7 @@ python -m open_research_tagging.check_tags --pr N                # scan a PR
 python -m open_research_tagging.check_tags --body '#Design'      # debug only
 ```
 
-`--reply` posts on the review comment (skips `*[bot]`). `--soft` prints issues but exits 0.
+`--reply` posts on the review comment (skips `*[bot]`). `--soft` prints issues but exits 0. GitHub’s create-reply API only works on **submitted**, top-level review comments — pending comments in an unfinished “Start a review” draft often 404; coders should use Add single comment or submit the review (see `codebook/COMMENTING.md`).
 
 **Draft-codebook CI policy:** the Actions status check **fails only on malformed tags** (bare `#Word`, or `#…` that does not parse as `#namespace/value`). Well-formed tags with unknown namespace/value/scope ids are still printed (and may get a reply). They keep `needs_tag_review` on the site after refresh, but they do **not** fail the PR check until we tighten the policy later.
 
