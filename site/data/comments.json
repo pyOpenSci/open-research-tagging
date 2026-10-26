@@ -1,7 +1,7 @@
 {
   "meta": {
     "source_file": "site/data/raw_comments.json",
-    "count": 7,
+    "count": 6,
     "is_fixture": false,
     "codebook_version": "draft-0.1"
   },
@@ -210,121 +210,6 @@
       "commit_id": "e5c7cdc9f9a41b4cda5160e6318ed4047a7ac04a",
       "created_at": "2026-10-26T15:25:09Z",
       "updated_at": "2026-10-26T15:25:09Z"
-    },
-    {
-      "id": 4379066957,
-      "body": "\u26a0\ufe0f **Tag format check** \u2014 this review comment has hashtags that won't be picked up by the research site.\n\n- #OneMoreMadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md\n\nExpected shape:\n```\n#disclosure/required\n#stance/permissive-with-conditions\n\nOptional free-text note\u2026\n```\n\nGuide: https://github.com/shaunagm/open-research-tagging/blob/main/codebook/COMMENTING.md",
-      "quote": "* **Development History Timeline:** Projects should have at least **3-6 months of public development history**, with evidence of releases, public issues, and pull requests that reflect **iterative, thoughtful development** rather than rapid and recent code generation.\n* If the human effort put into the package is less than the effort required to review it, please don't submit the package.\n* Software should be developed openly, rather than developed in private and then moved to a public repository with an OSI-approved license to meet minimal open source requirements.\n* **Development History Approach:** We encourage thoughtful development history and patterns, including tightly scoped commits with clear commit messages that follow iterative development best practices, rather than large commits that address multiple issues in a package and affect large volumes of files throughout the package. These workflows signal careful design and development, and changes to a codebase that could be reviewed by a human.\n* Projects with very short, rapid development timelines (weeks to a few months) will face higher scrutiny by our review teams than those that have a significant development history (more than 6 months)\n* **Package Scope & Design:** We value packages with a thoughtful, well-scoped design. When submitting, we will ask you to describe the key design decisions behind your package \u2014 the tradeoffs you considered and why you built it the way you did.\n* We place greater value on packages that have been adopted or used by a wide user base, since this demonstrates that the package has design and performance characteristics that meet multiple use cases.\n* Be sure to situate your package within the broader Python ecosystem: identify related tools, explain how your package differs from them, and explain how it complements, extends, or builds upon them.\n* We particularly value **work that builds upon or extends existing tools rather than reinventing solutions** where quality alternatives already exist.",
-      "quote_source": "paragraph",
-      "diff_hunk": "",
-      "tags": [
-        {
-          "raw": "#namespace/value",
-          "namespace": "namespace",
-          "value": "value",
-          "dimension": "namespace",
-          "dimension_label": "Namespace",
-          "kind": "value",
-          "value_label": "Value",
-          "display": "Namespace: Value",
-          "filter_key": "namespace:value"
-        },
-        {
-          "raw": "#disclosure/required",
-          "namespace": "disclosure",
-          "value": "required",
-          "dimension": "disclosure",
-          "dimension_label": "Disclosure",
-          "kind": "value",
-          "value_label": "Required",
-          "display": "Disclosure: Required",
-          "filter_key": "disclosure:required"
-        },
-        {
-          "raw": "#disclosure/required",
-          "namespace": "disclosure",
-          "value": "required",
-          "dimension": "disclosure",
-          "dimension_label": "Disclosure",
-          "kind": "value",
-          "value_label": "Required",
-          "display": "Disclosure: Required",
-          "filter_key": "disclosure:required"
-        },
-        {
-          "raw": "#stance/permissive-with-conditions",
-          "namespace": "stance",
-          "value": "permissive-with-conditions",
-          "dimension": "stance",
-          "dimension_label": "Stance",
-          "kind": "value",
-          "value_label": "Permissive with conditions",
-          "display": "Stance: Permissive with conditions",
-          "filter_key": "stance:permissive-with-conditions"
-        }
-      ],
-      "tag_strings": [
-        "#namespace/value",
-        "#disclosure/required",
-        "#disclosure/required",
-        "#stance/permissive-with-conditions"
-      ],
-      "displays": [
-        "Namespace: Value",
-        "Disclosure: Required",
-        "Disclosure: Required",
-        "Stance: Permissive with conditions"
-      ],
-      "filter_keys": [
-        "namespace:value",
-        "disclosure:required",
-        "disclosure:required",
-        "stance:permissive-with-conditions"
-      ],
-      "parse_warnings": [
-        "#OneMoreMadeUpTag looks like a tag but needs #namespace/value (e.g. #disclosure/required). See codebook/COMMENTING.md",
-        "#namespace/value uses unknown namespace 'namespace'. Known namespaces: disclosure, enforcement, guidance, guidance-level, human-responsibility, rationale, scope, stance"
-      ],
-      "needs_tag_review": true,
-      "codes": {
-        "namespace": [
-          {
-            "value": "value",
-            "filter_key": "namespace:value",
-            "display": "Namespace: Value"
-          }
-        ],
-        "disclosure": [
-          {
-            "value": "required",
-            "filter_key": "disclosure:required",
-            "display": "Disclosure: Required"
-          },
-          {
-            "value": "required",
-            "filter_key": "disclosure:required",
-            "display": "Disclosure: Required"
-          }
-        ],
-        "stance": [
-          {
-            "value": "permissive-with-conditions",
-            "filter_key": "stance:permissive-with-conditions",
-            "display": "Stance: Permissive with conditions"
-          }
-        ]
-      },
-      "path": "projects/pyopensci/generative-ai-policy.md",
-      "project": "pyopensci",
-      "start_line": 49,
-      "line": 49,
-      "side": "RIGHT",
-      "user": "github-actions[bot]",
-      "pr_number": 1,
-      "html_url": "https://github.com/shaunagm/open-research-tagging/pull/1#discussion_r4379066957",
-      "commit_id": "e5c7cdc9f9a41b4cda5160e6318ed4047a7ac04a",
-      "created_at": "2026-10-26T15:25:26Z",
-      "updated_at": "2026-10-26T15:25:26Z"
     }
   ]
 }

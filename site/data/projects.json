@@ -74,20 +74,16 @@
                 "dimension_label": "Stance",
                 "all": {
                   "label": "All stance comments",
-                  "count": 1,
-                  "comment_ids": [
-                    4379066957
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=stance"
                 },
                 "value": "permissive-with-conditions",
                 "value_label": "Permissive with conditions",
                 "matching": {
                   "label": "Permissive with conditions",
-                  "count": 1,
-                  "comment_ids": [
-                    4379066957
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=stance:permissive-with-conditions"
                 }
               }
@@ -338,20 +334,16 @@
                 "dimension_label": "Disclosure",
                 "all": {
                   "label": "All disclosure comments",
-                  "count": 1,
-                  "comment_ids": [
-                    4379066957
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&dimension=disclosure"
                 },
                 "value": "required",
                 "value_label": "Required",
                 "matching": {
                   "label": "Required",
-                  "count": 1,
-                  "comment_ids": [
-                    4379066957
-                  ],
+                  "count": 0,
+                  "comment_ids": [],
                   "href": "index.html?project=pyopensci&filter=disclosure:required"
                 }
               }
@@ -505,7 +497,7 @@
           ]
         }
       },
-      "comment_count": 7,
+      "comment_count": 6,
       "comments_href": "index.html?project=pyopensci",
       "yaml_path": "projects/pyopensci/project.yaml",
       "coding_warnings": []
