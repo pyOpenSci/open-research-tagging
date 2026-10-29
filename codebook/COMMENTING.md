@@ -6,7 +6,7 @@ Use **PR review comments** on the Files tab (line or multi-line). Put codebook h
 
 ## Workflow
 
-1. Open the **tag picker** on the site (`tags.html`). Live: https://shaunagm.github.io/open-research-tagging/tags.html — locally: `cd site && python3 -m http.server 8000`, then http://localhost:8000/tags.html.
+1. Open the **tag picker** on the site (`tags.html`). Live: https://www.pyopensci.org/open-research-tagging/tags.html — locally: `cd site && python3 -m http.server 8000`, then http://localhost:8000/tags.html.
 2. Search if needed; **click a tag** to stage it. Stage several if the passage needs more than one code.
 3. **Copy** — multiline hashtags only, one per line.
 4. On the PR **Files** tab, start a review comment on the relevant line(s), paste the hashtags at the top, then add one or two sentences under them. Prefer **Add single comment**, or **Submit** the review if you used “Start a review” — comments left sitting in an unsubmitted review often never get a tag-check bot reply (GitHub’s replies API can’t attach to them yet).

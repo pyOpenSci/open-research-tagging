@@ -43,7 +43,8 @@ def test_readme_onboarding_covers_layout_workflows_and_demo():
     assert "src/open_research_tagging" in text or "open_research_tagging/" in text
     assert "ARCHITECTURE.md" in text
     assert "COMMENTING.md" in text
-    assert "shaunagm.github.io/open-research-tagging" in text
+    assert "www.pyopensci.org/open-research-tagging" in text
+    # Personal Pages may remain as an intentional staging note only.
     assert "malformed" in lower
     assert "fixture" in lower
     assert "test.yml" in text or "**Tests**" in text

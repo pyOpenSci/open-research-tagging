@@ -178,7 +178,8 @@ Tag picker copy-text and coding-view **Copy YAML** run in the browser; canonical
 | `update-comments.yml` | Daily cron + manual | Fetch → process → emit codebook → process projects → **commit** JSON → deploy Pages |
 | `deploy-pages.yml` | `site/**` on `main`, or manual | Publish `site/` to Pages |
 
-Personal/test Pages URL: https://shaunagm.github.io/open-research-tagging/ (org host later).
+**Org production Pages:** https://www.pyopensci.org/open-research-tagging/  
+**Personal/test staging (optional):** https://shaunagm.github.io/open-research-tagging/
 
 ### Tag-check
 

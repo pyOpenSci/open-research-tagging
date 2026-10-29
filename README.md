@@ -6,7 +6,7 @@ Coding happens on GitHub, not in a custom app. Policy files live under `projects
 
 Helpers on the site speed up the awkward parts: a **tag picker** stages the exact hashtag strings for paste into review comments, and a **coding view** walks passage evidence and emits a paste-ready `coding:` YAML block for `project.yaml`. Exact tag strings always come from the codebook (via the picker), not from memory.
 
-**Live demo:** https://shaunagm.github.io/open-research-tagging/  
+**Live site:** https://www.pyopensci.org/open-research-tagging/  
 **How the pieces fit:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)  
 **How to tag on a PR:** [`codebook/COMMENTING.md`](codebook/COMMENTING.md)
 
@@ -27,8 +27,8 @@ GitHub is the editor. The site is read-only.
 
 | Layer | Where | Helper |
 |-------|--------|--------|
-| **Passage** | Hashtags on Files-tab review comments | [Tag picker](https://shaunagm.github.io/open-research-tagging/tags.html) |
-| **Overall** | `coding:` in `project.yaml` | [Coding view](https://shaunagm.github.io/open-research-tagging/coding.html?project=pyopensci) |
+| **Passage** | Hashtags on Files-tab review comments | [Tag picker](https://www.pyopensci.org/open-research-tagging/tags.html) |
+| **Overall** | `coding:` in `project.yaml` | [Coding view](https://www.pyopensci.org/open-research-tagging/coding.html?project=pyopensci) |
 
 **Typical coder path:** tag picker → paste on the Files tab → maintainers refresh site data → coding view → Copy YAML into `project.yaml`. PR checklist: [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
 
@@ -72,12 +72,12 @@ While the codebook is still changing, tag-check **hard-fails the PR check only o
 
 ## GitHub Pages
 
-One-time on the GitHub remote (personal/test host first; org cutover later):
+Production host is the **pyOpenSci** org repo. One-time setup (already done for production):
 
 1. **Settings → Pages → Build and deployment → Source:** GitHub Actions.
 2. Push workflows on `main` (or merge a PR that adds `.github/workflows/`).
 3. Run **Actions → Update comment data → Run workflow** once (or wait for the daily cron) so live comments refresh into `site/data/`.
 4. Smoke-check: comments browser, projects, **tag picker**, **coding view**.
 
-**Personal/test URL:** https://shaunagm.github.io/open-research-tagging/  
-**Org production URL:** *(set at Phase 12g)*
+**Org production URL:** https://www.pyopensci.org/open-research-tagging/  
+**Personal/test staging (optional):** https://shaunagm.github.io/open-research-tagging/
