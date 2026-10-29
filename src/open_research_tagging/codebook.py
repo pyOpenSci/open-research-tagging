@@ -28,17 +28,23 @@ class Codebook:
 
     version: str
     _values: Mapping[str, Mapping[str, str]]
+    _value_descriptions: Mapping[str, Mapping[str, str]]
+    _leaf_descriptions: Mapping[str, str]
     _namespaces: Mapping[str, NamespaceInfo]
     _scope_types: Mapping[str, str]
     _scope_positions: Mapping[str, str]
+    _scope_type_descriptions: Mapping[str, str]
 
     @classmethod
     def from_validated(cls, data: Mapping[str, Any]) -> Codebook:
         """Build indexes from an already-validated codebook mapping."""
         values: dict[str, dict[str, str]] = {}
+        value_descriptions: dict[str, dict[str, str]] = {}
+        leaf_descriptions: dict[str, str] = {}
         namespaces: dict[str, NamespaceInfo] = {}
         scope_types: dict[str, str] = {}
         scope_positions: dict[str, str] = {}
+        scope_type_descriptions: dict[str, str] = {}
         dimensions = data["dimensions"]
         for namespace, info in data["namespaces"].items():
             dimension = str(info["dimension"])
@@ -51,23 +57,47 @@ class Codebook:
             if kind == "scope":
                 scope_body = _resolve_path(dimensions, path)
                 scope_types, scope_positions = _index_scope(scope_body)
+                scope_type_descriptions = index_value_descriptions(
+                    list(scope_body.get("contribution_types") or [])
+                )
+                leaf_descriptions[dimension] = _leaf_description_text(scope_body)
                 continue
             leaf = _resolve_path(dimensions, path)
             values[dimension] = _index_values(leaf.get("values", []))
+            value_descriptions[dimension] = index_value_descriptions(
+                list(leaf.get("values") or [])
+            )
+            leaf_descriptions[dimension] = _leaf_description_text(leaf)
         return cls(
             version=str(data["version"]),
             _values=values,
+            _value_descriptions=value_descriptions,
+            _leaf_descriptions=leaf_descriptions,
             _namespaces=namespaces,
             _scope_types=scope_types,
             _scope_positions=scope_positions,
+            _scope_type_descriptions=scope_type_descriptions,
         )
 
     def label_for(self, dimension: str, value_id: str) -> str | None:
         return self._values.get(dimension, {}).get(value_id)
 
+    def description_for(self, dimension: str, value_id: str) -> str | None:
+        """Per-value description, if the codebook defines one."""
+        text = (self._value_descriptions.get(dimension) or {}).get(value_id)
+        return text or None
+
+    def leaf_description_for(self, dimension: str) -> str | None:
+        """Description on the leaf the namespace path points at."""
+        text = self._leaf_descriptions.get(dimension) or ""
+        return text or None
+
+    def scope_type_description(self, type_id: str) -> str | None:
+        text = self._scope_type_descriptions.get(type_id) or ""
+        return text or None
+
     def has_value(self, dimension: str, value_id: str) -> bool:
         return value_id in self._values.get(dimension, {})
-
     def dimension_for_namespace(self, namespace: str) -> str | None:
         info = self._namespaces.get(namespace)
         return None if info is None else info.dimension
@@ -221,6 +251,27 @@ def index_value_labels(values: list[Any]) -> dict[str, str]:
             label = entry_id
         indexed[entry_id] = label
     return indexed
+
+
+def index_value_descriptions(values: list[Any]) -> dict[str, str]:
+    """Map value entry ids → non-empty description strings."""
+    indexed: dict[str, str] = {}
+    for entry in values:
+        if not isinstance(entry, Mapping):
+            continue
+        entry_id = str(entry["id"])
+        desc = entry.get("description")
+        if isinstance(desc, str) and desc.strip():
+            indexed[entry_id] = " ".join(desc.split())
+    return indexed
+
+
+def _leaf_description_text(leaf: Mapping[str, Any]) -> str:
+    """Normalize a leaf/section description field to a single line (or empty)."""
+    desc = leaf.get("description")
+    if not isinstance(desc, str) or not desc.strip():
+        return ""
+    return " ".join(desc.split())
 
 
 _index_values = index_value_labels

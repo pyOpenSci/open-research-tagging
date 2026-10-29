@@ -470,11 +470,15 @@ body.tags-page .lede {
   flex-direction: column;
   gap: 0.25rem;
 }
-.tag-list li {
+.tag-list li,
+.tag-item {
   margin: 0;
   padding: 0;
   border: none;
   background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 .tag-row {
   display: flex;
@@ -510,6 +514,15 @@ body.tags-page .lede {
   background: transparent;
   padding: 0;
   word-break: break-all;
+}
+.tag-definition {
+  display: block;
+  margin: 0.1rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted, #555);
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .copy-preview-label {
   display: flex;

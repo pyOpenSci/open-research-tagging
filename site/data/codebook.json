@@ -190,6 +190,7 @@
     {
       "hashtag": "#disclosure/none",
       "label": "None",
+      "description": "",
       "dimension": "disclosure",
       "dimension_label": "Disclosure",
       "namespace": "disclosure",
@@ -198,6 +199,7 @@
     {
       "hashtag": "#disclosure/recommended",
       "label": "Recommended",
+      "description": "",
       "dimension": "disclosure",
       "dimension_label": "Disclosure",
       "namespace": "disclosure",
@@ -206,6 +208,7 @@
     {
       "hashtag": "#disclosure/required",
       "label": "Required",
+      "description": "",
       "dimension": "disclosure",
       "dimension_label": "Disclosure",
       "namespace": "disclosure",
@@ -214,6 +217,7 @@
     {
       "hashtag": "#disclosure-in-practice/deliberate",
       "label": "Deliberate",
+      "description": "none seen; tool defaults only (e.g. Claude co-author line/footer); or deliberate markers someone chose.",
       "dimension": "disclosure_in_practice",
       "dimension_label": "Disclosure in practice",
       "namespace": "disclosure-in-practice",
@@ -222,6 +226,7 @@
     {
       "hashtag": "#disclosure-in-practice/none-seen",
       "label": "None seen",
+      "description": "none seen; tool defaults only (e.g. Claude co-author line/footer); or deliberate markers someone chose.",
       "dimension": "disclosure_in_practice",
       "dimension_label": "Disclosure in practice",
       "namespace": "disclosure-in-practice",
@@ -230,6 +235,7 @@
     {
       "hashtag": "#disclosure-in-practice/tool-defaults-only",
       "label": "Tool defaults only",
+      "description": "none seen; tool defaults only (e.g. Claude co-author line/footer); or deliberate markers someone chose.",
       "dimension": "disclosure_in_practice",
       "dimension_label": "Disclosure in practice",
       "namespace": "disclosure-in-practice",
@@ -238,6 +244,7 @@
     {
       "hashtag": "#enforcement/contributor-blocked",
       "label": "Contributor blocked",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -246,6 +253,7 @@
     {
       "hashtag": "#enforcement/none-stated",
       "label": "None stated",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -254,6 +262,7 @@
     {
       "hashtag": "#enforcement/other",
       "label": "Other",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -262,6 +271,7 @@
     {
       "hashtag": "#enforcement/pr-closed",
       "label": "PR closed",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -270,6 +280,7 @@
     {
       "hashtag": "#guidance/design",
       "label": "Design (modularity, existing patterns, technical debt)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -278,6 +289,7 @@
     {
       "hashtag": "#guidance/evaluation",
       "label": "Evaluation (understand, test, and explain output)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -286,6 +298,7 @@
     {
       "hashtag": "#guidance/iteration",
       "label": "Iteration (human-AI cycles rather than one-shot)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -294,6 +307,7 @@
     {
       "hashtag": "#guidance/learning",
       "label": "Learning (supports building skills or understanding)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -302,6 +316,7 @@
     {
       "hashtag": "#guidance/scoping",
       "label": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -310,6 +325,7 @@
     {
       "hashtag": "#guidance-implicit/design",
       "label": "Design (modularity, existing patterns, technical debt)",
+      "description": "",
       "dimension": "guidance_type_implicit",
       "dimension_label": "Guidance type (implicit)",
       "namespace": "guidance-implicit",
@@ -318,6 +334,7 @@
     {
       "hashtag": "#guidance-implicit/evaluation",
       "label": "Evaluation (understand, test, and explain output)",
+      "description": "",
       "dimension": "guidance_type_implicit",
       "dimension_label": "Guidance type (implicit)",
       "namespace": "guidance-implicit",
@@ -326,6 +343,7 @@
     {
       "hashtag": "#guidance-implicit/iteration",
       "label": "Iteration (human-AI cycles rather than one-shot)",
+      "description": "",
       "dimension": "guidance_type_implicit",
       "dimension_label": "Guidance type (implicit)",
       "namespace": "guidance-implicit",
@@ -334,6 +352,7 @@
     {
       "hashtag": "#guidance-implicit/learning",
       "label": "Learning (supports building skills or understanding)",
+      "description": "",
       "dimension": "guidance_type_implicit",
       "dimension_label": "Guidance type (implicit)",
       "namespace": "guidance-implicit",
@@ -342,6 +361,7 @@
     {
       "hashtag": "#guidance-implicit/scoping",
       "label": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "description": "",
       "dimension": "guidance_type_implicit",
       "dimension_label": "Guidance type (implicit)",
       "namespace": "guidance-implicit",
@@ -350,6 +370,7 @@
     {
       "hashtag": "#guidance-level/restricts-only",
       "label": "Restricts only",
+      "description": "Does the policy only restrict, or does it guide how to use AI well?",
       "dimension": "guidance_level",
       "dimension_label": "Guidance level",
       "namespace": "guidance-level",
@@ -358,6 +379,7 @@
     {
       "hashtag": "#guidance-level/some-guidance",
       "label": "Some guidance",
+      "description": "Does the policy only restrict, or does it guide how to use AI well?",
       "dimension": "guidance_level",
       "dimension_label": "Guidance level",
       "namespace": "guidance-level",
@@ -366,6 +388,7 @@
     {
       "hashtag": "#guidance-level/substantive-guidance",
       "label": "Substantive guidance",
+      "description": "Does the policy only restrict, or does it guide how to use AI well?",
       "dimension": "guidance_level",
       "dimension_label": "Guidance level",
       "namespace": "guidance-level",
@@ -374,6 +397,7 @@
     {
       "hashtag": "#guidance-level-implicit/restricts-only",
       "label": "Restricts only",
+      "description": "",
       "dimension": "guidance_level_implicit",
       "dimension_label": "Guidance level (implicit)",
       "namespace": "guidance-level-implicit",
@@ -382,6 +406,7 @@
     {
       "hashtag": "#guidance-level-implicit/some-guidance",
       "label": "Some guidance",
+      "description": "",
       "dimension": "guidance_level_implicit",
       "dimension_label": "Guidance level (implicit)",
       "namespace": "guidance-level-implicit",
@@ -390,6 +415,7 @@
     {
       "hashtag": "#guidance-level-implicit/substantive-guidance",
       "label": "Substantive guidance",
+      "description": "",
       "dimension": "guidance_level_implicit",
       "dimension_label": "Guidance level (implicit)",
       "namespace": "guidance-level-implicit",
@@ -398,6 +424,7 @@
     {
       "hashtag": "#human-responsibility/no",
       "label": "No",
+      "description": "",
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
@@ -406,6 +433,7 @@
     {
       "hashtag": "#human-responsibility/not_stated",
       "label": "Not stated",
+      "description": "",
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
@@ -414,6 +442,7 @@
     {
       "hashtag": "#human-responsibility/yes",
       "label": "Yes \u2014 contributor is responsible for submitted work",
+      "description": "",
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
@@ -422,6 +451,7 @@
     {
       "hashtag": "#new-contributors/no",
       "label": "No",
+      "description": "Different rules for new contributors.",
       "dimension": "new_contributors",
       "dimension_label": "New contributors",
       "namespace": "new-contributors",
@@ -430,6 +460,7 @@
     {
       "hashtag": "#new-contributors/not_stated",
       "label": "Not stated",
+      "description": "Different rules for new contributors.",
       "dimension": "new_contributors",
       "dimension_label": "New contributors",
       "namespace": "new-contributors",
@@ -438,6 +469,7 @@
     {
       "hashtag": "#new-contributors/yes",
       "label": "Yes",
+      "description": "Different rules for new contributors.",
       "dimension": "new_contributors",
       "dimension_label": "New contributors",
       "namespace": "new-contributors",
@@ -446,6 +478,7 @@
     {
       "hashtag": "#rationale/code-quality",
       "label": "Code quality",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -454,6 +487,7 @@
     {
       "hashtag": "#rationale/contributor-learning-and-skill-development",
       "label": "Contributor learning and skill development",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -462,6 +496,7 @@
     {
       "hashtag": "#rationale/environmental",
       "label": "Environmental",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -470,6 +505,7 @@
     {
       "hashtag": "#rationale/licensing-and-copyright",
       "label": "Licensing and copyright",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -478,6 +514,7 @@
     {
       "hashtag": "#rationale/maintainer-and-reviewer-burden",
       "label": "Maintainer and reviewer burden",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -486,6 +523,7 @@
     {
       "hashtag": "#rationale/other",
       "label": "Other (specify in free text)",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -494,6 +532,7 @@
     {
       "hashtag": "#rationale/security",
       "label": "Security",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -502,6 +541,7 @@
     {
       "hashtag": "#rationale/social-and-ethical",
       "label": "Social and ethical (trust, transparency, community norms)",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -510,6 +550,7 @@
     {
       "hashtag": "#rationale-implicit/code-quality",
       "label": "Code quality",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -518,6 +559,7 @@
     {
       "hashtag": "#rationale-implicit/contributor-learning-and-skill-development",
       "label": "Contributor learning and skill development",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -526,6 +568,7 @@
     {
       "hashtag": "#rationale-implicit/environmental",
       "label": "Environmental",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -534,6 +577,7 @@
     {
       "hashtag": "#rationale-implicit/licensing-and-copyright",
       "label": "Licensing and copyright",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -542,6 +586,7 @@
     {
       "hashtag": "#rationale-implicit/maintainer-and-reviewer-burden",
       "label": "Maintainer and reviewer burden",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -550,6 +595,7 @@
     {
       "hashtag": "#rationale-implicit/other",
       "label": "Other (specify in free text)",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -558,6 +604,7 @@
     {
       "hashtag": "#rationale-implicit/security",
       "label": "Security",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -566,6 +613,7 @@
     {
       "hashtag": "#rationale-implicit/social-and-ethical",
       "label": "Social and ethical (trust, transparency, community norms)",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
       "dimension": "rationale_implicit",
       "dimension_label": "Stated rationale (implicit)",
       "namespace": "rationale-implicit",
@@ -574,6 +622,7 @@
     {
       "hashtag": "#stance/ban",
       "label": "Ban",
+      "description": "AI-generated contributions prohibited",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -582,6 +631,7 @@
     {
       "hashtag": "#stance/discouraged",
       "label": "Discouraged",
+      "description": "Allowed but advised against, with no enforceable limit",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -590,6 +640,7 @@
     {
       "hashtag": "#stance/gate-restrict",
       "label": "Gate/restrict",
+      "description": "Allowed only under limits (for example, PR gating, pre-approval, issue-first)",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -598,6 +649,7 @@
     {
       "hashtag": "#stance/no-policy",
       "label": "No policy",
+      "description": "No written policy found after the search protocol",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -606,6 +658,7 @@
     {
       "hashtag": "#stance/permissive",
       "label": "Permissive",
+      "description": "Allowed, no stated requirements",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -614,6 +667,7 @@
     {
       "hashtag": "#stance/permissive-with-conditions",
       "label": "Permissive with conditions",
+      "description": "Allowed, with stated requirements",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -622,6 +676,7 @@
     {
       "hashtag": "#stance-implicit/defensive-instructions",
       "label": "Defensive instructions",
+      "description": "Agent files or templates aimed at other people's agents, for example telling them not to open PRs.",
       "dimension": "stance_implicit",
       "dimension_label": "Stance (implicit)",
       "namespace": "stance-implicit",
@@ -630,6 +685,7 @@
     {
       "hashtag": "#stance-implicit/maintainers-use-ai-tools",
       "label": "Maintainers use of AI tools",
+      "description": "Agent files they committed, or AI co-author lines and footers on their commits, PRs and issues.",
       "dimension": "stance_implicit",
       "dimension_label": "Stance (implicit)",
       "namespace": "stance-implicit",
@@ -638,6 +694,7 @@
     {
       "hashtag": "#stance-implicit/no-signals",
       "label": "No signals",
+      "description": "None of the above after the implicit search.",
       "dimension": "stance_implicit",
       "dimension_label": "Stance (implicit)",
       "namespace": "stance-implicit",
@@ -646,6 +703,7 @@
     {
       "hashtag": "#stance-implicit/outside-ai-assisted-accepted",
       "label": "External/outside AI-assisted work is accepted",
+      "description": "PRs from non-maintainers that carry AI attribution have been merged.",
       "dimension": "stance_implicit",
       "dimension_label": "Stance (implicit)",
       "namespace": "stance-implicit",
@@ -654,6 +712,7 @@
     {
       "hashtag": "#stance-implicit/outside-ai-assisted-turned-away",
       "label": "Outside AI-assisted work is turned away",
+      "description": "PRs or issues closed, labeled, or answered because of AI use.",
       "dimension": "stance_implicit",
       "dimension_label": "Stance (implicit)",
       "namespace": "stance-implicit",
@@ -662,6 +721,7 @@
     {
       "hashtag": "#scope/autonomous-agents:allowed",
       "label": "Autonomous agents \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -670,6 +730,7 @@
     {
       "hashtag": "#scope/autonomous-agents:banned",
       "label": "Autonomous agents \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -678,6 +739,7 @@
     {
       "hashtag": "#scope/autonomous-agents:not_addressed",
       "label": "Autonomous agents \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -686,6 +748,7 @@
     {
       "hashtag": "#scope/autonomous-agents:restricted",
       "label": "Autonomous agents \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -694,6 +757,7 @@
     {
       "hashtag": "#scope/code:allowed",
       "label": "Code \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -702,6 +766,7 @@
     {
       "hashtag": "#scope/code:banned",
       "label": "Code \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -710,6 +775,7 @@
     {
       "hashtag": "#scope/code:not_addressed",
       "label": "Code \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -718,6 +784,7 @@
     {
       "hashtag": "#scope/code:restricted",
       "label": "Code \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -726,6 +793,7 @@
     {
       "hashtag": "#scope/contribution-types-not-defined:allowed",
       "label": "Contribution types not defined \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -734,6 +802,7 @@
     {
       "hashtag": "#scope/contribution-types-not-defined:banned",
       "label": "Contribution types not defined \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -742,6 +811,7 @@
     {
       "hashtag": "#scope/contribution-types-not-defined:not_addressed",
       "label": "Contribution types not defined \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -750,6 +820,7 @@
     {
       "hashtag": "#scope/contribution-types-not-defined:restricted",
       "label": "Contribution types not defined \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -758,6 +829,7 @@
     {
       "hashtag": "#scope/docs-and-text:allowed",
       "label": "Docs and text \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -766,6 +838,7 @@
     {
       "hashtag": "#scope/docs-and-text:banned",
       "label": "Docs and text \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -774,6 +847,7 @@
     {
       "hashtag": "#scope/docs-and-text:not_addressed",
       "label": "Docs and text \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -782,6 +856,7 @@
     {
       "hashtag": "#scope/docs-and-text:restricted",
       "label": "Docs and text \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -790,6 +865,7 @@
     {
       "hashtag": "#scope/issues-and-pr-descriptions:allowed",
       "label": "Issues and PR descriptions \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -798,6 +874,7 @@
     {
       "hashtag": "#scope/issues-and-pr-descriptions:banned",
       "label": "Issues and PR descriptions \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -806,6 +883,7 @@
     {
       "hashtag": "#scope/issues-and-pr-descriptions:not_addressed",
       "label": "Issues and PR descriptions \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -814,6 +892,7 @@
     {
       "hashtag": "#scope/issues-and-pr-descriptions:restricted",
       "label": "Issues and PR descriptions \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -822,6 +901,7 @@
     {
       "hashtag": "#scope/review:allowed",
       "label": "Review \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -830,6 +910,7 @@
     {
       "hashtag": "#scope/review:banned",
       "label": "Review \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -838,6 +919,7 @@
     {
       "hashtag": "#scope/review:not_addressed",
       "label": "Review \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -846,6 +928,7 @@
     {
       "hashtag": "#scope/review:restricted",
       "label": "Review \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -854,6 +937,7 @@
     {
       "hashtag": "#scope/tests:allowed",
       "label": "Tests \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -862,6 +946,7 @@
     {
       "hashtag": "#scope/tests:banned",
       "label": "Tests \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -870,6 +955,7 @@
     {
       "hashtag": "#scope/tests:not_addressed",
       "label": "Tests \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -878,6 +964,7 @@
     {
       "hashtag": "#scope/tests:restricted",
       "label": "Tests \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
