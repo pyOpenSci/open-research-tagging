@@ -18,9 +18,10 @@
     <header class="page-header">
       <h1>Project coding view</h1>
       <p class="lede">
-        Walk overall codes with passage evidence, then Copy YAML and paste the
-        <code>coding:</code> block into <code>project.yaml</code>. Prefills from
-        site data when present. Form sections come from the codebook schema.
+        Walk overall codes with passage evidence, edit project metadata, then
+        Copy YAML and paste over the whole <code>project.yaml</code>. Prefills
+        from site data when present. Coding sections come from the codebook
+        schema; the files list is read-only (add files on the PR in GitHub).
       </p>
       <p class="meta-row" x-show="loading">Loading…</p>
       <p class="meta-row" x-show="error" x-text="error"></p>
@@ -116,6 +117,93 @@
         </aside>
         <section class="main-pane">
           <form id="coding-form" class="coding-form" @submit.prevent>
+            <fieldset class="coding-section" id="project-meta" x-show="meta">
+              <legend>Project metadata</legend>
+              <label class="search">Slug
+                <input
+                  type="text"
+                  id="meta-slug"
+                  x-model="meta.slug"
+                  @input="touchMeta()"
+                />
+              </label>
+              <label class="search">Display name
+                <input
+                  type="text"
+                  id="meta-display-name"
+                  x-model="meta.display_name"
+                  @input="touchMeta()"
+                />
+              </label>
+              <template x-for="key in provenanceKeys" :key="key">
+                <div class="coding-field">
+                  <template x-if="key === 'policy_location'">
+                    <label class="search">
+                      <span x-text="provenanceLabel(key)"></span>
+                      <select
+                        id="meta-policy-location"
+                        @change="meta.provenance.policy_location = $event.target.value || null; touchMeta()"
+                      >
+                        <option
+                          value=""
+                          :selected="!meta.provenance.policy_location"
+                        >—</option>
+                        <template
+                          x-for="opt in policyLocationOptions"
+                          :key="opt.id"
+                        >
+                          <option
+                            :value="opt.id"
+                            :selected="meta.provenance.policy_location === opt.id"
+                            x-text="opt.label"
+                          ></option>
+                        </template>
+                      </select>
+                    </label>
+                  </template>
+                  <template x-if="key === 'notes'">
+                    <label class="search">
+                      <span x-text="provenanceLabel(key)"></span>
+                      <textarea
+                        rows="2"
+                        x-model="meta.provenance.notes"
+                        @input="touchMeta()"
+                      ></textarea>
+                    </label>
+                  </template>
+                  <template x-if="key !== 'policy_location' && key !== 'notes'">
+                    <label class="search">
+                      <span x-text="provenanceLabel(key)"></span>
+                      <input
+                        type="text"
+                        :id="'meta-' + key"
+                        :value="meta.provenance[key] == null ? '' : meta.provenance[key]"
+                        @input="meta.provenance[key] = $event.target.value || null; touchMeta()"
+                      />
+                    </label>
+                  </template>
+                </div>
+              </template>
+              <div class="coding-field" id="meta-files">
+                <p class="field-label">Files (read-only)</p>
+                <ul class="meta-row" x-show="meta.files && meta.files.length">
+                  <template x-for="(f, i) in meta.files" :key="i">
+                    <li>
+                      <code x-text="f.path || f"></code>
+                      <span
+                        x-show="f.description"
+                        x-text="' — ' + f.description"
+                      ></span>
+                    </li>
+                  </template>
+                </ul>
+                <p class="meta-row" x-show="!meta.files || meta.files.length === 0">
+                  No files listed yet — add them under
+                  <code>projects/&lt;slug&gt;/</code> on the PR.
+                </p>
+              </div>
+            </fieldset>
+
             <template x-for="dim in schemaDimensions" :key="dim.id">
               <fieldset
                 class="coding-section"
@@ -262,17 +350,17 @@
 
             <div class="copy-yaml-block" id="copy-yaml">
               <div class="sidebar-head">
-                <h2>Copy coding YAML</h2>
+                <h2>Copy project.yaml</h2>
               </div>
               <p class="meta-row">
-                Paste over the <code>coding:</code> block in
-                <code>project.yaml</code> (not provenance or files).
+                Paste over the whole <code>projects/&lt;slug&gt;/project.yaml</code>
+                file (slug, provenance, coding, and files).
               </p>
               <textarea
                 class="copy-preview"
                 id="yaml-preview"
                 readonly
-                rows="14"
+                rows="18"
                 :value="yamlPreview"
               ></textarea>
               <div class="copy-actions">

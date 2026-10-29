@@ -11,6 +11,7 @@ import yaml
 
 from open_research_tagging.codebook import Codebook
 from open_research_tagging.coding_yaml import normalize_coding
+from open_research_tagging.project_yaml import PROVENANCE_KEYS, empty_provenance
 from open_research_tagging.tags import humanize
 
 
@@ -445,16 +446,15 @@ def build_project_from_data(
     overall, warnings = build_overall(coding, slug, codebook, cidx)
     pb = cidx.get(slug) or {"all_ids": []}
     files = data.get("files")
+    # Full provenance for coding-view meta form (13e); dates jsonable for JSON.
+    prov_out = empty_provenance()
+    for key in PROVENANCE_KEYS:
+        if key in provenance:
+            prov_out[key] = jsonable(provenance.get(key))
     row: dict[str, Any] = {
         "slug": slug,
         "display_name": data.get("display_name") or slug,
-        "provenance": {
-            "source_repo": provenance.get("source_repo"),
-            "source_commit": provenance.get("source_commit"),
-            "source_url": provenance.get("source_url"),
-            "policy_location": provenance.get("policy_location"),
-            "retrieved_at": jsonable(provenance.get("retrieved_at")),
-        },
+        "provenance": prov_out,
         "context": {
             "governance": context.get("governance"),
             "domain": context.get("domain"),
@@ -468,9 +468,8 @@ def build_project_from_data(
         "comments_href": f"index.html?project={slug}",
         "yaml_path": yaml_path,
         "coding_warnings": warnings,
+        "files": list(files) if isinstance(files, list) else [],
     }
-    if isinstance(files, list):
-        row["files"] = list(files)
     if from_open_pr:
         row["from_open_pr"] = True
         if pr_number is not None:

@@ -46,7 +46,7 @@ One or two sentences on what this passage shows.
 |------|--------|
 | Tag a **passage** (line evidence) | **Tag picker** (`tags.html`) → Copy hashtags → paste into a **Files-tab** review comment (this doc). |
 | Browse tagged passages | Comment browser (`index.html`) after maintainers refresh site data. |
-| Set **overall** codes for the policy | **Coding view** (`coding.html?project=<slug>`) → walk evidence → **Copy YAML** → paste over the `coding:` block in `projects/<slug>/project.yaml`. |
+| Set **overall** codes / project metadata | **Coding view** (`coding.html?project=<slug>`) → walk evidence → edit provenance → **Copy YAML** → paste over the whole `projects/<slug>/project.yaml`. Files list is read-only; add policy files on the PR in GitHub. |
 
 After maintainers run **Update comment data**, open PRs that add `projects/<slug>/project.yaml` also appear on the projects list / coding view (merged with main; main wins if the slug already exists). Passage tags on those PRs refresh the same way as before.
 

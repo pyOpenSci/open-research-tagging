@@ -30,7 +30,7 @@ GitHub is the editor. The site is read-only.
 | **Passage** | Hashtags on Files-tab review comments | [Tag picker](https://www.pyopensci.org/open-research-tagging/tags.html) |
 | **Overall** | `coding:` in `project.yaml` | [Coding view](https://www.pyopensci.org/open-research-tagging/coding.html?project=pyopensci) |
 
-**Typical coder path:** tag picker → paste on the Files tab → maintainers refresh site data → coding view → Copy YAML into `project.yaml`. PR checklist: [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
+**Typical coder path:** tag picker → paste on the Files tab → maintainers refresh site data → coding view → Copy YAML over `project.yaml`. PR checklist: [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
 
 ## Setup (dev)
 

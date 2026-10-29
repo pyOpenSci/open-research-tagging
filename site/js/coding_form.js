@@ -235,6 +235,106 @@
     return lines.join("\n") + "\n";
   }
 
+  /** Provenance key order — keep in sync with Python project_yaml.PROVENANCE_KEYS. */
+  const PROVENANCE_KEYS = [
+    "source_repo",
+    "source_path",
+    "source_commit",
+    "source_url",
+    "retrieved_at",
+    "policy_location",
+    "policy_date",
+    "notes",
+  ];
+
+  const POLICY_LOCATION_OPTIONS = [
+    { id: "CONTRIBUTING", label: "CONTRIBUTING" },
+    { id: "standalone-file", label: "Standalone file" },
+    { id: "governance-doc", label: "Governance doc" },
+    { id: "other", label: "Other" },
+  ];
+
+  function emptyProvenance() {
+    const out = {};
+    PROVENANCE_KEYS.forEach(function (key) {
+      out[key] = key === "notes" ? "" : null;
+    });
+    return out;
+  }
+
+  function emptyMeta() {
+    return {
+      slug: "",
+      display_name: "",
+      provenance: emptyProvenance(),
+      files: [],
+    };
+  }
+
+  function normalizeMeta(raw) {
+    const base = emptyMeta();
+    if (!raw || typeof raw !== "object") return base;
+    const slug = String(raw.slug || "").trim();
+    base.slug = slug;
+    const display = raw.display_name;
+    base.display_name =
+      display != null && String(display).trim() !== ""
+        ? String(display).trim()
+        : slug;
+    const provIn =
+      raw.provenance && typeof raw.provenance === "object" ? raw.provenance : {};
+    const prov = emptyProvenance();
+    PROVENANCE_KEYS.forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(provIn, key)) {
+        prov[key] = key === "notes" && provIn[key] == null ? "" : provIn[key];
+      }
+    });
+    base.provenance = prov;
+    if (Array.isArray(raw.files)) {
+      base.files = raw.files.map(function (f) {
+        if (f && typeof f === "object") return Object.assign({}, f);
+        return { path: String(f) };
+      });
+    }
+    return base;
+  }
+
+  function emitProjectYaml(meta, coding, codebook) {
+    const m = normalizeMeta(meta);
+    const lines = [
+      "slug: " + yamlScalar(m.slug || "example-project"),
+      "display_name: " + yamlScalar(m.display_name || m.slug || "Example Project"),
+      "",
+      "provenance:",
+    ];
+    PROVENANCE_KEYS.forEach(function (key) {
+      lines.push("  " + key + ": " + yamlScalar(m.provenance[key]));
+    });
+    lines.push("");
+    const codingText = emitCodingYaml(coding, codebook).replace(/\n$/, "");
+    lines.push(codingText);
+    lines.push("");
+    lines.push("files:");
+    if (!m.files.length) {
+      lines.push("  []");
+    } else {
+      m.files.forEach(function (row) {
+        const path = row && row.path != null ? row.path : row;
+        lines.push("  - path: " + yamlScalar(path));
+        if (row && typeof row === "object" && "description" in row) {
+          lines.push("    description: " + yamlScalar(row.description));
+        }
+        if (row && typeof row === "object") {
+          Object.keys(row).forEach(function (extra) {
+            if (extra === "path" || extra === "description") return;
+            lines.push("    " + extra + ": " + yamlScalar(row[extra]));
+          });
+        }
+      });
+    }
+    return lines.join("\n") + "\n";
+  }
+
   function emitLayer(lines, indent, layer, layerVal) {
     const storage = layer.storage || "object";
     const fields = layer.fields || [];
@@ -313,6 +413,11 @@
     emptyFromSchema: emptyFromSchema,
     prefillCoding: prefillCoding,
     emitCodingYaml: emitCodingYaml,
+    emitProjectYaml: emitProjectYaml,
+    emptyMeta: emptyMeta,
+    normalizeMeta: normalizeMeta,
+    PROVENANCE_KEYS: PROVENANCE_KEYS,
+    POLICY_LOCATION_OPTIONS: POLICY_LOCATION_OPTIONS,
     toggleMulti: toggleMulti,
     yamlScopeKey: yamlScopeKey,
     hashtagScopeKey: hashtagScopeKey,

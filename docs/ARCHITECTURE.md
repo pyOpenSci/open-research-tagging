@@ -136,7 +136,7 @@ Shared chrome under `site/` (Alpine.js + DataTables from CDN). Local preview: `c
 | `index.html` | Comment browser (filters, quotes, deep links) |
 | `projects.html` | Overall codes + evidence links into the browser |
 | `tags.html` | Passage **tag picker** (search / stage / Copy hashtags) |
-| `coding.html?project=<slug>` | Overall **coding view** (evidence + schema-driven form + Copy YAML) |
+| `coding.html?project=<slug>` | Overall **coding view** (evidence + metadata + schema form + Copy full `project.yaml`) |
 
 **Comment browser URL params** (same shapes the projects join emits):
 
@@ -159,13 +159,13 @@ Documented for researchers in [`codebook/COMMENTING.md`](../codebook/COMMENTING.
 | Need | Tool |
 |------|------|
 | Tag a **passage** | Tag picker → Copy → Files-tab review comment (hashtags at top, then a short note). Prefer **Add single comment** or **Submit** the review — unsubmitted “Start a review” drafts often cannot receive bot replies. |
-| Set **overall** codes | Coding view → walk evidence → **Copy YAML** → paste over `coding:` in `project.yaml`. Do not invent overall YAML by pasting random hashtags into the file. |
+| Set **overall** codes / metadata | Coding view → walk evidence → edit provenance → **Copy YAML** → paste over whole `project.yaml` (files list read-only). Do not invent overall YAML by pasting random hashtags into the file. |
 
 Exact hashtag strings come from the picker / `tag_catalog`, not a second hand-maintained table in the docs.
 
 ## Emit drift
 
-Tag picker copy-text and coding-view **Copy YAML** run in the browser; canonical strings and YAML shape are defined and tested in **Python** (`tag_catalog.py`, `coding_yaml.py`). Two implementations can drift.
+Tag picker copy-text and coding-view **Copy YAML** run in the browser; canonical strings and YAML shape are defined and tested in **Python** (`tag_catalog.py`, `coding_yaml.py`, `project_yaml.py`). Two implementations can drift.
 
 **v1 approach:** Python goldens / helpers are the contract; Playwright paste/preview tests check the browser against that contract. Do not invent a third source of truth or a shared JS/Python runtime unless drift becomes chronic.
 

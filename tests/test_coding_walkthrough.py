@@ -13,6 +13,7 @@ import pytest
 import yaml
 
 from open_research_tagging.coding_yaml import emit_coding_block
+from open_research_tagging.project_yaml import emit_project_yaml
 
 pytest.importorskip("playwright")
 pytest.importorskip("pytest_playwright")
@@ -57,7 +58,13 @@ def test_coding_view_prefills_and_yaml_matches_python(
     page.wait_for_selector("#coding-ready", state="visible")
     page.wait_for_selector("#yaml-preview")
 
-    expected = emit_coding_block(pyopensci_row["coding"])
+    expected = emit_project_yaml(
+        slug=pyopensci_row["slug"],
+        display_name=pyopensci_row.get("display_name"),
+        provenance=pyopensci_row.get("provenance"),
+        coding=pyopensci_row["coding"],
+        files=pyopensci_row.get("files") or [],
+    )
     page.wait_for_function(
         """(needle) => {
           const ta = document.getElementById('yaml-preview');
@@ -65,21 +72,30 @@ def test_coding_view_prefills_and_yaml_matches_python(
         }""",
         arg=pyopensci_row["coding"]["stance"]["explicit"],
     )
-    # Prefill: stance.explicit select shows seed value
-    stance_val = page.locator("#coding-form select").first.input_value()
-    assert stance_val == pyopensci_row["coding"]["stance"]["explicit"]
+    # Prefill: metadata + stance.explicit somewhere in the form selects
+    assert page.locator("#meta-slug").input_value() == pyopensci_row["slug"]
+    assert page.locator("#meta-files").is_visible()
+    selects = page.locator("#coding-form select")
+    values = [selects.nth(i).input_value() for i in range(selects.count())]
+    assert pyopensci_row["coding"]["stance"]["explicit"] in values
 
     preview = page.locator("#yaml-preview").input_value()
     assert preview == expected
-    assert preview.startswith("coding:\n")
+    assert preview.startswith("slug:")
+    assert "provenance:\n" in preview
+    assert "coding:\n" in preview
+    assert "files:\n" in preview
 
-    # Parsed preview is a coding mapping process_projects can consume
     parsed = yaml.safe_load(preview)
-    assert "coding" in parsed
+    assert parsed["slug"] == pyopensci_row["slug"]
     assert (
         parsed["coding"]["stance"]["explicit"]
         == pyopensci_row["coding"]["stance"]["explicit"]
     )
+    # coding subsection still matches emit_coding_block contract
+    assert parsed["coding"] == yaml.safe_load(
+        emit_coding_block(pyopensci_row["coding"])
+    )["coding"]
 
 
 def test_section_title_filters_evidence(page, site_base_url):
@@ -114,8 +130,8 @@ def test_form_edit_updates_yaml_preview(page, site_base_url, pyopensci_row):
     stance_ex = pyopensci_row["coding"]["stance"]["explicit"]
     assert stance_ex in before
 
-    # First select in form is stance.explicit
-    page.locator("#coding-form select").first.select_option("permissive")
+    # Stance.explicit select (skip policy_location in metadata)
+    page.locator("#coding-form select").nth(1).select_option("permissive")
     page.wait_for_function(
         """() => {
           const ta = document.getElementById('yaml-preview');

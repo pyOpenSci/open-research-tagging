@@ -157,8 +157,12 @@ def test_coding_page_wires_copy_yaml():
     html = CODING_HTML.read_text(encoding="utf-8")
     assert "copy-yaml" in html or "copyYaml" in html or "Copy YAML" in html
     assert "schemaDimensions" in html
+    assert "project-meta" in html or "meta-slug" in html
+    assert "meta-files" in html
+    assert "whole" in html.lower() or "project.yaml" in html
     src = FORM_JS.read_text(encoding="utf-8")
     assert "emitCodingYaml" in src
+    assert "emitProjectYaml" in src
 
 
 def _run_js_emit(coding: dict) -> str:
@@ -204,3 +208,60 @@ def test_browser_emit_matches_python_golden():
 
 def test_browser_emit_matches_python_empty():
     assert _run_js_emit({}) == emit_coding_block({})
+
+
+def test_browser_project_yaml_emit_matches_python():
+    from open_research_tagging.project_yaml import emit_project_yaml
+
+    meta = {
+        "slug": "acme",
+        "display_name": "Acme",
+        "provenance": {
+            "source_repo": "https://example.com/r",
+            "source_commit": "abc",
+            "notes": "",
+        },
+        "files": [{"path": "p.md", "description": "Policy"}],
+    }
+    py = emit_project_yaml(
+        slug=meta["slug"],
+        display_name=meta["display_name"],
+        provenance=meta["provenance"],
+        coding=SAMPLE,
+        files=meta["files"],
+    )
+    js = _run_js_project_emit(meta, SAMPLE)
+    assert js == py
+
+
+def _run_js_project_emit(meta: dict, coding: dict) -> str:
+    from open_research_tagging.codebook import load_codebook_file
+    from open_research_tagging.codebook_emit import emit_codebook_json
+
+    codebook = emit_codebook_json(
+        load_codebook_file(REPO / "codebook" / "codebook.yaml")
+    )
+    script = f"""
+const fs = require('fs');
+const vm = require('vm');
+const code = fs.readFileSync({json.dumps(str(FORM_JS))}, 'utf8');
+const sandbox = {{ console }};
+sandbox.globalThis = sandbox;
+vm.createContext(sandbox);
+vm.runInContext(code, sandbox);
+const F = sandbox.OrtCodingForm;
+if (!F || !F.emitProjectYaml) throw new Error('emitProjectYaml missing');
+const codebook = {json.dumps(codebook)};
+const text = F.emitProjectYaml({json.dumps(meta)}, {json.dumps(coding)}, codebook);
+process.stdout.write(text);
+"""
+    proc = subprocess.run(
+        ["node", "-e", script],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        pytest.fail(proc.stderr or proc.stdout or f"exit {proc.returncode}")
+    return proc.stdout

@@ -24,6 +24,7 @@
       comments: [],
       evidenceDim: "",
       coding: null,
+      meta: null,
       copyStatus: "",
 
       async init() {
@@ -46,14 +47,15 @@
           this.slug = resolved.slug;
           this.project = resolved.project;
           this.comments = resolved.comments;
-          // Prefill coding BEFORE assigning codebook. schemaDimensions is derived
-          // from codebook; if codebook is set first, Alpine renders the form while
-          // coding is still null and the bindings throw (empty form).
+          // Prefill coding + meta BEFORE assigning codebook. schemaDimensions is
+          // derived from codebook; if codebook is set first, Alpine renders the
+          // form while coding is still null and the bindings throw (empty form).
           if (Form) {
             this.coding = Form.prefillCoding(
               resolved.project && resolved.project.coding,
               codebook
             );
+            this.meta = Form.normalizeMeta(resolved.project || { slug: resolved.slug });
           }
           this.codebook = codebook;
           this.loading = false;
@@ -61,6 +63,18 @@
           this.loading = false;
           this.error = String(err);
         }
+      },
+
+      get provenanceKeys() {
+        return (Form && Form.PROVENANCE_KEYS) || [];
+      },
+
+      get policyLocationOptions() {
+        return (Form && Form.POLICY_LOCATION_OPTIONS) || [];
+      },
+
+      provenanceLabel(key) {
+        return String(key || "").replace(/_/g, " ");
       },
 
       get schemaDimensions() {
@@ -177,8 +191,12 @@
       },
 
       get yamlPreview() {
-        if (!Form || !this.coding) return "";
-        return Form.emitCodingYaml(this.coding, this.codebook);
+        if (!Form || !this.coding || !this.meta) return "";
+        return Form.emitProjectYaml(this.meta, this.coding, this.codebook);
+      },
+
+      touchMeta() {
+        this.copyStatus = "";
       },
 
       async copyYaml() {
