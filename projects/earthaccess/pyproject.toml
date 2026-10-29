@@ -3,7 +3,7 @@
 # Explicit = stated in policy docs; Implicit = practices / signals.
 # Use PR review comments for passage-level evidence — see codebook/COMMENTING.md.
 
-slug: example-project
+slug: earthaccess
 display_name: Example Project
 
 provenance:
