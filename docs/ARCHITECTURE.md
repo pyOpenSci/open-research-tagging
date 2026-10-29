@@ -117,9 +117,12 @@ Joining overall codes to passage evidence:
 
 Practical details: scope `not_addressed` is omitted from the sparse table; unknown overall ids still show and are flagged; YAML scope keys may use underscores while hashtags use hyphens — matching normalizes that. The YAML→site field map is an explicit adapter for the known nesting (not a generic “any codebook dimension → form” engine). For draft-0.2, `build_overall` flattens each dimension’s **Explicit** subsection into the projects-table chips; Implicit stays on the nested `coding` passthrough for the coding view.
 
+**Open PRs (13a):** review comments already refresh from every PR. Project rows normally come from `projects/` on the branch Actions checked out (main). **Update comment data** runs `process_projects --include-open-prs`, which also loads `projects/*/project.yaml` from **open** PRs at each PR head and merges those rows when the slug is not already on main (main wins on conflict). Open-PR rows carry `from_open_pr` / `pr_number` so the site can tell them apart later. Local/fixture regen leaves the flag off so it stays offline.
+
 ```bash
 python -m open_research_tagging.process_projects \
   --comments site/data/comments.json --out site/data/projects.json
+# Actions refresh also passes --include-open-prs (needs GITHUB_TOKEN + repo).
 ```
 
 Each row carries processed `overall` (projects table) and raw nested `coding` (coding-view pre-fill). YAML 1.1 bare `yes`/`no` normalize to string ids so JSON does not store booleans. Missing comments file → empty index and a warning (project rows still emit).
@@ -245,5 +248,5 @@ Site JS (under `site/js/`): `codebook.js`, `chips.js`, `comments_filters.js`, `c
 
 - Codebook content swap (**12e**); seed retire when ready (**12f**); org Pages cutover (**12g**)
 - Optional Tests CI Playwright install speedup (**12h**)
-- Optional mutation spot-check (**Phase 13**)
+- Optional mutation spot-check (plan **Maybe later**, not Phase 13)
 - Optional README screengrab GIFs (deferred; see plan open questions)

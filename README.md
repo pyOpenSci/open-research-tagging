@@ -63,7 +63,7 @@ Committed `site/data/comments.json` may be **live** (whatever is tagged on this 
 |----------|------|------|
 | **Tests** (`test.yml`) | Push to `main`, PRs | `pytest` (incl. Playwright) |
 | **Check comment tags** | Files-tab comment create/edit; PR open/sync | Soft bot reply on bad tags; PR scan hard-fails **malformed** only |
-| **Update comment data** | Daily cron + manual | Fetch → process → commit site JSON → deploy Pages |
+| **Update comment data** | Daily cron + manual | Fetch → process (incl. open-PR `project.yaml` into `projects.json`) → commit site JSON → deploy Pages |
 | **Deploy Pages** | `site/**` on `main`, or manual | Publish `site/` |
 
 ### Draft-codebook tag-check policy

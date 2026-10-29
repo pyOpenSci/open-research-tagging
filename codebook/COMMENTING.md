@@ -48,4 +48,6 @@ One or two sentences on what this passage shows.
 | Browse tagged passages | Comment browser (`index.html`) after maintainers refresh site data. |
 | Set **overall** codes for the policy | **Coding view** (`coding.html?project=<slug>`) → walk evidence → **Copy YAML** → paste over the `coding:` block in `projects/<slug>/project.yaml`. |
 
+After maintainers run **Update comment data**, open PRs that add `projects/<slug>/project.yaml` also appear on the projects list / coding view (merged with main; main wins if the slug already exists). Passage tags on those PRs refresh the same way as before.
+
 Do **not** invent overall YAML by pasting random hashtags into `project.yaml`. Passage hashtags stay on PR comments; overall codes stay in `project.yaml`.

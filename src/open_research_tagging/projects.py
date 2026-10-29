@@ -411,19 +411,23 @@ def _coding_explicit_view(coding: Mapping[str, Any]) -> dict[str, Any]:
     return out
 
 
-def build_project(
-    path: str | Path,
+def build_project_from_data(
+    data: Mapping[str, Any],
+    *,
     codebook: Codebook,
     cidx: Mapping[str, Any],
-    *,
-    repo_root: Path | None = None,
+    yaml_path: str,
+    slug_fallback: str | None = None,
+    from_open_pr: bool = False,
+    pr_number: int | None = None,
 ) -> dict[str, Any] | None:
-    """Build one projects.json row from a project.yaml path."""
-    path = Path(path)
-    root = repo_root if repo_root is not None else path.parents[1]
-    data = load_project_yaml(path)
-    slug = str(data.get("slug") or path.parent.name)
-    if slug.startswith("_"):
+    """
+    Build one projects.json row from an already-loaded project.yaml mapping.
+
+    Used for on-disk projects and open-PR YAMLs (13a). Skips _-prefixed slugs.
+    """
+    slug = str(data.get("slug") or slug_fallback or "")
+    if not slug or slug.startswith("_"):
         return None
     coding = data.get("coding") or {}
     if not isinstance(coding, Mapping):
@@ -440,11 +444,8 @@ def build_project(
         context = context_raw
     overall, warnings = build_overall(coding, slug, codebook, cidx)
     pb = cidx.get(slug) or {"all_ids": []}
-    try:
-        yaml_rel = str(path.resolve().relative_to(Path(root).resolve()))
-    except ValueError:
-        yaml_rel = str(path)
-    return {
+    files = data.get("files")
+    row: dict[str, Any] = {
         "slug": slug,
         "display_name": data.get("display_name") or slug,
         "provenance": {
@@ -465,9 +466,40 @@ def build_project(
         "overall": overall,
         "comment_count": len(pb.get("all_ids") or []),
         "comments_href": f"index.html?project={slug}",
-        "yaml_path": yaml_rel,
+        "yaml_path": yaml_path,
         "coding_warnings": warnings,
     }
+    if isinstance(files, list):
+        row["files"] = list(files)
+    if from_open_pr:
+        row["from_open_pr"] = True
+        if pr_number is not None:
+            row["pr_number"] = pr_number
+    return row
+
+
+def build_project(
+    path: str | Path,
+    codebook: Codebook,
+    cidx: Mapping[str, Any],
+    *,
+    repo_root: Path | None = None,
+) -> dict[str, Any] | None:
+    """Build one projects.json row from a project.yaml path."""
+    path = Path(path)
+    root = repo_root if repo_root is not None else path.parents[1]
+    data = load_project_yaml(path)
+    try:
+        yaml_rel = str(path.resolve().relative_to(Path(root).resolve()))
+    except ValueError:
+        yaml_rel = str(path)
+    return build_project_from_data(
+        data,
+        codebook=codebook,
+        cidx=cidx,
+        yaml_path=yaml_rel,
+        slug_fallback=path.parent.name,
+    )
 
 
 def collect_project_rows(

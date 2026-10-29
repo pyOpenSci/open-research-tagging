@@ -50,7 +50,11 @@ jobs:
         run: python -m open_research_tagging.emit_codebook
 
       - name: Process projects
-        run: python -m open_research_tagging.process_projects
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        # Include open-PR project.yaml so new slugs appear before merge (13a).
+        run: python -m open_research_tagging.process_projects --include-open-prs
 
       - name: Commit updated data
         run: |

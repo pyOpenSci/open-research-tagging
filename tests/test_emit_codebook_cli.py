@@ -51,6 +51,7 @@ def test_update_comments_workflow_wiring():
     assert "process_comments" in runs
     assert "emit_codebook" in runs
     assert "process_projects" in runs
+    assert "--include-open-prs" in runs
     assert "git commit" in runs or "git commit" in text
     assert "deploy-pages" in runs or "actions/deploy-pages" in text
     assert "comments.json" in text

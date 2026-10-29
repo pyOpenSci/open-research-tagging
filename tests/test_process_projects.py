@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 import yaml
 
 from open_research_tagging.codebook import Codebook, validate_codebook
@@ -147,3 +148,86 @@ def test_process_projects_cli_missing_comments(tmp_path: Path):
     loaded = json.loads(out.read_text(encoding="utf-8"))
     assert loaded["meta"]["count"] == 1
     assert loaded["data"][0]["comment_count"] == 0
+
+
+def test_process_projects_cli_include_open_prs(tmp_path: Path, monkeypatch):
+    from open_research_tagging import process_projects as pp
+
+    _write_project(tmp_path, "acme")
+    codebook_path = tmp_path / "codebook.yaml"
+    codebook_path.write_text(yaml.dump(minimal_codebook()), encoding="utf-8")
+    comments_path = tmp_path / "comments.json"
+    comments_path.write_text(
+        json.dumps({"meta": {"count": 0}, "data": []}),
+        encoding="utf-8",
+    )
+
+    def fake_collect(*, owner, repo, codebook, comments, token):
+        assert owner == "o" and repo == "r"
+        assert token == "tok"
+        return [
+            {
+                "slug": "earthaccess",
+                "display_name": "Earthaccess",
+                "from_open_pr": True,
+                "pr_number": 2,
+                "coding": {},
+                "overall": {},
+                "comment_count": 0,
+                "comments_href": "index.html?project=earthaccess",
+                "yaml_path": "projects/earthaccess/project.yaml",
+                "coding_warnings": [],
+                "provenance": {},
+                "context": {},
+            }
+        ]
+
+    monkeypatch.setenv("GITHUB_TOKEN", "tok")
+    monkeypatch.setattr(pp, "collect_open_pr_rows", fake_collect)
+    out = tmp_path / "projects.json"
+    pp.main(
+        [
+            "--comments",
+            str(comments_path),
+            "--out",
+            str(out),
+            "--codebook",
+            str(codebook_path),
+            "--projects-dir",
+            str(tmp_path / "projects"),
+            "--repo-root",
+            str(tmp_path),
+            "--include-open-prs",
+            "--owner",
+            "o",
+            "--repo",
+            "r",
+        ]
+    )
+    loaded = json.loads(out.read_text(encoding="utf-8"))
+    assert {r["slug"] for r in loaded["data"]} == {"acme", "earthaccess"}
+    earth = next(r for r in loaded["data"] if r["slug"] == "earthaccess")
+    assert earth["from_open_pr"] is True
+    assert earth["pr_number"] == 2
+
+
+def test_process_projects_cli_include_open_prs_needs_owner_repo(tmp_path: Path):
+    from open_research_tagging.process_projects import main
+
+    _write_project(tmp_path, "acme")
+    codebook_path = tmp_path / "codebook.yaml"
+    codebook_path.write_text(yaml.dump(minimal_codebook()), encoding="utf-8")
+    with pytest.raises(SystemExit, match="owner"):
+        main(
+            [
+                "--comments",
+                str(tmp_path / "comments.json"),
+                "--out",
+                str(tmp_path / "projects.json"),
+                "--codebook",
+                str(codebook_path),
+                "--projects-dir",
+                str(tmp_path / "projects"),
+                "--include-open-prs",
+            ]
+        )
