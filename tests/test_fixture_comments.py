@@ -1,6 +1,6 @@
 """Offline fixture: raw_comments.fixture.json → comments.json shape + join coherence.
 
-Committed site/data/comments.json may be live after Update comment data.
+Committed site/data/comments.json is the offline fixture snapshot (live JSON is deploy-time only).
 Playwright uses a temp site tree filled from this fixture (see conftest
 site_under_test). These tests do not require the committed file to be
 fixture-shaped.

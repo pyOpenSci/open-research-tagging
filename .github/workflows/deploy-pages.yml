@@ -1,8 +1,8 @@
-# Publish the static site/ folder to GitHub Pages.
-# One-time setup: repo Settings → Pages → Source → GitHub Actions (see 11f).
+# Rebuild site/data JSON and publish site/ to GitHub Pages.
+# Live comments/projects/codebook are generated in the runner and uploaded as
+# the Pages artifact — not committed to main (13c).
 #
-# update-comments.yml also deploys after a data refresh, because GITHUB_TOKEN
-# pushes do not trigger this workflow.
+# One-time setup: repo Settings → Pages → Source → GitHub Actions.
 
 name: Deploy Pages
 
@@ -11,17 +11,20 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "projects/**"
+      - "codebook/**"
+      - "src/open_research_tagging/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 permissions:
   contents: read
   pages: write
   id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -31,6 +34,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Fetch PR review comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python -m open_research_tagging.fetch_comments
+
+      - name: Process comments
+        run: python -m open_research_tagging.process_comments
+
+      - name: Emit codebook.json
+        run: python -m open_research_tagging.emit_codebook
+
+      - name: Process projects
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python -m open_research_tagging.process_projects --include-open-prs
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

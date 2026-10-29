@@ -1,168 +1,10 @@
 {
   "meta": {
-    "count": 2,
+    "count": 1,
     "comments_source": "site/data/comments.json",
     "codebook_version": "draft-0.2"
   },
   "data": [
-    {
-      "slug": "earthaccess",
-      "display_name": "Example Project",
-      "provenance": {
-        "source_repo": "https://github.com/earthaccess-dev/earthaccess",
-        "source_commit": "REPLACE_WITH_FULL_SHA",
-        "source_url": "https://github.com/org/repo/blob/REPLACE_WITH_FULL_SHA/path/to/policy.md",
-        "policy_location": "standalone-file",
-        "retrieved_at": "YYYY-MM-DD"
-      },
-      "context": {
-        "governance": null,
-        "domain": ""
-      },
-      "coding": {
-        "stance": {
-          "explicit": null,
-          "implicit": []
-        },
-        "scope": {
-          "explicit": {
-            "code": "not_addressed",
-            "tests": "not_addressed",
-            "docs_and_text": "not_addressed",
-            "issues_and_pr_descriptions": "not_addressed",
-            "review": "not_addressed",
-            "autonomous_agents": "not_addressed",
-            "contribution_types_not_defined": "not_addressed"
-          },
-          "implicit": {
-            "code": "not_seen",
-            "comments": "not_seen",
-            "tests": "not_seen",
-            "docs_and_text": "not_seen",
-            "issues_and_pr_descriptions": "not_seen",
-            "review": "not_seen",
-            "autonomous_agents": "not_seen"
-          }
-        },
-        "stated_rationale": {
-          "explicit": [],
-          "implicit": []
-        },
-        "guidance_on_use": {
-          "explicit": {
-            "level": null,
-            "types": []
-          },
-          "implicit": {
-            "level": null,
-            "types": [],
-            "notes": "",
-            "written_for": "",
-            "not_ai_specific": ""
-          }
-        },
-        "accountability": {
-          "explicit": {
-            "human_responsibility": "not_stated",
-            "disclosure": "none",
-            "disclosure_format": [],
-            "enforcement": [],
-            "new_contributors": "not_stated"
-          },
-          "implicit": {
-            "disclosure_in_practice": "none-seen",
-            "notes": ""
-          }
-        },
-        "context": {
-          "explicit": {
-            "project_size": "",
-            "governance": null,
-            "decision_process": "",
-            "domain": "",
-            "policy_date": "",
-            "policy_location": null,
-            "notes": ""
-          },
-          "implicit": {
-            "contributors": "",
-            "who_decides": "",
-            "outside_activity": "",
-            "when_ai_began": "",
-            "ai_file_locations": "",
-            "notes": ""
-          }
-        }
-      },
-      "overall": {
-        "human_responsibility": {
-          "values": [
-            {
-              "id": "not_stated",
-              "label": "Not stated",
-              "unknown_id": false,
-              "links": {
-                "dimension": "human_responsibility",
-                "dimension_label": "Human responsibility",
-                "all": {
-                  "label": "All human responsibility comments",
-                  "count": 0,
-                  "comment_ids": [],
-                  "href": "index.html?project=earthaccess&dimension=human_responsibility"
-                },
-                "value": "not_stated",
-                "value_label": "Not stated",
-                "matching": {
-                  "label": "Not stated",
-                  "count": 0,
-                  "comment_ids": [],
-                  "href": "index.html?project=earthaccess&filter=human_responsibility:not_stated"
-                }
-              }
-            }
-          ]
-        },
-        "disclosure": {
-          "values": [
-            {
-              "id": "none",
-              "label": "None",
-              "unknown_id": false,
-              "links": {
-                "dimension": "disclosure",
-                "dimension_label": "Disclosure",
-                "all": {
-                  "label": "All disclosure comments",
-                  "count": 0,
-                  "comment_ids": [],
-                  "href": "index.html?project=earthaccess&dimension=disclosure"
-                },
-                "value": "none",
-                "value_label": "None",
-                "matching": {
-                  "label": "None",
-                  "count": 0,
-                  "comment_ids": [],
-                  "href": "index.html?project=earthaccess&filter=disclosure:none"
-                }
-              }
-            }
-          ]
-        }
-      },
-      "comment_count": 0,
-      "comments_href": "index.html?project=earthaccess",
-      "yaml_path": "projects/earthaccess/project.yaml",
-      "coding_warnings": [],
-      "files": [
-        {
-          "path": "policy.md",
-          "description": "Primary AI / LLM contribution policy"
-        }
-      ],
-      "from_open_pr": true,
-      "pr_number": 2
-    },
     {
       "slug": "pyopensci",
       "display_name": "pyOpenSci",
@@ -278,16 +120,20 @@
                 "dimension_label": "Stance",
                 "all": {
                   "label": "All stance comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1001
+                  ],
                   "href": "index.html?project=pyopensci&dimension=stance"
                 },
                 "value": "permissive-with-conditions",
                 "value_label": "Permissive with conditions",
                 "matching": {
                   "label": "Permissive with conditions",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1001
+                  ],
                   "href": "index.html?project=pyopensci&filter=stance:permissive-with-conditions"
                 }
               }
@@ -305,9 +151,11 @@
                 "dimension_label": "Stated rationale",
                 "all": {
                   "label": "All stated rationale comments",
-                  "count": 1,
+                  "count": 3,
                   "comment_ids": [
-                    4378693606
+                    1002,
+                    1004,
+                    2001
                   ],
                   "href": "index.html?project=pyopensci&dimension=stated_rationale"
                 },
@@ -315,8 +163,10 @@
                 "value_label": "Code quality",
                 "matching": {
                   "label": "Code quality",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1004
+                  ],
                   "href": "index.html?project=pyopensci&filter=stated_rationale:code-quality"
                 }
               }
@@ -330,9 +180,11 @@
                 "dimension_label": "Stated rationale",
                 "all": {
                   "label": "All stated rationale comments",
-                  "count": 1,
+                  "count": 3,
                   "comment_ids": [
-                    4378693606
+                    1002,
+                    1004,
+                    2001
                   ],
                   "href": "index.html?project=pyopensci&dimension=stated_rationale"
                 },
@@ -342,7 +194,7 @@
                   "label": "Maintainer and reviewer burden",
                   "count": 1,
                   "comment_ids": [
-                    4378693606
+                    1002
                   ],
                   "href": "index.html?project=pyopensci&filter=stated_rationale:maintainer-and-reviewer-burden"
                 }
@@ -357,9 +209,11 @@
                 "dimension_label": "Stated rationale",
                 "all": {
                   "label": "All stated rationale comments",
-                  "count": 1,
+                  "count": 3,
                   "comment_ids": [
-                    4378693606
+                    1002,
+                    1004,
+                    2001
                   ],
                   "href": "index.html?project=pyopensci&dimension=stated_rationale"
                 },
@@ -369,7 +223,7 @@
                   "label": "Social and ethical (trust, transparency, community norms)",
                   "count": 1,
                   "comment_ids": [
-                    4378693606
+                    2001
                   ],
                   "href": "index.html?project=pyopensci&filter=stated_rationale:social-and-ethical"
                 }
@@ -388,16 +242,22 @@
                 "dimension_label": "Guidance level",
                 "all": {
                   "label": "All guidance level comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 2,
+                  "comment_ids": [
+                    1002,
+                    1005
+                  ],
                   "href": "index.html?project=pyopensci&dimension=guidance_level"
                 },
                 "value": "substantive-guidance",
                 "value_label": "Substantive guidance",
                 "matching": {
                   "label": "Substantive guidance",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 2,
+                  "comment_ids": [
+                    1002,
+                    1005
+                  ],
                   "href": "index.html?project=pyopensci&filter=guidance_level:substantive-guidance"
                 }
               }
@@ -415,16 +275,23 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 4,
+                  "comment_ids": [
+                    1001,
+                    1004,
+                    1005,
+                    2002
+                  ],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "scoping",
                 "value_label": "Scoping (PR size limits, scoped tasks, issue-first)",
                 "matching": {
                   "label": "Scoping (PR size limits, scoped tasks, issue-first)",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1004
+                  ],
                   "href": "index.html?project=pyopensci&filter=guidance_type:scoping"
                 }
               }
@@ -438,16 +305,23 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 4,
+                  "comment_ids": [
+                    1001,
+                    1004,
+                    1005,
+                    2002
+                  ],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "design",
                 "value_label": "Design (modularity, existing patterns, technical debt)",
                 "matching": {
                   "label": "Design (modularity, existing patterns, technical debt)",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1005
+                  ],
                   "href": "index.html?project=pyopensci&filter=guidance_type:design"
                 }
               }
@@ -461,16 +335,24 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 4,
+                  "comment_ids": [
+                    1001,
+                    1004,
+                    1005,
+                    2002
+                  ],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "evaluation",
                 "value_label": "Evaluation (understand, test, and explain output)",
                 "matching": {
                   "label": "Evaluation (understand, test, and explain output)",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 2,
+                  "comment_ids": [
+                    1001,
+                    2002
+                  ],
                   "href": "index.html?project=pyopensci&filter=guidance_type:evaluation"
                 }
               }
@@ -484,16 +366,23 @@
                 "dimension_label": "Guidance type",
                 "all": {
                   "label": "All guidance type comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 4,
+                  "comment_ids": [
+                    1001,
+                    1004,
+                    1005,
+                    2002
+                  ],
                   "href": "index.html?project=pyopensci&dimension=guidance_type"
                 },
                 "value": "iteration",
                 "value_label": "Iteration (human-AI cycles rather than one-shot)",
                 "matching": {
                   "label": "Iteration (human-AI cycles rather than one-shot)",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1004
+                  ],
                   "href": "index.html?project=pyopensci&filter=guidance_type:iteration"
                 }
               }
@@ -511,16 +400,22 @@
                 "dimension_label": "Human responsibility",
                 "all": {
                   "label": "All human responsibility comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 2,
+                  "comment_ids": [
+                    1001,
+                    2002
+                  ],
                   "href": "index.html?project=pyopensci&dimension=human_responsibility"
                 },
                 "value": "yes",
                 "value_label": "Yes \u2014 contributor is responsible for submitted work",
                 "matching": {
                   "label": "Yes \u2014 contributor is responsible for submitted work",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 2,
+                  "comment_ids": [
+                    1001,
+                    2002
+                  ],
                   "href": "index.html?project=pyopensci&filter=human_responsibility:yes"
                 }
               }
@@ -538,16 +433,22 @@
                 "dimension_label": "Disclosure",
                 "all": {
                   "label": "All disclosure comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 2,
+                  "comment_ids": [
+                    1001,
+                    2001
+                  ],
                   "href": "index.html?project=pyopensci&dimension=disclosure"
                 },
                 "value": "required",
                 "value_label": "Required",
                 "matching": {
                   "label": "Required",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 2,
+                  "comment_ids": [
+                    1001,
+                    2001
+                  ],
                   "href": "index.html?project=pyopensci&filter=disclosure:required"
                 }
               }
@@ -565,16 +466,20 @@
                 "dimension_label": "Enforcement",
                 "all": {
                   "label": "All enforcement comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1003
+                  ],
                   "href": "index.html?project=pyopensci&dimension=enforcement"
                 },
                 "value": "contributor-blocked",
                 "value_label": "Contributor blocked",
                 "matching": {
                   "label": "Contributor blocked",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1003
+                  ],
                   "href": "index.html?project=pyopensci&filter=enforcement:contributor-blocked"
                 }
               }
@@ -588,8 +493,10 @@
                 "dimension_label": "Enforcement",
                 "all": {
                   "label": "All enforcement comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1003
+                  ],
                   "href": "index.html?project=pyopensci&dimension=enforcement"
                 },
                 "value": "other",
@@ -617,14 +524,20 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 3,
+                  "comment_ids": [
+                    1003,
+                    1004,
+                    2001
+                  ],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
                   "label": "Code \u2192 Restricted",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1004
+                  ],
                   "href": "index.html?project=pyopensci&scope_type=code&scope_position=restricted"
                 }
               }
@@ -640,8 +553,12 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 3,
+                  "comment_ids": [
+                    1003,
+                    1004,
+                    2001
+                  ],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
@@ -663,14 +580,20 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 3,
+                  "comment_ids": [
+                    1003,
+                    1004,
+                    2001
+                  ],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
                   "label": "Docs and text \u2192 Restricted",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    2001
+                  ],
                   "href": "index.html?project=pyopensci&scope_type=docs-and-text&scope_position=restricted"
                 }
               }
@@ -686,14 +609,20 @@
                 "dimension_label": "Scope",
                 "all": {
                   "label": "All scope comments",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 3,
+                  "comment_ids": [
+                    1003,
+                    1004,
+                    2001
+                  ],
                   "href": "index.html?project=pyopensci&dimension=scope"
                 },
                 "matching": {
                   "label": "Issues and PR descriptions \u2192 Restricted",
-                  "count": 0,
-                  "comment_ids": [],
+                  "count": 1,
+                  "comment_ids": [
+                    1003
+                  ],
                   "href": "index.html?project=pyopensci&scope_type=issues-and-pr-descriptions&scope_position=restricted"
                 }
               }
@@ -701,7 +630,7 @@
           ]
         }
       },
-      "comment_count": 6,
+      "comment_count": 7,
       "comments_href": "index.html?project=pyopensci",
       "yaml_path": "projects/pyopensci/project.yaml",
       "coding_warnings": [],

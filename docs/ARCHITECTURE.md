@@ -117,7 +117,7 @@ Joining overall codes to passage evidence:
 
 Practical details: scope `not_addressed` is omitted from the sparse table; unknown overall ids still show and are flagged; YAML scope keys may use underscores while hashtags use hyphens — matching normalizes that. The YAML→site field map is an explicit adapter for the known nesting (not a generic “any codebook dimension → form” engine). For draft-0.2, `build_overall` flattens each dimension’s **Explicit** subsection into the projects-table chips; Implicit stays on the nested `coding` passthrough for the coding view.
 
-**Open PRs (13a):** review comments already refresh from every PR. Project rows normally come from `projects/` on the branch Actions checked out (main). **Update comment data** runs `process_projects --include-open-prs`, which also loads `projects/*/project.yaml` from **open** PRs at each PR head and merges those rows when the slug is not already on main (main wins on conflict). Open-PR rows carry `from_open_pr` / `pr_number` so the site can tell them apart later. Local/fixture regen leaves the flag off so it stays offline.
+**Open PRs (13a):** review comments already refresh from every PR. Project rows normally come from `projects/` on the branch Actions checked out (main). Deploy/refresh jobs run `process_projects --include-open-prs`, which also loads `projects/*/project.yaml` from **open** PRs at each PR head and merges those rows when the slug is not already on main (main wins on conflict). Open-PR rows carry `from_open_pr` / `pr_number`. Local/fixture regen leaves the flag off so it stays offline.
 
 ```bash
 python -m open_research_tagging.process_projects \
@@ -175,8 +175,8 @@ Tag picker copy-text and coding-view **Copy YAML** run in the browser; canonical
 |----------|------|------|
 | `test.yml` | Push to `main`, PRs | `pytest` (incl. Playwright) |
 | `check-comment-tags.yml` | Review comment create/edit; PR open/sync | Soft reply on bad tags; PR scan hard-fails **malformed** only |
-| `update-comments.yml` | Daily cron + manual | Fetch → process → emit codebook → process projects → **commit** JSON → deploy Pages |
-| `deploy-pages.yml` | `site/**` on `main`, or manual | Publish `site/` to Pages |
+| `update-comments.yml` | Daily cron + manual | Fetch → process → emit codebook → process projects (incl. open PRs) → **deploy Pages artifact** (no git commit) |
+| `deploy-pages.yml` | Push touching `site/` / `projects/` / `codebook/` / package, or manual | Same rebuild + deploy (no git commit) |
 
 **Org production Pages:** https://www.pyopensci.org/open-research-tagging/  
 **Personal/test staging (optional):** https://shaunagm.github.io/open-research-tagging/
@@ -199,19 +199,19 @@ python -m open_research_tagging.check_tags --pr N
 python -m open_research_tagging.fetch_comments   # needs GITHUB_TOKEN / GITHUB_REPOSITORY
 ```
 
-Writes gitignored `site/data/raw_comments.json`. Pushes made with `GITHUB_TOKEN` do **not** start other workflows, so `update-comments.yml` deploys Pages in the same job after committing. That commit can land while you are committing locally — `git pull --rebase` then push is normal.
+Writes gitignored `site/data/raw_comments.json`. Live `comments.json` / `projects.json` / `codebook.json` are built **in the Actions runner** and uploaded as the Pages artifact only (**13c**) — they are **not** committed back to `main`. That removes bot refresh commits racing human pushes. Committed `site/data/*.json` on `main` is the **offline fixture snapshot** for local `http.server` and clones without a token.
 
 No `paths:` filter on tag-check yet; revisit if code-review `#…` noise on non-`projects/` PRs becomes a problem.
 
 ## Fixture vs live site JSON
 
-| | Offline fixture | Live (Pages / `main` after refresh) |
+| | Offline fixture (committed / Playwright) | Live (public Pages) |
 |--|-----------------|--------------------------------------|
-| Raw input | `site/data/raw_comments.fixture.json` | Fetched PR review comments |
+| Raw input | `site/data/raw_comments.fixture.json` | Fetched PR review comments in Actions |
 | After process | `is_fixture: true`, dense demo/pyOpenSci tags | `is_fixture: false`, whatever is tagged on this remote |
-| Consumers | Playwright temp site; local experiments | Public Pages; committed `comments.json` / `projects.json` |
+| Consumers | Playwright temp site; local `site/` preview; git clone | Pages artifact only (not on `main`) |
 
-**Update comment data** replaces committed site JSON with live data and deploys — expected that the public browser then shows GitHub, not the old demo fixture. Playwright copies `site/` into a **temp directory**, regenerates fixture-shaped JSON there, and serves that tree (`site_under_test` / `site_base_url` in `tests/conftest.py`) so tests do not rewrite or depend on the last live refresh.
+**Update comment data** / **Deploy Pages** regenerate live JSON in CI and deploy — the public site shows GitHub data; `main` keeps the fixture snapshot until a human regenerates it from the fixture on purpose. Playwright copies `site/` into a **temp directory**, regenerates fixture-shaped JSON there, and serves that tree (`site_under_test` / `site_base_url` in `tests/conftest.py`).
 
 With `projects/pyopensci/` present, fixture quotes usually resolve from local policy files (`paragraph` / `selection`) instead of `diff_hunk`.
 

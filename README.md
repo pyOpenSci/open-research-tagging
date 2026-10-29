@@ -55,7 +55,7 @@ cd site && python3 -m http.server 8000
 | http://localhost:8000/tags.html | Tag picker |
 | http://localhost:8000/coding.html?project=pyopensci | Coding view |
 
-Committed `site/data/comments.json` may be **live** (whatever is tagged on this GitHub remote after a refresh). Playwright tests use an offline **fixture** in a temp copy of `site/` — they do not depend on the last Pages refresh. Details: ARCHITECTURE → *Fixture vs live site JSON*.
+Committed `site/data/*.json` is an **offline fixture snapshot** for local preview. Public Pages gets **live** JSON built in Actions (not committed to `main`). Playwright uses a temp copy of `site/` filled from `raw_comments.fixture.json`. Details: ARCHITECTURE → *Fixture vs live site JSON*.
 
 ## Workflows
 
@@ -63,8 +63,8 @@ Committed `site/data/comments.json` may be **live** (whatever is tagged on this 
 |----------|------|------|
 | **Tests** (`test.yml`) | Push to `main`, PRs | `pytest` (incl. Playwright) |
 | **Check comment tags** | Files-tab comment create/edit; PR open/sync | Soft bot reply on bad tags; PR scan hard-fails **malformed** only |
-| **Update comment data** | Daily cron + manual | Fetch → process (incl. open-PR `project.yaml` into `projects.json`) → commit site JSON → deploy Pages |
-| **Deploy Pages** | `site/**` on `main`, or manual | Publish `site/` |
+| **Update comment data** | Daily cron + manual | Fetch → process (incl. open-PR projects) → deploy Pages (**no** git commit of JSON) |
+| **Deploy Pages** | `site/` / `projects/` / `codebook/` (etc.) on `main`, or manual | Rebuild live JSON in CI → publish `site/` (**no** git commit) |
 
 ### Draft-codebook tag-check policy
 
@@ -76,7 +76,7 @@ Production host is the **pyOpenSci** org repo. One-time setup (already done for 
 
 1. **Settings → Pages → Build and deployment → Source:** GitHub Actions.
 2. Push workflows on `main` (or merge a PR that adds `.github/workflows/`).
-3. Run **Actions → Update comment data → Run workflow** once (or wait for the daily cron) so live comments refresh into `site/data/`.
+3. Run **Actions → Update comment data → Run workflow** once (or wait for the daily cron) so Pages gets live comments (JSON is built in CI, not committed).
 4. Smoke-check: comments browser, projects, **tag picker**, **coding view**.
 
 **Org production URL:** https://www.pyopensci.org/open-research-tagging/  

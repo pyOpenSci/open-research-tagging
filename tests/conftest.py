@@ -70,7 +70,7 @@ def _fill_temp_site_with_fixture_json(site_root: Path) -> None:
 def site_under_test(tmp_path_factory: pytest.TempPathFactory) -> Path:
     """Copy of site/ with fixture-shaped comments/projects JSON (Playwright only).
 
-    Isolates offline demo data from committed live comments.json on main.
+    Isolates offline demo data from whatever JSON happens to sit in repo site/.
     """
     dest = tmp_path_factory.mktemp("ort-site")
     shutil.copytree(SITE, dest, dirs_exist_ok=True)

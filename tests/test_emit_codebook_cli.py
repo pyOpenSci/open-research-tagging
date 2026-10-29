@@ -39,7 +39,7 @@ def test_update_comments_workflow_wiring():
     assert "workflow_dispatch" in on
     assert "schedule" in on
     perms = data.get("permissions") or {}
-    assert perms.get("contents") == "write"
+    assert perms.get("contents") == "read"
     assert perms.get("pages") == "write"
     jobs = data["jobs"]
     assert "refresh-and-deploy" in jobs
@@ -52,8 +52,6 @@ def test_update_comments_workflow_wiring():
     assert "emit_codebook" in runs
     assert "process_projects" in runs
     assert "--include-open-prs" in runs
-    assert "git commit" in runs or "git commit" in text
+    assert "git commit" not in runs
+    assert "git push" not in runs
     assert "deploy-pages" in runs or "actions/deploy-pages" in text
-    assert "comments.json" in text
-    assert "projects.json" in text
-    assert "codebook.json" in text
