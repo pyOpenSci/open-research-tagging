@@ -211,8 +211,15 @@ def test_process_projects_cli_include_open_prs(tmp_path: Path, monkeypatch):
     assert earth["pr_number"] == 2
 
 
-def test_process_projects_cli_include_open_prs_needs_owner_repo(tmp_path: Path):
+def test_process_projects_cli_include_open_prs_needs_owner_repo(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     from open_research_tagging.process_projects import main
+
+    # Actions runners set GITHUB_REPOSITORY; clear so we test the missing-config path.
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    monkeypatch.delenv("GH_TOKEN", raising=False)
 
     _write_project(tmp_path, "acme")
     codebook_path = tmp_path / "codebook.yaml"
