@@ -1,10 +1,168 @@
 {
   "meta": {
-    "count": 1,
+    "count": 2,
     "comments_source": "site/data/comments.json",
     "codebook_version": "draft-0.2"
   },
   "data": [
+    {
+      "slug": "earthaccess",
+      "display_name": "Example Project",
+      "provenance": {
+        "source_repo": "https://github.com/earthaccess-dev/earthaccess",
+        "source_commit": "REPLACE_WITH_FULL_SHA",
+        "source_url": "https://github.com/org/repo/blob/REPLACE_WITH_FULL_SHA/path/to/policy.md",
+        "policy_location": "standalone-file",
+        "retrieved_at": "YYYY-MM-DD"
+      },
+      "context": {
+        "governance": null,
+        "domain": ""
+      },
+      "coding": {
+        "stance": {
+          "explicit": null,
+          "implicit": []
+        },
+        "scope": {
+          "explicit": {
+            "code": "not_addressed",
+            "tests": "not_addressed",
+            "docs_and_text": "not_addressed",
+            "issues_and_pr_descriptions": "not_addressed",
+            "review": "not_addressed",
+            "autonomous_agents": "not_addressed",
+            "contribution_types_not_defined": "not_addressed"
+          },
+          "implicit": {
+            "code": "not_seen",
+            "comments": "not_seen",
+            "tests": "not_seen",
+            "docs_and_text": "not_seen",
+            "issues_and_pr_descriptions": "not_seen",
+            "review": "not_seen",
+            "autonomous_agents": "not_seen"
+          }
+        },
+        "stated_rationale": {
+          "explicit": [],
+          "implicit": []
+        },
+        "guidance_on_use": {
+          "explicit": {
+            "level": null,
+            "types": []
+          },
+          "implicit": {
+            "level": null,
+            "types": [],
+            "notes": "",
+            "written_for": "",
+            "not_ai_specific": ""
+          }
+        },
+        "accountability": {
+          "explicit": {
+            "human_responsibility": "not_stated",
+            "disclosure": "none",
+            "disclosure_format": [],
+            "enforcement": [],
+            "new_contributors": "not_stated"
+          },
+          "implicit": {
+            "disclosure_in_practice": "none-seen",
+            "notes": ""
+          }
+        },
+        "context": {
+          "explicit": {
+            "project_size": "",
+            "governance": null,
+            "decision_process": "",
+            "domain": "",
+            "policy_date": "",
+            "policy_location": null,
+            "notes": ""
+          },
+          "implicit": {
+            "contributors": "",
+            "who_decides": "",
+            "outside_activity": "",
+            "when_ai_began": "",
+            "ai_file_locations": "",
+            "notes": ""
+          }
+        }
+      },
+      "overall": {
+        "human_responsibility": {
+          "values": [
+            {
+              "id": "not_stated",
+              "label": "Not stated",
+              "unknown_id": false,
+              "links": {
+                "dimension": "human_responsibility",
+                "dimension_label": "Human responsibility",
+                "all": {
+                  "label": "All human responsibility comments",
+                  "count": 0,
+                  "comment_ids": [],
+                  "href": "index.html?project=earthaccess&dimension=human_responsibility"
+                },
+                "value": "not_stated",
+                "value_label": "Not stated",
+                "matching": {
+                  "label": "Not stated",
+                  "count": 0,
+                  "comment_ids": [],
+                  "href": "index.html?project=earthaccess&filter=human_responsibility:not_stated"
+                }
+              }
+            }
+          ]
+        },
+        "disclosure": {
+          "values": [
+            {
+              "id": "none",
+              "label": "None",
+              "unknown_id": false,
+              "links": {
+                "dimension": "disclosure",
+                "dimension_label": "Disclosure",
+                "all": {
+                  "label": "All disclosure comments",
+                  "count": 0,
+                  "comment_ids": [],
+                  "href": "index.html?project=earthaccess&dimension=disclosure"
+                },
+                "value": "none",
+                "value_label": "None",
+                "matching": {
+                  "label": "None",
+                  "count": 0,
+                  "comment_ids": [],
+                  "href": "index.html?project=earthaccess&filter=disclosure:none"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "comment_count": 0,
+      "comments_href": "index.html?project=earthaccess",
+      "yaml_path": "projects/earthaccess/project.yaml",
+      "coding_warnings": [],
+      "files": [
+        {
+          "path": "policy.md",
+          "description": "Primary AI / LLM contribution policy"
+        }
+      ],
+      "from_open_pr": true,
+      "pr_number": 2
+    },
     {
       "slug": "pyopensci",
       "display_name": "pyOpenSci",
@@ -546,7 +704,17 @@
       "comment_count": 6,
       "comments_href": "index.html?project=pyopensci",
       "yaml_path": "projects/pyopensci/project.yaml",
-      "coding_warnings": []
+      "coding_warnings": [],
+      "files": [
+        {
+          "path": "generative-ai-policy.md",
+          "description": "Primary generative AI / LLM policy for peer review"
+        },
+        {
+          "path": "gen-ai-checklist.md",
+          "description": "Submission checklist included by the policy"
+        }
+      ]
     }
   ]
 }
