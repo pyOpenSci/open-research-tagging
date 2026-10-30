@@ -75,9 +75,9 @@ While the codebook is still a draft, CI **hard-fails only on malformed tags** (s
 
 Pipeline for a comment body:
 
-1. **Parse** — `#namespace/value`, `#namespace:value` (colon slip), and `#scope/type:position`.
+1. **Parse** — `#namespace/value`, `#namespace:value` (colon slip), and `#scope/type:position`. Underscores in ids map to hyphens. Duplicate hashtags in one body (same namespace/value/qualifier after canonicalize) are kept once, first-seen (**13i**).
 2. **Enrich** — attach dimension, labels, `display`, and `filter_key` from the codebook. Unknown values still get a humanized fallback label so nothing disappears silently.
-3. **Warn** — bare `#Word` tokens, unknown namespaces/values, bad scope type/position. Any warnings set `needs_tag_review` on the normalized row.
+3. **Warn** — bare `#Word` tokens, unknown namespaces/values, bad scope type/position. Any warnings set `needs_tag_review` on the normalized row. Repeating a valid tag is not a warning.
 
 ## Comments → `comments.json`
 

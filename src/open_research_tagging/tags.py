@@ -33,9 +33,23 @@ def canonicalize_tag_id(part: str) -> str:
     return part.lower().replace("_", "-")
 
 
+def _tag_identity(tag: Mapping[str, Any]) -> tuple[str, str, str]:
+    """Canonical identity for dedupe (slash/colon and _/- variants match)."""
+    return (
+        str(tag.get("namespace") or ""),
+        str(tag.get("value") or ""),
+        str(tag.get("qualifier") or ""),
+    )
+
+
 def parse_tags(body: str | None) -> list[dict[str, Any]]:
-    """Extract raw tag dicts from a comment body (no codebook enrichment)."""
+    """Extract raw tag dicts from a comment body (no codebook enrichment).
+
+    Duplicate hashtags (same namespace/value/qualifier after canonicalize) are
+    kept once, first-seen order (13i).
+    """
     tags: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
     for match in TAG_RE.finditer(body or ""):
         raw = {
             "raw": match.group(0).lower(),
@@ -45,6 +59,10 @@ def parse_tags(body: str | None) -> list[dict[str, Any]]:
         qualifier = match.group("qual")
         if qualifier:
             raw["qualifier"] = canonicalize_tag_id(qualifier)
+        key = _tag_identity(raw)
+        if key in seen:
+            continue
+        seen.add(key)
         tags.append(raw)
     return tags
 

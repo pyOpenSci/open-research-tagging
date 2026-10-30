@@ -56,6 +56,11 @@ def test_unknown_scope_position_warns():
     assert any("unknown scope position" in w for w in warnings)
 
 
+def test_duplicate_good_tags_do_not_warn():
+    """13i: repeating a valid hashtag is not an error."""
+    assert _warn("#stance/ban\n#stance/ban") == []
+
+
 def test_underscore_scope_position_canonicalizes_without_warning():
     """13h: underscore ids normalize to hyphen codebook ids."""
     from pathlib import Path
