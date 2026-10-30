@@ -51,3 +51,17 @@ def test_readme_onboarding_covers_layout_workflows_and_demo():
     assert "check-comment-tags" in text or "Check comment tags" in text
     assert "update-comments" in text or "Update comment data" in text
     assert "deploy-pages" in text or "Deploy Pages" in text
+
+
+def test_readme_how_to_add_a_project():
+    """13k: short add-project path — template, provenance/files, branch then PR."""
+    text = README.read_text(encoding="utf-8")
+    lower = text.lower()
+    assert "## How to add a project" in text
+    assert "projects/_template" in text or "projects/_template/" in text
+    assert "provenance" in lower
+    assert "files" in lower
+    assert "branch" in lower
+    assert "pull request" in lower or " pr" in lower or "open a pr" in lower
+    assert "files tab" in lower or "files-tab" in lower
+    assert "COMMENTING.md" in text
