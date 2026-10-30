@@ -1,0 +1,88 @@
+# Copy this folder to projects/<slug>/ and fill in.
+# Project-level codes (Stance, Accountability, Context, etc.).
+# Explicit = stated in policy docs; Implicit = practices / signals.
+# Use PR review comments for passage-level evidence — see codebook/COMMENTING.md.
+
+slug: earthaccess
+display_name: Example Project
+
+provenance:
+  source_repo: https://github.com/earthaccess-dev/earthaccess
+  source_path: path/to/policy.md
+  source_commit: REPLACE_WITH_FULL_SHA
+  source_url: https://github.com/org/repo/blob/REPLACE_WITH_FULL_SHA/path/to/policy.md
+  retrieved_at: YYYY-MM-DD
+  policy_location: standalone-file  # CONTRIBUTING | standalone-file | governance-doc | other
+  policy_date: null  # if known
+  notes: ""
+
+coding:
+  stance:
+    explicit: null  # ban | discouraged | gate-restrict | permissive-with-conditions | permissive | no-policy
+    implicit: []  # maintainers-use-ai-tools | outside-ai-assisted-accepted | …
+
+  scope:
+    explicit:
+      code: not_addressed  # allowed | restricted | banned | not_addressed
+      tests: not_addressed
+      docs_and_text: not_addressed
+      issues_and_pr_descriptions: not_addressed
+      review: not_addressed
+      autonomous_agents: not_addressed
+      contribution_types_not_defined: not_addressed
+    implicit:
+      code: not_seen  # seen | not_seen
+      comments: not_seen
+      tests: not_seen
+      docs_and_text: not_seen
+      issues_and_pr_descriptions: not_seen
+      review: not_seen
+      autonomous_agents: not_seen
+
+  stated_rationale:
+    explicit: []
+    implicit: []
+  # e.g. explicit: [code-quality, maintainer-and-reviewer-burden]
+
+  guidance_on_use:
+    explicit:
+      level: null  # restricts-only | some-guidance | substantive-guidance
+      types: []  # scoping | design | evaluation | iteration | learning
+    implicit:
+      level: null
+      types: []
+      notes: ""
+      written_for: ""
+      not_ai_specific: ""
+
+  accountability:
+    explicit:
+      human_responsibility: not_stated  # yes | no | not_stated
+      disclosure: none  # none | recommended | required
+      disclosure_format: []  # label-or-tag | free-text | other
+      enforcement: []  # none-stated | pr-closed | contributor-blocked | other
+      new_contributors: not_stated  # yes | no | not_stated
+    implicit:
+      disclosure_in_practice: none-seen  # none-seen | tool-defaults-only | deliberate
+      notes: ""
+
+  context:
+    explicit:
+      project_size: ""  # note measure and thresholds
+      governance: null  # solo | community | foundation-backed | corporate-backed
+      decision_process: ""
+      domain: ""
+      policy_date: ""
+      policy_location: null
+      notes: ""
+    implicit:
+      contributors: ""
+      who_decides: ""
+      outside_activity: ""
+      when_ai_began: ""
+      ai_file_locations: ""
+      notes: ""
+
+files:
+  - path: policy.md
+    description: Primary AI / LLM contribution policy
