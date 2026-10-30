@@ -115,12 +115,15 @@ def jsonable(value: Any) -> Any:
 
 
 def coerce_code_id(value: Any) -> str:
-    """YAML may turn bare yes/no into booleans; map those to codebook ids."""
+    """YAML may turn bare yes/no into booleans; map those to codebook ids.
+
+    Underscores in legacy value ids become hyphens (13h).
+    """
     if value is True:
         return "yes"
     if value is False:
         return "no"
-    return str(value)
+    return str(value).replace("_", "-")
 
 
 def _dimension_label(codebook: Codebook, dimension: str) -> str:
@@ -206,7 +209,7 @@ def build_overall(
     Map nested project.yaml coding → site overall block.
 
     Explicit adapter for the known YAML shape (not a generic codebook walker).
-    Omits scope positions that are null or not_addressed.
+    Omits scope positions that are null or not-addressed.
     """
     overall: dict[str, Any] = {}
     warnings: list[str] = []
@@ -315,10 +318,12 @@ def build_overall(
     scope_values: list[dict[str, Any]] = []
     if isinstance(scope, Mapping):
         for raw_type, position in scope.items():
-            if position in (None, "not_addressed"):
+            if position is None:
                 continue
             ctype = normalize_scope_key(str(raw_type))
             pos = coerce_code_id(position)
+            if pos in ("", "not-addressed"):
+                continue
             filter_key = f"scope:{ctype}:{pos}"
             pb = cidx.get(project) or {"by_dimension": {}, "by_filter_key": {}}
             all_scope = list(pb.get("by_dimension", {}).get("scope", []))

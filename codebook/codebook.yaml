@@ -95,7 +95,7 @@ dimensions:
         - allowed
         - restricted
         - banned
-        - not_addressed
+        - not-addressed
     implicit:
       select: multi
       description: >
@@ -134,7 +134,7 @@ dimensions:
             in .github/workflows.
       positions:
         - seen
-        - not_seen
+        - not-seen
 
   stated_rationale:
     description: >
@@ -253,7 +253,7 @@ dimensions:
             label: "Yes — contributor is responsible for submitted work"
           - id: "no"
             label: "No"
-          - id: not_stated
+          - id: not-stated
             label: Not stated
       disclosure:
         select: single
@@ -292,7 +292,7 @@ dimensions:
             label: "Yes"
           - id: "no"
             label: "No"
-          - id: not_stated
+          - id: not-stated
             label: Not stated
     implicit:
       disclosure_in_practice:

@@ -20,21 +20,21 @@ coding:
 
   scope:
     explicit:
-      code: not_addressed  # allowed | restricted | banned | not_addressed
-      tests: not_addressed
-      docs_and_text: not_addressed
-      issues_and_pr_descriptions: not_addressed
-      review: not_addressed
-      autonomous_agents: not_addressed
-      contribution_types_not_defined: not_addressed
+      code: not-addressed  # allowed | restricted | banned | not-addressed
+      tests: not-addressed
+      docs_and_text: not-addressed
+      issues_and_pr_descriptions: not-addressed
+      review: not-addressed
+      autonomous_agents: not-addressed
+      contribution_types_not_defined: not-addressed
     implicit:
-      code: not_seen  # seen | not_seen
-      comments: not_seen
-      tests: not_seen
-      docs_and_text: not_seen
-      issues_and_pr_descriptions: not_seen
-      review: not_seen
-      autonomous_agents: not_seen
+      code: not-seen  # seen | not-seen
+      comments: not-seen
+      tests: not-seen
+      docs_and_text: not-seen
+      issues_and_pr_descriptions: not-seen
+      review: not-seen
+      autonomous_agents: not-seen
 
   stated_rationale:
     explicit: []
@@ -54,11 +54,11 @@ coding:
 
   accountability:
     explicit:
-      human_responsibility: not_stated  # yes | no | not_stated
+      human_responsibility: not-stated  # yes | no | not-stated
       disclosure: none  # none | recommended | required
       disclosure_format: []  # label-or-tag | free-text | other
       enforcement: []  # none-stated | pr-closed | contributor-blocked | other
-      new_contributors: not_stated  # yes | no | not_stated
+      new_contributors: not-stated  # yes | no | not-stated
     implicit:
       disclosure_in_practice: none-seen  # none-seen | tool-defaults-only | deliberate
       notes: ""

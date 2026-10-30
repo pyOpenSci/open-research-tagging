@@ -20,7 +20,7 @@ def test_build_overall_stance_links_and_omits_not_addressed_scope():
     coding = {
         "stance": "allow",
         "stated_rationale": ["security"],
-        "scope": {"code": "banned", "tests": "not_addressed"},
+        "scope": {"code": "banned", "tests": "not-addressed"},
         "guidance_on_use": {"level": "none", "types": ["design"]},
         "accountability": {"disclosure": "required"},
     }

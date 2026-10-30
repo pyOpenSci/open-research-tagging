@@ -48,7 +48,7 @@ def emit_codebook_json(data: Mapping[str, Any]) -> dict[str, Any]:
 def _optional_scope_leaf(
     data: Mapping[str, Any], path: str
 ) -> dict[str, dict[str, str]] | None:
-    """Emit a second scope block (e.g. implicit seen/not_seen) when present."""
+    """Emit a second scope block (e.g. implicit seen/not-seen) when present."""
     try:
         leaf = resolve_dimension_path(data["dimensions"], path)
     except (KeyError, TypeError):

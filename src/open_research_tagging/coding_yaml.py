@@ -186,7 +186,7 @@ def _merge_by_schema(
                 for key, val in raw_layer.items():
                     yaml_key = str(key).replace("-", "_")
                     if val not in (None, ""):
-                        dest[yaml_key] = str(val)
+                        dest[yaml_key] = _boolish_id(val)
             elif storage == "object" and isinstance(raw_layer, Mapping):
                 dest = base[dim_id][layer_id]
                 for field in layer.get("fields") or []:
@@ -258,8 +258,8 @@ def _str_list(value: Any) -> list[str]:
     if value is None:
         return []
     if isinstance(value, list):
-        return [str(v) for v in value if v not in (None, "")]
-    return [str(value)]
+        return [_boolish_id(v) for v in value if v not in (None, "")]
+    return [_boolish_id(value)]
 
 
 def _boolish_id(value: Any) -> str:
@@ -267,7 +267,8 @@ def _boolish_id(value: Any) -> str:
         return "yes"
     if value is False:
         return "no"
-    return str(value)
+    # Legacy underscore value ids → hyphen codebook ids (13h).
+    return str(value).replace("_", "-")
 
 
 def _scalar(value: Any) -> str:

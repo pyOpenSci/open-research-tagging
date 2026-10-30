@@ -91,7 +91,7 @@ def _empty_layer_value(layer: Mapping[str, Any]) -> Any:
         return _default_for_field(field)
     if storage == "scope_map":
         field = fields[0] if fields else {}
-        default_pos = field.get("default_position") or "not_addressed"
+        default_pos = field.get("default_position") or "not-addressed"
         types = field.get("contribution_types") or []
         return {t["yaml_key"]: default_pos for t in types}
     # object: named fields
@@ -217,12 +217,12 @@ def _scope_field(body: Mapping[str, Any]) -> dict[str, Any]:
                     else _titleize(pid),
                 }
             )
-    default_pos = "not_addressed"
+    default_pos = "not-addressed"
     pos_ids = {p["id"] for p in positions_out}
-    if "not_seen" in pos_ids and "not_addressed" not in pos_ids:
-        default_pos = "not_seen"
-    elif "not_addressed" in pos_ids:
-        default_pos = "not_addressed"
+    if "not-seen" in pos_ids and "not-addressed" not in pos_ids:
+        default_pos = "not-seen"
+    elif "not-addressed" in pos_ids:
+        default_pos = "not-addressed"
     elif positions_out:
         default_pos = positions_out[-1]["id"]
     return {
@@ -322,11 +322,11 @@ def _named_default(
     # Match prior template defaults for common accountability leaves
     if dim_id == "accountability" and layer_id == "explicit":
         if key == "human_responsibility":
-            return "not_stated"
+            return "not-stated"
         if key == "disclosure":
             return "none"
         if key == "new_contributors":
-            return "not_stated"
+            return "not-stated"
     if dim_id == "accountability" and layer_id == "implicit":
         if key == "disclosure_in_practice":
             return "none-seen"

@@ -42,8 +42,8 @@ def test_empty_coding_matches_schema_defaults():
     assert empty_coding() == from_schema
     assert from_schema["stance"]["explicit"] is None
     assert from_schema["stance"]["implicit"] == []
-    assert from_schema["scope"]["explicit"]["code"] == "not_addressed"
-    assert from_schema["scope"]["implicit"]["code"] == "not_seen"
+    assert from_schema["scope"]["explicit"]["code"] == "not-addressed"
+    assert from_schema["scope"]["implicit"]["code"] == "not-seen"
     assert from_schema["accountability"]["explicit"]["disclosure"] == "none"
 
 

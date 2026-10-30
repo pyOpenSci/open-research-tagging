@@ -140,7 +140,7 @@
     "human_responsibility": {
       "yes": "Yes \u2014 contributor is responsible for submitted work",
       "no": "No",
-      "not_stated": "Not stated"
+      "not-stated": "Not stated"
     },
     "enforcement": {
       "none-stated": "None stated",
@@ -151,7 +151,7 @@
     "new_contributors": {
       "yes": "Yes",
       "no": "No",
-      "not_stated": "Not stated"
+      "not-stated": "Not stated"
     },
     "disclosure_in_practice": {
       "none-seen": "None seen",
@@ -173,7 +173,7 @@
       "allowed": "Allowed",
       "restricted": "Restricted",
       "banned": "Banned",
-      "not_addressed": "Not Addressed"
+      "not-addressed": "Not Addressed"
     }
   },
   "filter_order": [
@@ -431,7 +431,7 @@
       "kind": "value"
     },
     {
-      "hashtag": "#human-responsibility/not_stated",
+      "hashtag": "#human-responsibility/not-stated",
       "label": "Not stated",
       "description": "",
       "dimension": "human_responsibility",
@@ -458,7 +458,7 @@
       "kind": "value"
     },
     {
-      "hashtag": "#new-contributors/not_stated",
+      "hashtag": "#new-contributors/not-stated",
       "label": "Not stated",
       "description": "Different rules for new contributors.",
       "dimension": "new_contributors",
@@ -737,7 +737,7 @@
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/autonomous-agents:not_addressed",
+      "hashtag": "#scope/autonomous-agents:not-addressed",
       "label": "Autonomous agents \u2192 Not Addressed",
       "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
@@ -773,7 +773,7 @@
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/code:not_addressed",
+      "hashtag": "#scope/code:not-addressed",
       "label": "Code \u2192 Not Addressed",
       "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
@@ -809,7 +809,7 @@
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/contribution-types-not-defined:not_addressed",
+      "hashtag": "#scope/contribution-types-not-defined:not-addressed",
       "label": "Contribution types not defined \u2192 Not Addressed",
       "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
@@ -845,7 +845,7 @@
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/docs-and-text:not_addressed",
+      "hashtag": "#scope/docs-and-text:not-addressed",
       "label": "Docs and text \u2192 Not Addressed",
       "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
@@ -881,7 +881,7 @@
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/issues-and-pr-descriptions:not_addressed",
+      "hashtag": "#scope/issues-and-pr-descriptions:not-addressed",
       "label": "Issues and PR descriptions \u2192 Not Addressed",
       "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
@@ -917,7 +917,7 @@
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/review:not_addressed",
+      "hashtag": "#scope/review:not-addressed",
       "label": "Review \u2192 Not Addressed",
       "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
@@ -953,7 +953,7 @@
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/tests:not_addressed",
+      "hashtag": "#scope/tests:not-addressed",
       "label": "Tests \u2192 Not Addressed",
       "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
@@ -1120,11 +1120,11 @@
                     "label": "Banned"
                   },
                   {
-                    "id": "not_addressed",
+                    "id": "not-addressed",
                     "label": "Not Addressed"
                   }
                 ],
-                "default_position": "not_addressed",
+                "default_position": "not-addressed",
                 "default": null
               }
             ]
@@ -1182,11 +1182,11 @@
                     "label": "Seen"
                   },
                   {
-                    "id": "not_seen",
+                    "id": "not-seen",
                     "label": "Not Seen"
                   }
                 ],
-                "default_position": "not_seen",
+                "default_position": "not-seen",
                 "default": null
               }
             ]
@@ -1456,11 +1456,11 @@
                     "label": "No"
                   },
                   {
-                    "id": "not_stated",
+                    "id": "not-stated",
                     "label": "Not stated"
                   }
                 ],
-                "default": "not_stated"
+                "default": "not-stated"
               },
               {
                 "id": "disclosure",
@@ -1540,11 +1540,11 @@
                     "label": "No"
                   },
                   {
-                    "id": "not_stated",
+                    "id": "not-stated",
                     "label": "Not stated"
                   }
                 ],
-                "default": "not_stated"
+                "default": "not-stated"
               }
             ]
           },
@@ -1744,7 +1744,7 @@
     },
     "positions": {
       "seen": "Seen",
-      "not_seen": "Not Seen"
+      "not-seen": "Not Seen"
     }
   }
 }

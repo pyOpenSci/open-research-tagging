@@ -68,7 +68,7 @@ def test_empty_coding_defaults_and_prefill():
         r"""
 const empty = F.emptyCoding(codebook);
 if (empty.stance.explicit !== null) throw new Error('stance');
-if (!empty.scope.explicit || empty.scope.explicit.code !== 'not_addressed') {
+if (!empty.scope.explicit || empty.scope.explicit.code !== 'not-addressed') {
   throw new Error('scope');
 }
 if (!Array.isArray(empty.stated_rationale.explicit) || empty.stated_rationale.explicit.length !== 0) {
@@ -80,7 +80,7 @@ if (empty.context.explicit.notes !== '') throw new Error('notes');
 
 const raw = {
   stance: 'permissive-with-conditions',
-  scope: { code: 'restricted', tests: 'not_addressed', docs_and_text: 'restricted' },
+  scope: { code: 'restricted', tests: 'not-addressed', docs_and_text: 'restricted' },
   stated_rationale: ['security'],
   guidance_on_use: { level: 'some-guidance', types: ['design'] },
   accountability: {
