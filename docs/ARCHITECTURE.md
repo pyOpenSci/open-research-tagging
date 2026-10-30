@@ -203,6 +203,8 @@ python -m open_research_tagging.fetch_comments   # needs GITHUB_TOKEN / GITHUB_R
 
 Writes gitignored `site/data/raw_comments.json`. Live `comments.json` / `projects.json` / `codebook.json` are built **in the Actions runner** and uploaded as the Pages artifact only (**13c**) — they are **not** committed back to `main`. That removes bot refresh commits racing human pushes. Committed `site/data/*.json` on `main` is the **offline fixture snapshot** for local `http.server` and clones without a token.
 
+**Edited review comments (13j):** refresh is a full re-fetch of every PR review comment, then a full rebuild of `comments.json` from that dump (no merge with the previous site JSON). GitHub’s list payload includes the current `body` and `updated_at`, so an edit shows up after the next **Update comment data** / **Deploy Pages** run. Tag-check already listens to `edited` for soft replies; the public site waits for that refresh.
+
 No `paths:` filter on tag-check yet; revisit if code-review `#…` noise on non-`projects/` PRs becomes a problem.
 
 ## Fixture vs live site JSON
