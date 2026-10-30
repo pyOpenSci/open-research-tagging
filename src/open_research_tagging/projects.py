@@ -11,7 +11,11 @@ import yaml
 
 from open_research_tagging.codebook import Codebook
 from open_research_tagging.coding_yaml import normalize_coding
-from open_research_tagging.project_yaml import PROVENANCE_KEYS, empty_provenance
+from open_research_tagging.project_yaml import (
+    PROVENANCE_KEYS,
+    empty_provenance,
+    resolve_display_name,
+)
 from open_research_tagging.tags import humanize
 
 
@@ -453,7 +457,7 @@ def build_project_from_data(
             prov_out[key] = jsonable(provenance.get(key))
     row: dict[str, Any] = {
         "slug": slug,
-        "display_name": data.get("display_name") or slug,
+        "display_name": resolve_display_name(data.get("display_name"), slug),
         "provenance": prov_out,
         "context": {
             "governance": context.get("governance"),

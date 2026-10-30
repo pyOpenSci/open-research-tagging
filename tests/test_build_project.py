@@ -143,3 +143,42 @@ def test_build_project_skips_underscore_slug(tmp_path: Path):
         encoding="utf-8",
     )
     assert build_project(yaml_path, _codebook(), {}, repo_root=tmp_path) is None
+
+
+def test_build_project_placeholder_display_name_uses_slug(tmp_path: Path):
+    """13g: template display_name 'Example Project' must not appear on the site."""
+    proj = tmp_path / "projects" / "acme-ai"
+    proj.mkdir(parents=True)
+    yaml_path = proj / "project.yaml"
+    yaml_path.write_text(
+        yaml.dump(
+            {
+                "slug": "acme-ai",
+                "display_name": "Example Project",
+                "coding": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    row = build_project(yaml_path, _codebook(), {}, repo_root=tmp_path)
+    assert row is not None
+    assert row["display_name"] == "acme-ai"
+
+
+def test_build_project_keeps_real_display_name(tmp_path: Path):
+    proj = tmp_path / "projects" / "acme-ai"
+    proj.mkdir(parents=True)
+    yaml_path = proj / "project.yaml"
+    yaml_path.write_text(
+        yaml.dump(
+            {
+                "slug": "acme-ai",
+                "display_name": "Acme AI Policy",
+                "coding": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    row = build_project(yaml_path, _codebook(), {}, repo_root=tmp_path)
+    assert row is not None
+    assert row["display_name"] == "Acme AI Policy"

@@ -27,6 +27,20 @@ PROVENANCE_KEYS: tuple[str, ...] = (
 # Preferred order for files: entries; other keys still passthrough after these.
 FILE_ENTRY_KEYS: tuple[str, ...] = ("path", "description", "notes")
 
+# Template placeholder — site rows substitute the slug (13g).
+PLACEHOLDER_DISPLAY_NAME = "Example Project"
+
+
+def resolve_display_name(display_name: Any, slug: str) -> str:
+    """Return a site-facing name; treat template placeholder as unset."""
+    slug = str(slug or "").strip()
+    if display_name is None:
+        return slug
+    text = str(display_name).strip()
+    if not text or text == PLACEHOLDER_DISPLAY_NAME:
+        return slug
+    return text
+
 
 def empty_provenance() -> dict[str, Any]:
     """Default provenance mapping (nulls / empty notes)."""
