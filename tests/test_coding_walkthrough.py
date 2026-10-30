@@ -130,8 +130,8 @@ def test_form_edit_updates_yaml_preview(page, site_base_url, pyopensci_row):
     stance_ex = pyopensci_row["coding"]["stance"]["explicit"]
     assert stance_ex in before
 
-    # Stance.explicit select (skip policy_location in metadata)
-    page.locator("#coding-form select").nth(1).select_option("permissive")
+    # First coding select is stance.explicit (provenance no longer has selects)
+    page.locator("#coding-form select").first.select_option("permissive")
     page.wait_for_function(
         """() => {
           const ta = document.getElementById('yaml-preview');

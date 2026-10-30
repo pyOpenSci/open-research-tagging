@@ -69,10 +69,6 @@
         return (Form && Form.PROVENANCE_KEYS) || [];
       },
 
-      get policyLocationOptions() {
-        return (Form && Form.POLICY_LOCATION_OPTIONS) || [];
-      },
-
       provenanceLabel(key) {
         return String(key || "").replace(/_/g, " ");
       },

@@ -8,15 +8,13 @@ display_name: pyOpenSci
 
 provenance:
   source_repo: https://github.com/pyOpenSci/software-peer-review
-  source_path: our-process/generative-ai-policy.md
   source_commit: 499a7e2bedf55f78a39ab77edcb1ed36c04ecbd7
   source_url: https://github.com/pyOpenSci/software-peer-review/blob/499a7e2bedf55f78a39ab77edcb1ed36c04ecbd7/our-process/generative-ai-policy.md
   retrieved_at: 2026-10-13
-  policy_location: standalone-file
-  policy_date: null
   notes: >
-    Also copied appendices/gen-ai-checklist.md from the same commit.
-    Policy is for pyOpenSci software peer review submissions.
+    Also copied appendices/gen-ai-checklist.md from the same commit
+    (our-process/generative-ai-policy.md). Policy is for pyOpenSci software
+    peer review submissions.
 
 coding:
   stance:

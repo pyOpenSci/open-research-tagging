@@ -8,12 +8,9 @@ display_name: Example Project
 
 provenance:
   source_repo: https://github.com/org/repo
-  source_path: path/to/policy.md
   source_commit: REPLACE_WITH_FULL_SHA
-  source_url: https://github.com/org/repo/blob/REPLACE_WITH_FULL_SHA/path/to/policy.md
+  source_url: null  # optional — commit-pinned URL of a primary policy, if any
   retrieved_at: YYYY-MM-DD
-  policy_location: standalone-file  # CONTRIBUTING | standalone-file | governance-doc | other
-  policy_date: null  # if known
   notes: ""
 
 coding:
@@ -86,3 +83,4 @@ coding:
 files:
   - path: policy.md
     description: Primary AI / LLM contribution policy
+    notes: ""  # optional — coder notes about this file

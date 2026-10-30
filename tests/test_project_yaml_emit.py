@@ -77,3 +77,32 @@ def test_empty_meta_defaults():
     meta = empty_meta()
     assert meta["slug"] == ""
     assert set(meta["provenance"]) == set(PROVENANCE_KEYS)
+
+
+def test_emit_project_yaml_preserves_file_notes():
+    text = emit_project_yaml(
+        slug="acme",
+        files=[
+            {
+                "path": "a.md",
+                "description": "Primary",
+                "notes": "Also covers appendix",
+            }
+        ],
+        codebook_path=CODEBOOK,
+    )
+    assert "    description: Primary\n" in text
+    assert "notes:" in text.split("files:", 1)[1]
+    parsed = yaml.safe_load(text)
+    assert parsed["files"][0]["description"] == "Primary"
+    assert parsed["files"][0]["notes"] == "Also covers appendix"
+
+
+def test_template_marks_source_url_optional_and_has_file_notes():
+    raw = (REPO / "projects" / "_template" / "project.yaml").read_text(
+        encoding="utf-8"
+    )
+    assert "source_url: null  # optional" in raw
+    data = yaml.safe_load(raw)
+    assert data["provenance"]["source_url"] is None
+    assert "notes" in data["files"][0]

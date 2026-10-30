@@ -238,20 +238,10 @@
   /** Provenance key order — keep in sync with Python project_yaml.PROVENANCE_KEYS. */
   const PROVENANCE_KEYS = [
     "source_repo",
-    "source_path",
     "source_commit",
     "source_url",
     "retrieved_at",
-    "policy_location",
-    "policy_date",
     "notes",
-  ];
-
-  const POLICY_LOCATION_OPTIONS = [
-    { id: "CONTRIBUTING", label: "CONTRIBUTING" },
-    { id: "standalone-file", label: "Standalone file" },
-    { id: "governance-doc", label: "Governance doc" },
-    { id: "other", label: "Other" },
   ];
 
   function emptyProvenance() {
@@ -321,12 +311,16 @@
       m.files.forEach(function (row) {
         const path = row && row.path != null ? row.path : row;
         lines.push("  - path: " + yamlScalar(path));
-        if (row && typeof row === "object" && "description" in row) {
-          lines.push("    description: " + yamlScalar(row.description));
-        }
         if (row && typeof row === "object") {
+          ["description", "notes"].forEach(function (key) {
+            if (Object.prototype.hasOwnProperty.call(row, key)) {
+              lines.push("    " + key + ": " + yamlScalar(row[key]));
+            }
+          });
           Object.keys(row).forEach(function (extra) {
-            if (extra === "path" || extra === "description") return;
+            if (extra === "path" || extra === "description" || extra === "notes") {
+              return;
+            }
             lines.push("    " + extra + ": " + yamlScalar(row[extra]));
           });
         }
@@ -417,7 +411,6 @@
     emptyMeta: emptyMeta,
     normalizeMeta: normalizeMeta,
     PROVENANCE_KEYS: PROVENANCE_KEYS,
-    POLICY_LOCATION_OPTIONS: POLICY_LOCATION_OPTIONS,
     toggleMulti: toggleMulti,
     yamlScopeKey: yamlScopeKey,
     hashtagScopeKey: hashtagScopeKey,

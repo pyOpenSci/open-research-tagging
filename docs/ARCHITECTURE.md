@@ -109,6 +109,8 @@ Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixtur
 
 Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips folder names starting with `_`. The development seed is **pyOpenSci** (`projects/pyopensci/`).
 
+**Provenance (13f):** only `source_repo`, `source_commit`, `source_url`, `retrieved_at`, and `notes`. `source_url` is optional (null when there is no single primary policy URL); pin the snapshot with repo + commit instead. Policy location / date live under `coding.context` when coded; retired top-level provenance keys are dropped on normalize / Copy YAML. Each `files:` entry is `path` plus optional `description` and `notes`.
+
 Joining overall codes to passage evidence:
 
 1. Index normalized comments per project (by dimension and `filter_key`).

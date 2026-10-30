@@ -137,30 +137,6 @@
               </label>
               <template x-for="key in provenanceKeys" :key="key">
                 <div class="coding-field">
-                  <template x-if="key === 'policy_location'">
-                    <label class="search">
-                      <span x-text="provenanceLabel(key)"></span>
-                      <select
-                        id="meta-policy-location"
-                        @change="meta.provenance.policy_location = $event.target.value || null; touchMeta()"
-                      >
-                        <option
-                          value=""
-                          :selected="!meta.provenance.policy_location"
-                        >—</option>
-                        <template
-                          x-for="opt in policyLocationOptions"
-                          :key="opt.id"
-                        >
-                          <option
-                            :value="opt.id"
-                            :selected="meta.provenance.policy_location === opt.id"
-                            x-text="opt.label"
-                          ></option>
-                        </template>
-                      </select>
-                    </label>
-                  </template>
                   <template x-if="key === 'notes'">
                     <label class="search">
                       <span x-text="provenanceLabel(key)"></span>
@@ -171,7 +147,7 @@
                       ></textarea>
                     </label>
                   </template>
-                  <template x-if="key !== 'policy_location' && key !== 'notes'">
+                  <template x-if="key !== 'notes'">
                     <label class="search">
                       <span x-text="provenanceLabel(key)"></span>
                       <input
@@ -193,6 +169,11 @@
                       <span
                         x-show="f.description"
                         x-text="' — ' + f.description"
+                      ></span>
+                      <span
+                        class="meta-row"
+                        x-show="f.notes"
+                        x-text="f.notes"
                       ></span>
                     </li>
                   </template>

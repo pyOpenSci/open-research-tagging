@@ -2,7 +2,7 @@
 
 Python is the contract; the browser mirrors formatting. The ``coding:`` section
 reuses ``emit_coding_block``. Files are passthrough (read-only in the form for
-now; editable files are **13k**).
+now; editable files are **13l**).
 """
 
 from __future__ import annotations
@@ -15,17 +15,17 @@ from open_research_tagging.coding_yaml import (
     emit_coding_block,
 )
 
-# Order matches projects/_template/project.yaml provenance block.
+# Slim v1 set (13f). policy_location lives under coding.context when needed.
 PROVENANCE_KEYS: tuple[str, ...] = (
     "source_repo",
-    "source_path",
     "source_commit",
     "source_url",
     "retrieved_at",
-    "policy_location",
-    "policy_date",
     "notes",
 )
+
+# Preferred order for files: entries; other keys still passthrough after these.
+FILE_ENTRY_KEYS: tuple[str, ...] = ("path", "description", "notes")
 
 
 def empty_provenance() -> dict[str, Any]:
@@ -116,12 +116,12 @@ def emit_project_yaml(
             if not isinstance(row, Mapping):
                 lines.append(f"  - path: {_scalar(row)}")
                 continue
-            path = row.get("path")
-            lines.append(f"  - path: {_scalar(path)}")
-            if "description" in row:
-                lines.append(f"    description: {_scalar(row.get('description'))}")
+            lines.append(f"  - path: {_scalar(row.get('path'))}")
+            for key in FILE_ENTRY_KEYS[1:]:
+                if key in row:
+                    lines.append(f"    {key}: {_scalar(row.get(key))}")
             for extra_key, extra_val in row.items():
-                if extra_key in {"path", "description"}:
+                if extra_key in FILE_ENTRY_KEYS:
                     continue
                 lines.append(f"    {extra_key}: {_scalar(extra_val)}")
     return "\n".join(lines) + "\n"
