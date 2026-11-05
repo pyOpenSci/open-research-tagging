@@ -260,6 +260,7 @@
                               :value="getScope(dim.id, layer.id, row.yaml_key)"
                               @change="setScope(dim.id, layer.id, row.yaml_key, $event.target.value)"
                             >
+                              <option value="">—</option>
                               <template
                                 x-for="pos in (layer.fields[0] && layer.fields[0].positions) || []"
                                 :key="pos.id"

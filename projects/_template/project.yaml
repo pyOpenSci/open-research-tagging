@@ -6,10 +6,10 @@ slug: example-project
 display_name: Example Project
 
 provenance:
-  source_repo: https://github.com/org/repo
-  source_commit: REPLACE_WITH_FULL_SHA
+  source_repo: null
+  source_commit: null
   source_url: null
-  retrieved_at: YYYY-MM-DD
+  retrieved_at: null
   notes: ""
 
 files: []
@@ -21,21 +21,21 @@ coding:
 
   scope:
     explicit:
-      code: not-addressed
-      tests: not-addressed
-      docs_and_text: not-addressed
-      issues_and_pr_descriptions: not-addressed
-      review: not-addressed
-      autonomous_agents: not-addressed
-      contribution_types_not_defined: not-addressed
+      code: null
+      tests: null
+      docs_and_text: null
+      issues_and_pr_descriptions: null
+      review: null
+      autonomous_agents: null
+      contribution_types_not_defined: null
     implicit:
-      code: not-seen
-      comments: not-seen
-      tests: not-seen
-      docs_and_text: not-seen
-      issues_and_pr_descriptions: not-seen
-      review: not-seen
-      autonomous_agents: not-seen
+      code: null
+      comments: null
+      tests: null
+      docs_and_text: null
+      issues_and_pr_descriptions: null
+      review: null
+      autonomous_agents: null
 
   stated_rationale:
     explicit: []
@@ -54,13 +54,13 @@ coding:
 
   accountability:
     explicit:
-      human_responsibility: not-stated
-      disclosure: none
+      human_responsibility: null
+      disclosure: null
       disclosure_format: []
       enforcement: []
-      new_contributors: not-stated
+      new_contributors: null
     implicit:
-      disclosure_in_practice: none-seen
+      disclosure_in_practice: null
       notes: ""
 
   context:

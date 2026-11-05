@@ -42,9 +42,11 @@ def test_empty_coding_matches_schema_defaults():
     assert empty_coding() == from_schema
     assert from_schema["stance"]["explicit"] is None
     assert from_schema["stance"]["implicit"] == []
-    assert from_schema["scope"]["explicit"]["code"] == "not-addressed"
-    assert from_schema["scope"]["implicit"]["code"] == "not-seen"
-    assert from_schema["accountability"]["explicit"]["disclosure"] == "none"
+    # Uncoded — not codebook ids like not-addressed / none
+    assert from_schema["scope"]["explicit"]["code"] is None
+    assert from_schema["scope"]["implicit"]["code"] is None
+    assert from_schema["accountability"]["explicit"]["disclosure"] is None
+    assert from_schema["accountability"]["explicit"]["human_responsibility"] is None
 
 
 def test_template_coding_keys_align_with_schema():
@@ -64,6 +66,28 @@ def test_template_coding_keys_align_with_schema():
         assert dim["id"] in coding
         for layer in dim["layers"]:
             assert layer["id"] in coding[dim["id"]]
+
+
+def test_template_coding_values_are_uncoded_not_codebook_defaults():
+    """Fresh template must not claim not-addressed / none / not-stated."""
+    import yaml
+
+    template_path = (
+        Path(__file__).resolve().parents[1]
+        / "projects"
+        / "_template"
+        / "project.yaml"
+    )
+    data = yaml.safe_load(template_path.read_text(encoding="utf-8"))
+    coding = data["coding"]
+    assert coding["scope"]["explicit"]["code"] is None
+    assert coding["scope"]["implicit"]["code"] is None
+    assert coding["accountability"]["explicit"]["disclosure"] is None
+    assert coding["accountability"]["explicit"]["human_responsibility"] is None
+    assert coding["accountability"]["implicit"]["disclosure_in_practice"] is None
+    # Provenance placeholders cleared too
+    assert data["provenance"]["source_repo"] is None
+    assert data["provenance"]["source_commit"] is None
 
 
 def test_new_context_text_field_appears_without_form_hardcoding():

@@ -113,6 +113,8 @@ Each studied policy lives under `projects/<slug>/` with a `project.yaml` (proven
 
 **Files (13l):** membership comes from the project folder (recursive; skips `project.yaml` and dotfiles), including open-PR heads when `--include-open-prs` runs. YAML `files:` entries supply `description` / optional `notes` by path; orphan YAML paths are dropped. Coding view shows path read-only and editable description; Copy YAML emits `files:` after provenance and before `coding:`. Path listing is two small walkers — local disk vs GitHub Contents at the PR head — because open-PR trees often are not on the Actions checkout; both return the same sorted relative-path list into one shared merge with YAML descriptions.
 
+**Uncoded vs coded defaults:** empty coding / `_template` use `null` / `[]` (and `""` for text), not codebook value ids. Values like `not-addressed`, `not-stated`, and `none` are real codes — seeding them would make a fresh project look coded on the site.
+
 Joining overall codes to passage evidence:
 
 1. Index normalized comments per project (by dimension and `filter_key`).

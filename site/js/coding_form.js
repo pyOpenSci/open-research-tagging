@@ -45,7 +45,13 @@
     }
     if (storage === "scope_map") {
       const field = fields[0] || {};
-      const defaultPos = field.default_position || "not-addressed";
+      // null = uncoded (do not fall back to not-addressed / not-seen)
+      const defaultPos = Object.prototype.hasOwnProperty.call(
+        field,
+        "default_position"
+      )
+        ? field.default_position
+        : null;
       const scope = {};
       (field.contribution_types || []).forEach(function (t) {
         scope[t.yaml_key] = defaultPos;

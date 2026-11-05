@@ -155,14 +155,15 @@
         if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
           return "";
         }
-        return this.coding[dimId][layerId][yamlKey] || "";
+        const v = this.coding[dimId][layerId][yamlKey];
+        return v == null ? "" : String(v);
       },
 
       setScope(dimId, layerId, yamlKey, value) {
         if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
           return;
         }
-        this.coding[dimId][layerId][yamlKey] = value;
+        this.coding[dimId][layerId][yamlKey] = value || null;
         this.copyStatus = "";
       },
 

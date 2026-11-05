@@ -130,7 +130,7 @@ def test_emit_round_trips_yaml_shape():
     assert coding["context"]["explicit"]["governance"] == "community"
     empty = yaml.safe_load(emit_coding_block({}))["coding"]
     assert empty["stated_rationale"]["explicit"] == []
-    assert empty["accountability"]["explicit"]["disclosure"] == "none"
+    assert empty["accountability"]["explicit"]["disclosure"] is None
 
 
 def test_lift_flat_draft_01_coding():

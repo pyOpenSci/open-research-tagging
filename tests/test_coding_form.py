@@ -68,14 +68,14 @@ def test_empty_coding_defaults_and_prefill():
         r"""
 const empty = F.emptyCoding(codebook);
 if (empty.stance.explicit !== null) throw new Error('stance');
-if (!empty.scope.explicit || empty.scope.explicit.code !== 'not-addressed') {
+if (!empty.scope.explicit || empty.scope.explicit.code !== null) {
   throw new Error('scope');
 }
 if (!Array.isArray(empty.stated_rationale.explicit) || empty.stated_rationale.explicit.length !== 0) {
   throw new Error('rationale');
 }
 if (empty.guidance_on_use.explicit.level !== null) throw new Error('glevel');
-if (empty.accountability.explicit.disclosure !== 'none') throw new Error('disclosure');
+if (empty.accountability.explicit.disclosure !== null) throw new Error('disclosure');
 if (empty.context.explicit.notes !== '') throw new Error('notes');
 
 const raw = {
@@ -102,7 +102,7 @@ if (filled.context.explicit.notes !== 'n') throw new Error('pref notes');
 const fromNull = F.prefillCoding(null, codebook);
 if (fromNull.stance.explicit !== null) throw new Error('null pref');
 const fromEmpty = F.prefillCoding({}, codebook);
-if (fromEmpty.accountability.explicit.disclosure !== 'none') throw new Error('empty pref');
+if (fromEmpty.accountability.explicit.disclosure !== null) throw new Error('empty pref');
 console.log('ok');
 """
     )

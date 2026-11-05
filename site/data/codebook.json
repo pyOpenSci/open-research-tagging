@@ -1124,7 +1124,7 @@
                     "label": "Not Addressed"
                   }
                 ],
-                "default_position": "not-addressed",
+                "default_position": null,
                 "default": null
               }
             ]
@@ -1186,7 +1186,7 @@
                     "label": "Not Seen"
                   }
                 ],
-                "default_position": "not-seen",
+                "default_position": null,
                 "default": null
               }
             ]
@@ -1460,7 +1460,7 @@
                     "label": "Not stated"
                   }
                 ],
-                "default": "not-stated"
+                "default": null
               },
               {
                 "id": "disclosure",
@@ -1480,7 +1480,7 @@
                     "label": "Required"
                   }
                 ],
-                "default": "none"
+                "default": null
               },
               {
                 "id": "disclosure_format",
@@ -1544,7 +1544,7 @@
                     "label": "Not stated"
                   }
                 ],
-                "default": "not-stated"
+                "default": null
               }
             ]
           },
@@ -1571,7 +1571,7 @@
                     "label": "Deliberate"
                   }
                 ],
-                "default": "none-seen"
+                "default": null
               },
               {
                 "id": "notes",

@@ -91,7 +91,8 @@ def _empty_layer_value(layer: Mapping[str, Any]) -> Any:
         return _default_for_field(field)
     if storage == "scope_map":
         field = fields[0] if fields else {}
-        default_pos = field.get("default_position") or "not-addressed"
+        # Prefer explicit default_position (may be None = uncoded).
+        default_pos = field.get("default_position")
         types = field.get("contribution_types") or []
         return {t["yaml_key"]: default_pos for t in types}
     # object: named fields
@@ -217,14 +218,7 @@ def _scope_field(body: Mapping[str, Any]) -> dict[str, Any]:
                     else _titleize(pid),
                 }
             )
-    default_pos = "not-addressed"
-    pos_ids = {p["id"] for p in positions_out}
-    if "not-seen" in pos_ids and "not-addressed" not in pos_ids:
-        default_pos = "not-seen"
-    elif "not-addressed" in pos_ids:
-        default_pos = "not-addressed"
-    elif positions_out:
-        default_pos = positions_out[-1]["id"]
+    # Uncoded = null (not a codebook value like not-addressed / not-seen).
     return {
         "id": "_",
         "label": "Scope",
@@ -232,7 +226,7 @@ def _scope_field(body: Mapping[str, Any]) -> dict[str, Any]:
         "options": [],
         "contribution_types": types_out,
         "positions": positions_out,
-        "default_position": default_pos,
+        "default_position": None,
         "default": None,
     }
 
@@ -317,19 +311,10 @@ def _scalar_default(body: Mapping[str, Any]) -> Any:
 def _named_default(
     dim_id: str, layer_id: str, key: str, body: Mapping[str, Any]
 ) -> Any:
+    """Empty / uncoded defaults — never seed real codebook value ids."""
+    _ = (dim_id, layer_id, key)
     if body.get("select") == "multi":
         return []
-    # Match prior template defaults for common accountability leaves
-    if dim_id == "accountability" and layer_id == "explicit":
-        if key == "human_responsibility":
-            return "not-stated"
-        if key == "disclosure":
-            return "none"
-        if key == "new_contributors":
-            return "not-stated"
-    if dim_id == "accountability" and layer_id == "implicit":
-        if key == "disclosure_in_practice":
-            return "none-seen"
     return None
 
 
