@@ -109,7 +109,9 @@ Output shape: `{ meta, data }`. Meta includes `source_file`, `count`, `is_fixtur
 
 Each studied policy lives under `projects/<slug>/` with a `project.yaml` (provenance, overall `coding:`, `files:`). Copy `projects/_template/` to start a new slug. Discovery skips folder names starting with `_`. The development seed is **pyOpenSci** (`projects/pyopensci/`). If `display_name` is still the template placeholder `Example Project`, site rows use the **slug** instead (**13g**); the YAML file is left unchanged until a coder edits it.
 
-**Provenance (13f):** only `source_repo`, `source_commit`, `source_url`, `retrieved_at`, and `notes`. `source_url` is optional (null when there is no single primary policy URL); pin the snapshot with repo + commit instead. Policy location / date live under `coding.context` when coded; retired top-level provenance keys are dropped on normalize / Copy YAML. Each `files:` entry is `path` plus optional `description` and `notes`.
+**Provenance (13f):** only `source_repo`, `source_commit`, `source_url`, `retrieved_at`, and `notes`. `source_url` is optional (null when there is no single primary policy URL); pin the snapshot with repo + commit instead. Policy location / date live under `coding.context` when coded; retired top-level provenance keys are dropped on normalize / Copy YAML.
+
+**Files (13l):** membership comes from the project folder (recursive; skips `project.yaml` and dotfiles), including open-PR heads when `--include-open-prs` runs. YAML `files:` entries supply `description` / optional `notes` by path; orphan YAML paths are dropped. Coding view shows path read-only and editable description; Copy YAML emits `files:` after provenance and before `coding:`. Path listing is two small walkers — local disk vs GitHub Contents at the PR head — because open-PR trees often are not on the Actions checkout; both return the same sorted relative-path list into one shared merge with YAML descriptions.
 
 Joining overall codes to passage evidence:
 
@@ -161,7 +163,7 @@ Documented for researchers in [`codebook/COMMENTING.md`](../codebook/COMMENTING.
 | Need | Tool |
 |------|------|
 | Tag a **passage** | Tag picker → Copy → Files-tab review comment (hashtags at top, then a short note). Prefer **Add single comment** or **Submit** the review — unsubmitted “Start a review” drafts often cannot receive bot replies. |
-| Set **overall** codes / metadata | Coding view → walk evidence → edit provenance → **Copy YAML** → paste over whole `project.yaml` (files list read-only). Do not invent overall YAML by pasting random hashtags into the file. |
+| Set **overall** codes / metadata | Coding view → walk evidence → edit provenance + file descriptions → **Copy YAML** → paste over whole `project.yaml`. Add policy files on the PR; they appear after refresh. Do not invent overall YAML by pasting random hashtags into the file. |
 
 Exact hashtag strings come from the picker / `tag_catalog`, not a second hand-maintained table in the docs.
 

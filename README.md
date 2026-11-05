@@ -17,11 +17,9 @@ Helpers on the site speed up the awkward parts: a **tag picker** stages the exac
 
 1. On a **new branch** (not `main`), create a new folder with the name of the project as the folder name.
 2. Copy the `project.yaml` file in [`projects/_template/`](projects/_template/) into `projects/<slug>/`.
-3. Edit `project.yaml`. The `slug` should be the same as the folder name. If you want a different display name, add a `display_name`. Optionally fill **provenance** (`source_repo`, `source_commit`, optional `source_url`, `retrieved_at`, `notes`), but you can always come back to that.
-4. Move project files such as READMEs, Contributing Guides, AI policy docs, etc into the project folder and give them corresponding entries in `project.yaml` under the files list.
-5. Open a **pull request**. This will trigger a GitHub action that re-deploys the site with your project listed. Check [the projects page](https://www.pyopensci.org/open-research-tagging/projects.html) to confirm.
-
-Note: once you create the project folder with `project.yaml` (steps 1 and 2) you should be able to open a PR without any other steps and the site should still deploy fine. So you can technically skip steps X-Y and come back to them incrementally if you want to.
+3. Copy project files (READMEs, Contributing Guides, AI policy docs, etc.) into the project folder. The site lists them automatically; you can fill **descriptions** later on the coding view (Copy YAML).
+4. Open a **pull request**. This will trigger a GitHub action that re-deploys the site with your project listed. Check [the projects page](https://www.pyopensci.org/open-research-tagging/projects.html) to confirm.
+5. The project should now appear on the website. You can finish filling out the project metadata (provenance info, descriptions for the files) via the coding view on the site. Note that the site *does not save data itself* - instead, you'll use the "copy yaml" feature at the bottom of the page to get the updated yaml, and use that to write over the project.yaml file in github. (You'll repeat this process later when you do project-level coding, or whenever you update the files or other metadata.)
 
 ### Tagging & Coding
 
@@ -29,7 +27,7 @@ There are two types of tagging/coding you'll want to do.
 
 **Comment tags.** These mark a specific passage (a line or range in a policy file) with codebook hashtags such as `#disclosure/required`. Use the [tag picker](https://www.pyopensci.org/open-research-tagging/tags.html) to stage and copy the exact strings, then paste them into a **Files-tab** comment on the PR (details: [`COMMENTING.md`](codebook/COMMENTING.md)). After you comment, someone needs to run **Actions → Update comment data** (or wait for the daily run) so the site picks them up. They show up in the [comment browser](https://www.pyopensci.org/open-research-tagging/) (filter by project) and as evidence in the coding view.
 
-**Project-level coding.** These are the overall codes for the whole policy (stance, scope, accountability, and so on) stored under `coding:` in `project.yaml` — not as hashtags on lines. Open the [coding view](https://www.pyopensci.org/open-research-tagging/coding.html) for your project slug, walk the comment evidence, fill the form, then **Copy YAML** and paste over `projects/<slug>/project.yaml` on the PR.
+**Project-level coding.** These are the overall codes for the whole policy (stance, scope, accountability, and so on) stored under `coding:` in `project.yaml` — not as hashtags on lines. Open the [coding view](https://www.pyopensci.org/open-research-tagging/coding.html) for your project slug, walk the comment evidence, edit provenance and file descriptions, fill overall codes, then **Copy YAML** and paste over `projects/<slug>/project.yaml` on the PR.
 
 ## Layout
 

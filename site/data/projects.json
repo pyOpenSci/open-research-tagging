@@ -636,12 +636,16 @@
       "coding_warnings": [],
       "files": [
         {
+          "path": "gen-ai-checklist.md",
+          "description": "Submission checklist included by the policy"
+        },
+        {
           "path": "generative-ai-policy.md",
           "description": "Primary generative AI / LLM policy for peer review"
         },
         {
-          "path": "gen-ai-checklist.md",
-          "description": "Submission checklist included by the policy"
+          "path": "newfiletest.md",
+          "description": ""
         }
       ]
     }

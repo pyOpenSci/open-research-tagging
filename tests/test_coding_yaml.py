@@ -159,6 +159,8 @@ def test_coding_page_wires_copy_yaml():
     assert "schemaDimensions" in html
     assert "project-meta" in html or "meta-slug" in html
     assert "meta-files" in html
+    assert "meta-file-description" in html
+    assert "Files (read-only)" not in html
     assert "whole" in html.lower() or "project.yaml" in html
     src = FORM_JS.read_text(encoding="utf-8")
     assert "emitCodingYaml" in src

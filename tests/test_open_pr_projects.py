@@ -119,17 +119,40 @@ def test_discover_open_pr_project_yamls_skips_template_and_non_project():
 def test_fetch_open_pr_project_docs_decodes_contents():
     doc = _project_doc("earthaccess")
     encoded = base64.b64encode(yaml.dump(doc).encode("utf-8")).decode("ascii")
-    contents_url = (
+    yaml_url = (
         "https://api.github.com/repos/o/r/contents/"
         "projects/earthaccess/project.yaml?ref=abc123"
     )
+    dir_url = (
+        "https://api.github.com/repos/o/r/contents/"
+        "projects/earthaccess?ref=abc123"
+    )
 
     def getter(url: str, headers: dict[str, str]):
-        assert url == contents_url
-        return (
-            {"content": encoded, "encoding": "base64"},
-            {},
-        )
+        if url == yaml_url:
+            return ({"content": encoded, "encoding": "base64"}, {})
+        if url == dir_url:
+            return (
+                [
+                    {
+                        "type": "file",
+                        "name": "project.yaml",
+                        "path": "projects/earthaccess/project.yaml",
+                    },
+                    {
+                        "type": "file",
+                        "name": "POLICY.md",
+                        "path": "projects/earthaccess/POLICY.md",
+                    },
+                    {
+                        "type": "file",
+                        "name": "extra.md",
+                        "path": "projects/earthaccess/extra.md",
+                    },
+                ],
+                {},
+            )
+        raise AssertionError(f"unexpected url {url}")
 
     specs = [
         {
@@ -145,6 +168,7 @@ def test_fetch_open_pr_project_docs_decodes_contents():
     assert len(docs) == 1
     assert docs[0]["pr_number"] == 2
     assert docs[0]["data"]["slug"] == "earthaccess"
+    assert docs[0]["discovered_paths"] == ["POLICY.md", "extra.md"]
 
 
 def test_build_project_from_data_marks_open_pr_and_files():
@@ -155,12 +179,14 @@ def test_build_project_from_data_marks_open_pr_and_files():
         yaml_path="projects/earthaccess/project.yaml",
         from_open_pr=True,
         pr_number=2,
+        discovered_paths=["POLICY.md", "extra.md"],
     )
     assert row is not None
     assert row["slug"] == "earthaccess"
     assert row["from_open_pr"] is True
     assert row["pr_number"] == 2
-    assert row["files"] == [{"path": "POLICY.md"}]
+    assert [f["path"] for f in row["files"]] == ["POLICY.md", "extra.md"]
+    assert row["files"][1].get("description", "") == ""
     assert row["yaml_path"] == "projects/earthaccess/project.yaml"
 
 
@@ -188,6 +214,22 @@ def test_collect_plus_open_pr_end_to_end(tmp_path: Path):
             )
         if "contents/projects/earthaccess/project.yaml" in url:
             return ({"content": encoded, "encoding": "base64"}, {})
+        if url.endswith("contents/projects/earthaccess?ref=deadbeef"):
+            return (
+                [
+                    {
+                        "type": "file",
+                        "name": "project.yaml",
+                        "path": "projects/earthaccess/project.yaml",
+                    },
+                    {
+                        "type": "file",
+                        "name": "POLICY.md",
+                        "path": "projects/earthaccess/POLICY.md",
+                    },
+                ],
+                {},
+            )
         raise AssertionError(url)
 
     codebook = _codebook()
@@ -211,12 +253,15 @@ def test_collect_plus_open_pr_end_to_end(tmp_path: Path):
             yaml_path=d["path"],
             from_open_pr=True,
             pr_number=d["pr_number"],
+            discovered_paths=d.get("discovered_paths"),
         )
         for d in docs
     ]
     pr_rows = [r for r in pr_rows if r is not None]
     merged = merge_project_rows(main_rows, pr_rows)
     assert [r["slug"] for r in merged] == ["earthaccess", "pyopensci"]
+    earth = next(r for r in merged if r["slug"] == "earthaccess")
+    assert [f["path"] for f in earth["files"]] == ["POLICY.md"]
 
 
 def test_discover_api_error_returns_empty_and_does_not_raise():
@@ -284,3 +329,61 @@ def test_fetch_skips_failed_contents_request():
     )
     assert docs == []
     assert warnings
+
+
+def test_list_dir_failure_falls_back_to_yaml_files_only():
+    """When project-dir listing fails, discovered_paths is None (YAML files kept)."""
+    from open_research_tagging.open_pr_projects import list_open_pr_project_files
+
+    warnings: list[str] = []
+
+    def getter(url: str, headers: dict[str, str]):
+        raise GitHubHTTPError(500, url, "boom")
+
+    paths = list_open_pr_project_files(
+        "o",
+        "r",
+        "acme",
+        "abc",
+        token="tok",
+        getter=getter,
+        warn=warnings.append,
+    )
+    assert paths is None
+    assert warnings
+
+    doc = _project_doc("acme")
+    encoded = base64.b64encode(yaml.dump(doc).encode("utf-8")).decode("ascii")
+
+    def getter2(url: str, headers: dict[str, str]):
+        if "project.yaml" in url:
+            return ({"content": encoded, "encoding": "base64"}, {})
+        raise GitHubHTTPError(500, url, "boom")
+
+    docs = fetch_open_pr_project_docs(
+        "o",
+        "r",
+        [
+            {
+                "slug": "acme",
+                "path": "projects/acme/project.yaml",
+                "pr_number": 1,
+                "head_sha": "abc",
+            }
+        ],
+        token="tok",
+        getter=getter2,
+        warn=lambda _m: None,
+    )
+    assert docs[0]["discovered_paths"] is None
+    row = build_project_from_data(
+        docs[0]["data"],
+        codebook=_codebook(),
+        cidx={},
+        yaml_path=docs[0]["path"],
+        from_open_pr=True,
+        pr_number=1,
+        discovered_paths=docs[0]["discovered_paths"],
+    )
+    assert row is not None
+    assert row["files"] == [{"path": "POLICY.md"}]

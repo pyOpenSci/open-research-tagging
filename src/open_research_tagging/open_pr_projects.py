@@ -114,6 +114,74 @@ def _decode_contents_payload(payload: Mapping[str, Any]) -> str:
     return content
 
 
+def list_open_pr_project_files(
+    owner: str,
+    repo: str,
+    slug: str,
+    ref: str,
+    token: str | None = None,
+    *,
+    getter: Getter | None = None,
+    warn: WarnFn | None = None,
+) -> list[str] | None:
+    """
+    Recursively list files under projects/<slug>/ at ref (13l).
+
+    Returns paths relative to the project folder, excluding project.yaml and
+    dotfile segments. Returns None on API failure so callers can fall back to
+    YAML-only files.
+    """
+    note = warn or (lambda _msg: None)
+    prefix = f"projects/{slug}"
+    found: list[str] = []
+
+    def walk(dir_path: str) -> None:
+        url = f"{API}/repos/{owner}/{repo}/contents/{dir_path}?ref={ref}"
+        body, _headers = github_get(url, token, getter=getter)
+        if isinstance(body, Mapping):
+            # Single file payload — treat as one entry at this path
+            entries: list[Any] = [body]
+        elif isinstance(body, list):
+            entries = body
+        else:
+            raise ValueError(f"unexpected contents payload for {dir_path}")
+        for entry in entries:
+            if not isinstance(entry, Mapping):
+                continue
+            entry_type = entry.get("type")
+            name = entry.get("name")
+            entry_path = entry.get("path")
+            if not isinstance(name, str) or not isinstance(entry_path, str):
+                continue
+            if name.startswith("."):
+                continue
+            if entry_type == "dir":
+                walk(entry_path)
+                continue
+            if entry_type != "file":
+                continue
+            if name == "project.yaml":
+                continue
+            if not entry_path.startswith(prefix + "/") and entry_path != prefix:
+                continue
+            rel = entry_path[len(prefix) + 1 :] if entry_path.startswith(
+                prefix + "/"
+            ) else entry_path
+            if not rel or any(part.startswith(".") for part in rel.split("/")):
+                continue
+            found.append(rel)
+
+    try:
+        walk(prefix)
+    except (GitHubHTTPError, ValueError) as exc:
+        note(
+            f"Warning: could not list projects/{slug}/ at {ref} ({exc}); "
+            "using YAML files: only"
+        )
+        return None
+    return sorted(found)
+
+
 def fetch_open_pr_project_docs(
     owner: str,
     repo: str,
@@ -126,7 +194,9 @@ def fetch_open_pr_project_docs(
     """
     Fetch and parse project.yaml for each discovery spec.
 
-    Returns list of {data, path, pr_number, slug}. Skips failures with a warning.
+    Returns list of {data, path, pr_number, slug, discovered_paths}.
+    ``discovered_paths`` is a list when the project dir listing succeeds, else
+    None (YAML-only files fallback). Skips YAML fetch failures with a warning.
     """
     note = warn or (lambda _msg: None)
     docs: list[dict[str, Any]] = []
@@ -134,6 +204,7 @@ def fetch_open_pr_project_docs(
         path = str(spec["path"])
         sha = str(spec["head_sha"])
         pr_number = int(spec["pr_number"])
+        slug = str(spec.get("slug") or "")
         url = f"{API}/repos/{owner}/{repo}/contents/{path}?ref={sha}"
         try:
             body, _headers = github_get(url, token, getter=getter)
@@ -155,12 +226,24 @@ def fetch_open_pr_project_docs(
         if not isinstance(data, dict):
             note(f"Warning: {path} is not a YAML mapping; skipping")
             continue
+        if not slug:
+            slug = str(data.get("slug") or "")
+        discovered = list_open_pr_project_files(
+            owner,
+            repo,
+            slug,
+            sha,
+            token=token,
+            getter=getter,
+            warn=note,
+        )
         docs.append(
             {
                 "data": data,
                 "path": path,
                 "pr_number": pr_number,
-                "slug": str(spec.get("slug") or data.get("slug") or ""),
+                "slug": slug,
+                "discovered_paths": discovered,
             }
         )
     return docs

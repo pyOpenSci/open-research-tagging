@@ -47,7 +47,7 @@ One or two sentences on what this passage shows.
 | **Add a new project** (folder + policy files) | README → [How to add a project](../README.md#how-to-add-a-project) — copy `_template` on a **branch**, open a PR, then tag on the Files tab. |
 | Tag a **passage** (line evidence) | **Tag picker** (`tags.html`) → Copy hashtags → paste into a **Files-tab** review comment (this doc). |
 | Browse tagged passages | Comment browser (`index.html`) after maintainers refresh site data. |
-| Set **overall** codes / project metadata | **Coding view** (`coding.html?project=<slug>`) → walk evidence → edit provenance → **Copy YAML** → paste over the whole `projects/<slug>/project.yaml`. Files list is read-only; add policy files on the PR in GitHub. |
+| Set **overall** codes / project metadata | **Coding view** (`coding.html?project=<slug>`) → walk evidence → edit provenance + file descriptions → **Copy YAML** → paste over the whole `projects/<slug>/project.yaml`. Add policy files under `projects/<slug>/` on the PR; the coding view lists them after site refresh. |
 
 After maintainers run **Update comment data**, open PRs that add `projects/<slug>/project.yaml` also appear on the projects list / coding view (merged with main; main wins if the slug already exists). Passage tags on those PRs refresh the same way as before.
 

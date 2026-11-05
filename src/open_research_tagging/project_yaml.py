@@ -1,8 +1,9 @@
-"""Emit a full ``project.yaml`` for the coding-view Copy action (13e).
+"""Emit a full ``project.yaml`` for the coding-view Copy action (13e / 13l).
 
 Python is the contract; the browser mirrors formatting. The ``coding:`` section
-reuses ``emit_coding_block``. Files are passthrough (read-only in the form for
-now; editable files are **13l**).
+reuses ``emit_coding_block``. File membership comes from the project folder;
+descriptions are edited on the coding view and emitted under ``files:``
+(after provenance, before coding).
 """
 
 from __future__ import annotations
@@ -117,10 +118,6 @@ def emit_project_yaml(
     for key in PROVENANCE_KEYS:
         lines.append(f"  {key}: {_scalar(meta['provenance'].get(key))}")
     lines.append("")
-    coding_text = emit_coding_block(coding, codebook_path=codebook_path)
-    # emit_coding_block already ends with newline; drop trailing blank join
-    lines.append(coding_text.rstrip("\n"))
-    lines.append("")
     lines.append("files:")
     file_rows = meta["files"]
     if not file_rows:
@@ -138,4 +135,8 @@ def emit_project_yaml(
                 if extra_key in FILE_ENTRY_KEYS:
                     continue
                 lines.append(f"    {extra_key}: {_scalar(extra_val)}")
+    lines.append("")
+    coding_text = emit_coding_block(coding, codebook_path=codebook_path)
+    # emit_coding_block already ends with newline; drop trailing blank join
+    lines.append(coding_text.rstrip("\n"))
     return "\n".join(lines) + "\n"

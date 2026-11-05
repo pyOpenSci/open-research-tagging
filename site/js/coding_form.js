@@ -301,9 +301,6 @@
       lines.push("  " + key + ": " + yamlScalar(m.provenance[key]));
     });
     lines.push("");
-    const codingText = emitCodingYaml(coding, codebook).replace(/\n$/, "");
-    lines.push(codingText);
-    lines.push("");
     lines.push("files:");
     if (!m.files.length) {
       lines.push("  []");
@@ -326,6 +323,9 @@
         }
       });
     }
+    lines.push("");
+    const codingText = emitCodingYaml(coding, codebook).replace(/\n$/, "");
+    lines.push(codingText);
     return lines.join("\n") + "\n";
   }
 

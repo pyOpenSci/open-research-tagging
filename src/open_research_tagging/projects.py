@@ -52,6 +52,66 @@ def load_project_yaml(path: str | Path) -> dict[str, Any]:
     return data
 
 
+def discover_project_file_paths(project_dir: str | Path) -> list[str]:
+    """
+    List policy files under a project folder (13l).
+
+    Recursive; skips ``project.yaml`` and any path with a dotfile segment.
+    Paths are relative to the project folder (posix).
+    """
+    root = Path(project_dir)
+    if not root.is_dir():
+        return []
+    found: list[str] = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(root)
+        if any(part.startswith(".") for part in rel.parts):
+            continue
+        if path.name == "project.yaml":
+            continue
+        found.append(rel.as_posix())
+    return found
+
+
+def merge_project_files(
+    discovered_paths: list[str],
+    yaml_files: Any,
+) -> list[dict[str, Any]]:
+    """
+    Folder membership + YAML descriptions (13l).
+
+    Discovered paths win for membership. Matching YAML entries contribute
+    description/notes (and other keys). Orphan YAML paths are dropped.
+    """
+    by_path: dict[str, dict[str, Any]] = {}
+    if isinstance(yaml_files, list):
+        for entry in yaml_files:
+            if isinstance(entry, Mapping):
+                path = str(entry.get("path") or "").strip()
+                if not path:
+                    continue
+                by_path[path] = dict(entry)
+            else:
+                path = str(entry).strip()
+                if path:
+                    by_path[path] = {"path": path}
+    merged: list[dict[str, Any]] = []
+    for path in discovered_paths:
+        row: dict[str, Any] = {"path": path}
+        prior = by_path.get(path)
+        if prior is not None:
+            for key, val in prior.items():
+                if key == "path":
+                    continue
+                row[key] = val
+        else:
+            row["description"] = ""
+        merged.append(row)
+    return merged
+
+
 def normalize_scope_key(key: str) -> str:
     """Map project.yaml scope keys to hashtag form (docs_and_text → docs-and-text)."""
     return key.replace("_", "-")
@@ -430,11 +490,14 @@ def build_project_from_data(
     slug_fallback: str | None = None,
     from_open_pr: bool = False,
     pr_number: int | None = None,
+    discovered_paths: list[str] | None = None,
 ) -> dict[str, Any] | None:
     """
     Build one projects.json row from an already-loaded project.yaml mapping.
 
     Used for on-disk projects and open-PR YAMLs (13a). Skips _-prefixed slugs.
+    When ``discovered_paths`` is set (13l), ``files`` membership comes from the
+    folder/tree and descriptions merge from YAML by path.
     """
     slug = str(data.get("slug") or slug_fallback or "")
     if not slug or slug.startswith("_"):
@@ -454,7 +517,11 @@ def build_project_from_data(
         context = context_raw
     overall, warnings = build_overall(coding, slug, codebook, cidx)
     pb = cidx.get(slug) or {"all_ids": []}
-    files = data.get("files")
+    yaml_files = data.get("files")
+    if discovered_paths is not None:
+        files = merge_project_files(discovered_paths, yaml_files)
+    else:
+        files = list(yaml_files) if isinstance(yaml_files, list) else []
     # Full provenance for coding-view meta form (13e); dates jsonable for JSON.
     prov_out = empty_provenance()
     for key in PROVENANCE_KEYS:
@@ -477,7 +544,7 @@ def build_project_from_data(
         "comments_href": f"index.html?project={slug}",
         "yaml_path": yaml_path,
         "coding_warnings": warnings,
-        "files": list(files) if isinstance(files, list) else [],
+        "files": files,
     }
     if from_open_pr:
         row["from_open_pr"] = True
@@ -507,6 +574,7 @@ def build_project(
         cidx=cidx,
         yaml_path=yaml_rel,
         slug_fallback=path.parent.name,
+        discovered_paths=discover_project_file_paths(path.parent),
     )
 
 

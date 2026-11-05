@@ -118,6 +118,7 @@ def collect_open_pr_rows(
             slug_fallback=str(doc.get("slug") or ""),
             from_open_pr=True,
             pr_number=int(doc["pr_number"]),
+            discovered_paths=doc.get("discovered_paths"),
         )
         if row is not None:
             rows.append(row)

@@ -85,6 +85,8 @@ def test_coding_view_prefills_and_yaml_matches_python(
     assert "provenance:\n" in preview
     assert "coding:\n" in preview
     assert "files:\n" in preview
+    assert preview.index("files:") < preview.index("coding:")
+    assert page.locator("#meta-files .meta-file-description").count() >= 1
 
     parsed = yaml.safe_load(preview)
     assert parsed["slug"] == pyopensci_row["slug"]
