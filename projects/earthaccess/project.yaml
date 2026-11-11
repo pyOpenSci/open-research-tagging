@@ -95,5 +95,7 @@ files:
     description: PR template with the AI usage disclosure checkbox the policy requires (.github/pull_request_template.md)
   - path: pr-guide.md
     description: Contributor guide for how to create and submit a PR
-  - path: paper.md
+  - path: paper/paper.md
     description: Research paper with AI usage disclosure at the end
+  - path: docs/contributor/index.md
+    description: 
