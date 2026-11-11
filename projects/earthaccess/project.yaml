@@ -2,48 +2,52 @@ slug: earthaccess
 display_name: earthaccess
 
 provenance:
-  source_repo: https://github.com/earthaccess-dev/earthaccess
+  source_repo: "https://github.com/earthaccess-dev/earthaccess"
   source_commit: 88c5ce849038c3164c02e5d4cc0c39d30ee73284
-  source_url: https://github.com/earthaccess-dev/earthaccess/blob/88c5ce849038c3164c02e5d4cc0c39d30ee73284/docs/contributor/ai-policy.md
+  source_url: "https://github.com/earthaccess-dev/earthaccess/blob/88c5ce849038c3164c02e5d4cc0c39d30ee73284/docs/contributor/ai-policy.md"
   retrieved_at: 2026-11-04
-  notes: >
-    Policy added in earthaccess-dev/earthaccess#1419 (CHANGELOG "Added");
-    last edited 2026-10-13 at this commit.
+  notes: "Policy added in earthaccess-dev/earthaccess#1419 (CHANGELOG \"Added\"); last edited 2026-10-13 at this commit.\n"
+
+files:
+  - path: ai-policy.md
+    description: "Primary AI contribution policy (docs/contributor/ai-policy.md)"
+  - path: pr-guide.md
+    description: "Contributor guide for how to create and submit a PR"
+  - path: pull_request_template.md
+    description: "PR template with the AI usage disclosure checkbox the policy requires (.github/pull_request_template.md)"
 
 coding:
   stance:
-    explicit: permissive-with-conditions  # Dan confirmed 2026-11-05 (ai-policy.md l.8-13)
-    implicit: []  # maintainers-use-ai-tools | outside-ai-assisted-accepted | …
-
+    explicit: permissive-with-conditions
+    implicit:
+      - outside-ai-assisted-accepted
   scope:
     explicit:
-      code: allowed # can be rescricted, you sre responsible for any code you submit, must understand and explain it
-      tests: allowed  # Dan 2026-11-05: same as code (deferred); only "any code you submit" (l.28) covers tests # nothing specific to tests, keeping same as code
+      code: restricted
+      tests: restricted
       docs_and_text: restricted
       issues_and_pr_descriptions: restricted
-      review: not-addressed
+      review: restricted
       autonomous_agents: banned
-      contribution_types_not_defined: restricted  # "anything you submit" (e.g. images, named in Scope)
+      contribution_types_not_defined: restricted
     implicit:
-      code: not-seen  # seen | not-seen
+      code: not-seen
       comments: not-seen
       tests: not-seen
       docs_and_text: not-seen
       issues_and_pr_descriptions: not-seen
       review: not-seen
       autonomous_agents: not-seen
-
   stated_rationale:
     explicit:
       - contributor-learning-and-skill-development
       - social-and-ethical
       - licensing-and-copyright
-      - maintainer-and-reviewer-burden  # soft: "not harder" (l.3-4), reviewer attention (l.48)
+      - maintainer-and-reviewer-burden
     implicit: []
-
   guidance_on_use:
     explicit:
-      level: some-guidance  # understand/explain is phrased as a rule but steers practice
+      level: some-guidance
       types:
         - evaluation
         - learning
@@ -53,43 +57,29 @@ coding:
       notes: ""
       written_for: ""
       not_ai_specific: ""
-
   accountability:
     explicit:
-      human_responsibility: yes
+      human_responsibility: "yes"
       disclosure: required
       disclosure_format:
         - free-text
-        - other  # required PR-template checkbox, ticked even when no AI was used
+        - other
       enforcement:
-        - pr-closed  # unanswered "can you explain this change?"; copyright in question
-        - other  # review withheld until disclosure done; engagement declined if unresponsive
+        - pr-closed
+        - other
       new_contributors: not-stated
     implicit:
-      disclosure_in_practice: none-seen  # none-seen | tool-defaults-only | deliberate
+      disclosure_in_practice: none-seen
       notes: ""
-
   context:
     explicit:
-      project_size: >
-        68 distinct non-bot commit author names in git history up to 88c5ce8
-        (aliases may double-count); 648 GitHub stars, 157 forks (2026-11-05).
+      project_size: "68 distinct non-bot commit author names in git history up to 88c5ce8 (aliases may double-count); 648 GitHub stars, 157 forks (2026-11-05).\n"
       governance: community
-      decision_process: >
-        Decision records in docs/governance/decisions/ with named deciders and
-        a status (e.g. #929, the move to the earthaccess-dev org). No general
-        decision process in the contributor docs or about page.
-      domain: scientific Python / Earth science data access (NASA Earthdata)
-      policy_date: >
-        Drafted 2026-08-04; merged 2026-09-02 (#1419); released in v0.19.0
-        (2026-09-03); revised 2026-10-13 (#1474).
+      decision_process: "Decision records in docs/governance/decisions/ with named deciders and a status (e.g. #929, the move to the earthaccess-dev org). No general decision process in the contributor docs or about page.\n"
+      domain: "scientific Python / Earth science data access (NASA Earthdata)"
+      policy_date: "Drafted 2026-08-04; merged 2026-09-02 (#1419); released in v0.19.0 (2026-09-03); revised 2026-10-13 (#1474).\n"
       policy_location: standalone-file
-      notes: >
-        Community-driven per docs/about-us.md; moved from the NSIDC GitHub org
-        to the community-owned earthaccess-dev org in March 2026. Adapted from
-        SciPy's AI policy (itself from SymPy's). Maintainer-run automations are
-        exempt from the policy. The disclosure checkbox lives in the PR
-        template; pr-guide.md restates it.
+      notes: "Community-driven per docs/about-us.md; moved from the NSIDC GitHub org to the community-owned earthaccess-dev org in March 2026. Adapted from SciPy's AI policy (itself from SymPy's). Maintainer-run automations are exempt from the policy. The disclosure checkbox lives in the PR template; pr-guide.md restates it.\n"
     implicit:
       contributors: ""
       who_decides: ""
