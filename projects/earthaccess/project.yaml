@@ -98,4 +98,6 @@ files:
   - path: paper/paper.md
     description: Research paper with AI usage disclosure at the end
   - path: docs/contributor/index.md
-    description: 
+    description: contributor guidelines
+  - path: CHANGELOG.md
+    description: repository changelog
