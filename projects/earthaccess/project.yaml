@@ -11,10 +11,22 @@ provenance:
 files:
   - path: ai-policy.md
     description: "Primary AI contribution policy (docs/contributor/ai-policy.md)"
-  - path: pr-guide.md
-    description: "Contributor guide for how to create and submit a PR"
+    source_path: "docs/contributor/ai-policy.md"
   - path: pull_request_template.md
     description: "PR template with the AI usage disclosure checkbox the policy requires (.github/pull_request_template.md)"
+    source_path: ".github/pull_request_template.md"
+  - path: pr-guide.md
+    description: "Contributor guide for how to create and submit a PR"
+    source_path: "docs/contributor/howto/pr-guide.md"
+  - path: paper.md
+    description: "Research paper with AI usage disclosure at the end"
+    source_path: "paper/paper.md"
+  - path: index.md
+    description: "contributor guidelines"
+    source_path: "docs/contributor/index.md"
+  - path: CHANGELOG.md
+    description: "repository changelog"
+    source_path: "CHANGELOG.md"
 
 coding:
   stance:
@@ -87,17 +99,3 @@ coding:
       when_ai_began: ""
       ai_file_locations: ""
       notes: ""
-
-files:
-  - path: ai-policy.md
-    description: Primary AI contribution policy (docs/contributor/ai-policy.md)
-  - path: pull_request_template.md
-    description: PR template with the AI usage disclosure checkbox the policy requires (.github/pull_request_template.md)
-  - path: pr-guide.md
-    description: Contributor guide for how to create and submit a PR
-  - path: paper/paper.md
-    description: Research paper with AI usage disclosure at the end
-  - path: docs/contributor/index.md
-    description: contributor guidelines
-  - path: CHANGELOG.md
-    description: repository changelog
