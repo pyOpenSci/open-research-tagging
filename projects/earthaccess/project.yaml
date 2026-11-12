@@ -33,6 +33,7 @@ coding:
     explicit: permissive-with-conditions
     implicit:
       - outside-ai-assisted-accepted
+      - maintainers-use-ai-tools
   scope:
     explicit:
       code: restricted
@@ -43,13 +44,13 @@ coding:
       autonomous_agents: banned
       contribution_types_not_defined: restricted
     implicit:
-      code: not-seen
+      code: seen
       comments: not-seen
       tests: not-seen
-      docs_and_text: not-seen
+      docs_and_text: seen
       issues_and_pr_descriptions: not-seen
-      review: not-seen
-      autonomous_agents: not-seen
+      review: seen
+      autonomous_agents: seen
   stated_rationale:
     explicit:
       - contributor-learning-and-skill-development
@@ -81,7 +82,7 @@ coding:
         - other
       new_contributors: not-stated
     implicit:
-      disclosure_in_practice: none-seen
+      disclosure_in_practice: deliberate
       notes: ""
   context:
     explicit:
@@ -96,6 +97,6 @@ coding:
       contributors: ""
       who_decides: ""
       outside_activity: ""
-      when_ai_began: ""
-      ai_file_locations: ""
+      when_ai_began: "Claude found this:  First AI co-authored commit 2025-08-14 (ccaf13a); policy merged 2026-09-02\n\nCHANGELOG [v0.19.0] - 2026-09-03 lists this is when the AI policy was added"
+      ai_file_locations: "docs/contributor/ai-policy.md\npr-guide.md"
       notes: ""
