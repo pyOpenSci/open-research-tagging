@@ -1,0 +1,102 @@
+slug: earthaccess
+display_name: earthaccess
+
+provenance:
+  source_repo: "https://github.com/earthaccess-dev/earthaccess"
+  source_commit: 88c5ce849038c3164c02e5d4cc0c39d30ee73284
+  source_url: "https://github.com/earthaccess-dev/earthaccess/blob/88c5ce849038c3164c02e5d4cc0c39d30ee73284/docs/contributor/ai-policy.md"
+  retrieved_at: 2026-11-04
+  notes: "Policy added in earthaccess-dev/earthaccess#1419 (CHANGELOG \"Added\"); last edited 2026-10-13 at this commit.\n"
+
+files:
+  - path: ai-policy.md
+    description: "Primary AI contribution policy (docs/contributor/ai-policy.md)"
+    source_path: "docs/contributor/ai-policy.md"
+  - path: pull_request_template.md
+    description: "PR template with the AI usage disclosure checkbox the policy requires (.github/pull_request_template.md)"
+    source_path: ".github/pull_request_template.md"
+  - path: pr-guide.md
+    description: "Contributor guide for how to create and submit a PR"
+    source_path: "docs/contributor/howto/pr-guide.md"
+  - path: paper.md
+    description: "Research paper with AI usage disclosure at the end"
+    source_path: "paper/paper.md"
+  - path: index.md
+    description: "contributor guidelines"
+    source_path: "docs/contributor/index.md"
+  - path: CHANGELOG.md
+    description: "repository changelog"
+    source_path: "CHANGELOG.md"
+
+coding:
+  stance:
+    explicit: permissive-with-conditions
+    implicit:
+      - outside-ai-assisted-accepted
+      - maintainers-use-ai-tools
+  scope:
+    explicit:
+      code: restricted
+      tests: restricted
+      docs_and_text: restricted
+      issues_and_pr_descriptions: restricted
+      review: restricted
+      autonomous_agents: banned
+      contribution_types_not_defined: restricted
+    implicit:
+      code: seen
+      comments: not-seen
+      tests: not-seen
+      docs_and_text: seen
+      issues_and_pr_descriptions: not-seen
+      review: seen
+      autonomous_agents: seen
+  stated_rationale:
+    explicit:
+      - contributor-learning-and-skill-development
+      - social-and-ethical
+      - licensing-and-copyright
+      - maintainer-and-reviewer-burden
+    implicit: []
+  guidance_on_use:
+    explicit:
+      level: some-guidance
+      types:
+        - evaluation
+        - learning
+    implicit:
+      level: null
+      types: []
+      notes: ""
+      written_for: ""
+      not_ai_specific: ""
+  accountability:
+    explicit:
+      human_responsibility: "yes"
+      disclosure: required
+      disclosure_format:
+        - free-text
+        - other
+      enforcement:
+        - pr-closed
+        - other
+      new_contributors: not-stated
+    implicit:
+      disclosure_in_practice: deliberate
+      notes: ""
+  context:
+    explicit:
+      project_size: "68 distinct non-bot commit author names in git history up to 88c5ce8 (aliases may double-count); 648 GitHub stars, 157 forks (2026-11-05).\n"
+      governance: community
+      decision_process: "Decision records in docs/governance/decisions/ with named deciders and a status (e.g. #929, the move to the earthaccess-dev org). No general decision process in the contributor docs or about page.\n"
+      domain: "scientific Python / Earth science data access (NASA Earthdata)"
+      policy_date: "Drafted 2026-08-04; merged 2026-09-02 (#1419); released in v0.19.0 (2026-09-03); revised 2026-10-13 (#1474).\n"
+      policy_location: standalone-file
+      notes: "Community-driven per docs/about-us.md; moved from the NSIDC GitHub org to the community-owned earthaccess-dev org in March 2026. Adapted from SciPy's AI policy (itself from SymPy's). Maintainer-run automations are exempt from the policy. The disclosure checkbox lives in the PR template; pr-guide.md restates it.\n"
+    implicit:
+      contributors: ""
+      who_decides: ""
+      outside_activity: ""
+      when_ai_began: "Claude found this:  First AI co-authored commit 2025-08-14 (ccaf13a); policy merged 2026-09-02\n\nCHANGELOG [v0.19.0] - 2026-09-03 lists this is when the AI policy was added"
+      ai_file_locations: "docs/contributor/ai-policy.md\npr-guide.md"
+      notes: ""
