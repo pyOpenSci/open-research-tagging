@@ -11,76 +11,76 @@ provenance:
 files:
   - path: AGENTS.md
     description: "Coding-agent instructions; the only AI-specific file in the repo (AGENTS.md)"
-    source_path: "AGENTS.md"
+    source_path: AGENTS.md
   - path: CONTRIBUTING.md
     description: "Contributor guide; no mention of AI (.github/CONTRIBUTING.md)"
-    source_path: ".github/CONTRIBUTING.md"
+    source_path: .github/CONTRIBUTING.md
   - path: gitignore
     description: "Git ignore rules; lines 1-4 ignore Claude Code (.claude, .claude/worktrees) and agent (.agent-workspace) directories (.gitignore)"
-    source_path: ".gitignore"
+    source_path: .gitignore
 
 coding:
   stance:
-    explicit: null
-    implicit: []
-
+    explicit: no-policy
+    implicit:
+      - maintainers-use-ai-tools
+      - outside-ai-assisted-accepted
   scope:
     explicit:
-      code: null
-      tests: null
-      docs_and_text: null
-      issues_and_pr_descriptions: null
-      review: null
-      autonomous_agents: null
-      contribution_types_not_defined: null
+      code: not-addressed
+      tests: not-addressed
+      docs_and_text: not-addressed
+      issues_and_pr_descriptions: not-addressed
+      review: not-addressed
+      autonomous_agents: not-addressed
+      contribution_types_not_defined: not-addressed
     implicit:
-      code: null
-      comments: null
-      tests: null
-      docs_and_text: null
-      issues_and_pr_descriptions: null
-      review: null
-      autonomous_agents: null
-
+      code: seen
+      comments: not-seen
+      tests: seen
+      docs_and_text: seen
+      issues_and_pr_descriptions: seen
+      review: seen
+      autonomous_agents: seen
   stated_rationale:
     explicit: []
-    implicit: []
-
+    implicit:
+      - social-and-ethical
+      - code-quality
   guidance_on_use:
     explicit:
       level: null
       types: []
     implicit:
-      level: null
+      level: substantive-guidance
       types: []
-      notes: ""
+      notes: "AGENTS.md\n.gitignore contains .claude and .claude/worktrees"
       written_for: ""
       not_ai_specific: ""
-
   accountability:
     explicit:
       human_responsibility: null
       disclosure: null
       disclosure_format: []
-      enforcement: []
+      enforcement:
+        - none-stated
       new_contributors: null
     implicit:
-      disclosure_in_practice: null
+      disclosure_in_practice: deliberate
       notes: ""
-
   context:
     explicit:
-      project_size: ""
-      governance: null
-      decision_process: ""
+      project_size: "257 contributors\n"
+      governance: corporate-backed
+      decision_process: "ADRs list change proposals in the adrs/ directory"
       domain: ""
       policy_date: ""
       policy_location: null
       notes: ""
     implicit:
-      contributors: ""
+      contributors: "claude is the 2nd biggest contributor after the main maintainer\ncopilot-pull-request-reviewer[bot]"
       who_decides: ""
       outside_activity: ""
       when_ai_began: ""
-      ai_file_locations: ""
+      ai_file_locations: "AGENTS.md is at the root of the project"
       notes: ""
