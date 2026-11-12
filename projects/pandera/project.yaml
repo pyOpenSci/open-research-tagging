@@ -1,0 +1,86 @@
+slug: pandera
+display_name: pandera
+
+provenance:
+  source_repo: "https://github.com/unionai-oss/pandera"
+  source_commit: 0292915e3321e83ee19380d7329788b7ead05291
+  source_url: "https://github.com/unionai-oss/pandera/tree/0292915e3321e83ee19380d7329788b7ead05291"
+  retrieved_at: 2026-11-11
+  notes: ""
+
+files:
+  - path: AGENTS.md
+    description: "Coding-agent instructions; the only AI-specific file in the repo (AGENTS.md)"
+    source_path: "AGENTS.md"
+  - path: CONTRIBUTING.md
+    description: "Contributor guide; no mention of AI (.github/CONTRIBUTING.md)"
+    source_path: ".github/CONTRIBUTING.md"
+  - path: gitignore
+    description: "Git ignore rules; lines 1-4 ignore Claude Code (.claude, .claude/worktrees) and agent (.agent-workspace) directories (.gitignore)"
+    source_path: ".gitignore"
+
+coding:
+  stance:
+    explicit: null
+    implicit: []
+
+  scope:
+    explicit:
+      code: null
+      tests: null
+      docs_and_text: null
+      issues_and_pr_descriptions: null
+      review: null
+      autonomous_agents: null
+      contribution_types_not_defined: null
+    implicit:
+      code: null
+      comments: null
+      tests: null
+      docs_and_text: null
+      issues_and_pr_descriptions: null
+      review: null
+      autonomous_agents: null
+
+  stated_rationale:
+    explicit: []
+    implicit: []
+
+  guidance_on_use:
+    explicit:
+      level: null
+      types: []
+    implicit:
+      level: null
+      types: []
+      notes: ""
+      written_for: ""
+      not_ai_specific: ""
+
+  accountability:
+    explicit:
+      human_responsibility: null
+      disclosure: null
+      disclosure_format: []
+      enforcement: []
+      new_contributors: null
+    implicit:
+      disclosure_in_practice: null
+      notes: ""
+
+  context:
+    explicit:
+      project_size: ""
+      governance: null
+      decision_process: ""
+      domain: ""
+      policy_date: ""
+      policy_location: null
+      notes: ""
+    implicit:
+      contributors: ""
+      who_decides: ""
+      outside_activity: ""
+      when_ai_began: ""
+      ai_file_locations: ""
+      notes: ""
