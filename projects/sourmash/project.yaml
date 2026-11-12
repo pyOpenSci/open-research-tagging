@@ -1,0 +1,80 @@
+slug: sourmash
+display_name: sourmash
+
+provenance:
+  source_repo: "https://github.com/sourmash-bio/sourmash"
+  source_commit: 43f64cb7b472dc6a6fde3dd0fb7ac65af43a9fea
+  source_url: "https://github.com/sourmash-bio/sourmash/tree/43f64cb7b472dc6a6fde3dd0fb7ac65af43a9fea"
+  retrieved_at: 2026-11-12
+  notes: ""
+
+files:
+  - path: developer.md
+    description: "Developer docs that CONTRIBUTING.md links to"
+    source_path: doc/developer.md
+
+coding:
+  stance:
+    explicit: null
+    implicit: []
+
+  scope:
+    explicit:
+      code: null
+      tests: null
+      docs_and_text: null
+      issues_and_pr_descriptions: null
+      review: null
+      autonomous_agents: null
+      contribution_types_not_defined: null
+    implicit:
+      code: null
+      comments: null
+      tests: null
+      docs_and_text: null
+      issues_and_pr_descriptions: null
+      review: null
+      autonomous_agents: null
+
+  stated_rationale:
+    explicit: []
+    implicit: []
+
+  guidance_on_use:
+    explicit:
+      level: null
+      types: []
+    implicit:
+      level: null
+      types: []
+      notes: ""
+      written_for: ""
+      not_ai_specific: ""
+
+  accountability:
+    explicit:
+      human_responsibility: null
+      disclosure: null
+      disclosure_format: []
+      enforcement: []
+      new_contributors: null
+    implicit:
+      disclosure_in_practice: null
+      notes: ""
+
+  context:
+    explicit:
+      project_size: ""
+      governance: null
+      decision_process: ""
+      domain: ""
+      policy_date: ""
+      policy_location: null
+      notes: ""
+    implicit:
+      contributors: ""
+      who_decides: ""
+      outside_activity: ""
+      when_ai_began: ""
+      ai_file_locations: ""
+      notes: ""
