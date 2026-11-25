@@ -19,7 +19,7 @@ Helpers on the site speed up the awkward parts: a **tag picker** stages the exac
 2. Copy the `project.yaml` file in [`projects/_template/`](projects/_template/) into `projects/<slug>/`.
 3. Copy project files (READMEs, Contributing Guides, AI policy docs, etc.) into the project folder. The site lists them automatically; you can fill **descriptions** later on the coding view (Copy YAML).
 4. Open a **pull request**. This will trigger a GitHub action that re-deploys the site with your project listed. Check [the projects page](https://www.pyopensci.org/open-research-tagging/projects.html) to confirm.
-5. The project should now appear on the website. You can finish filling out the project metadata (provenance info, descriptions for the files) via the coding view on the site. Note that the site *does not save data itself* - instead, you'll use the "copy yaml" feature at the bottom of the page to get the updated yaml, and use that to write over the project.yaml file in github. (You'll repeat this process later when you do project-level coding, or whenever you update the files or other metadata.)
+5. The project should now appear on the website. You can finish filling out the project metadata (provenance info, descriptions for the files) via the coding view on the site. Note that the site *does not save data itself* - instead, you'll use the "copy yaml" feature at the bottom of the page to get the updated yaml, and use that to write over the project.yaml file in github. (You'll repeat this process later when you do project-level coding, or whenever you update the files or other metadata.) CI checks that every policy file in the folder appears under `files:` in `project.yaml` (and vice versa)—keep those paths in sync when you Copy YAML.
 
 ### Tagging & Coding
 
@@ -89,7 +89,7 @@ Committed `site/data/*.json` is an **offline fixture snapshot** for local previe
 
 | Workflow                | When                                                            | What                                                                                |
 | ----------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| **Tests** (`test.yml`)  | Push to `main`, PRs                                             | `pytest` (incl. Playwright)                                                         |
+| **Tests** (`test.yml`)  | Push to `main`, PRs                                             | `files:` ↔ folder check, then `pytest` (incl. Playwright)                           |
 | **Check comment tags**  | Files-tab comment create/edit; PR open/sync                     | Soft bot reply on bad tags; PR scan hard-fails **malformed** only                   |
 | **Update comment data** | Daily cron + manual                                             | Fetch → process (incl. open-PR projects) → deploy Pages (**no** git commit of JSON) |
 | **Deploy Pages**        | `site/` / `projects/` / `codebook/` (etc.) on `main`, or manual | Rebuild live JSON in CI → publish `site/` (**no** git commit)                       |
