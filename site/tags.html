@@ -18,7 +18,7 @@
     <header class="page-header">
       <h1>Tag picker</h1>
       <p class="lede">
-        Click a tag to stage it, then Copy for a GitHub review comment.
+        Click a tag to stage or unstage it. Use Copy on a card for one hashtag, or Copy from Staged for several.
       </p>
       <p class="meta-row" x-show="version" x-text="'Codebook ' + version"></p>
       <p class="meta-row" x-show="error" x-text="error"></p>
@@ -38,6 +38,13 @@
           >Clear</button>
         </div>
         <p class="meta-row" x-text="staged.length + ' staged'"></p>
+        <p
+          class="meta-row"
+          id="copy-status"
+          x-show="copyStatus"
+          x-text="copyStatus"
+          aria-live="polite"
+        ></p>
         <ul class="staged-list" id="staged-list">
           <template x-for="tag in staged" :key="tag.hashtag">
             <li>
@@ -51,7 +58,7 @@
           </template>
         </ul>
         <p class="meta-row" x-show="staged.length === 0">
-          Click tags below to stage them.
+          Click tags below to stage them, or Copy a hashtag from a card.
         </p>
         <label class="copy-preview-label" x-show="staged.length > 0">Preview
           <textarea
@@ -69,7 +76,6 @@
             id="copy-staged"
             @click="copyStaged()"
           >Copy</button>
-          <span class="meta-row" x-text="copyStatus" aria-live="polite"></span>
         </div>
       </aside>
 
@@ -96,22 +102,37 @@
               <ul class="tag-list">
                 <template x-for="tag in group.tags" :key="tag.hashtag">
                   <li class="tag-item">
-                    <button
-                      type="button"
+                    <div
                       class="tag-row"
+                      role="button"
+                      tabindex="0"
                       :class="{ staged: isStaged(tag.hashtag) }"
                       :aria-pressed="isStaged(tag.hashtag) ? 'true' : 'false'"
-                      :disabled="isStaged(tag.hashtag)"
                       @click="addTag(tag)"
+                      @keydown.enter.prevent="addTag(tag)"
+                      @keydown.space.prevent="addTag(tag)"
                     >
                       <span class="tag-label" x-text="tag.label"></span>
-                      <code class="tag-hashtag" x-text="tag.hashtag"></code>
+                      <div class="tag-hashtag-row">
+                        <code
+                          class="tag-hashtag"
+                          @click.stop
+                          x-text="tag.hashtag"
+                        ></code>
+                        <button
+                          type="button"
+                          class="chip tag-copy"
+                          data-copy-hashtag
+                          @click.stop="copyHashtag(tag.hashtag)"
+                          :aria-label="'Copy ' + tag.hashtag"
+                        >Copy</button>
+                      </div>
                       <span
                         class="tag-definition"
                         x-show="tag.description"
                         x-text="'Definition: ' + tag.description"
                       ></span>
-                    </button>
+                    </div>
                   </li>
                 </template>
               </ul>

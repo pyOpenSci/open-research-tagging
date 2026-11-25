@@ -32,6 +32,21 @@ def test_tags_page_wires_search_and_staged_panel():
     assert "stagedToCopyText" in helpers
 
 
+def test_catalog_row_has_selectable_hashtag_and_copy_control():
+    """14f: card click stages; Copy chip + selectable hashtag for one-off copy."""
+    html = TAGS_HTML.read_text(encoding="utf-8")
+    assert "copyHashtag" in html or "copy-hashtag" in html.lower()
+    assert 'class="tag-copy"' in html or "tag-copy" in html
+    assert "@click=\"addTag(tag)\"" in html or "@click='addTag(tag)'" in html
+    assert "tag-hashtag-row" in html
+    assert "@click.stop" in html  # hashtag + Copy must not stage
+    css = (SITE / "css" / "site.css").read_text(encoding="utf-8")
+    assert "user-select" in css
+    assert ".tag-copy" in css
+    js = TAGS_JS.read_text(encoding="utf-8")
+    assert "copyHashtag" in js
+
+
 def test_staged_panel_css_is_sticky():
     """14e: Staged stays visible while the catalog scrolls (narrow column)."""
     css = (SITE / "css" / "site.css").read_text(encoding="utf-8")

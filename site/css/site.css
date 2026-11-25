@@ -500,13 +500,10 @@ body.tags-page .staged-panel {
   border: 1px solid var(--line);
   color: var(--ink);
 }
-.tag-row:hover:not(:disabled) {
+.tag-row:hover {
   border-color: var(--accent);
 }
-.tag-row.staged,
-.tag-row:disabled {
-  opacity: 0.65;
-  cursor: default;
+.tag-row.staged {
   border-color: var(--accent);
   background: var(--chip);
 }
@@ -514,12 +511,34 @@ body.tags-page .staged-panel {
   font-size: 0.8rem;
   line-height: 1.25;
 }
+.tag-hashtag-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.35rem;
+  width: 100%;
+  cursor: default;
+}
 .tag-hashtag {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 0.72rem;
   color: var(--accent);
   background: transparent;
   padding: 0;
   word-break: break-all;
+  user-select: text;
+  cursor: text;
+}
+.tag-copy {
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  background: color-mix(in srgb, var(--accent) 18%, var(--card));
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.tag-copy:hover {
+  background: color-mix(in srgb, var(--accent) 28%, var(--card));
 }
 .tag-definition {
   display: block;
@@ -529,6 +548,7 @@ body.tags-page .staged-panel {
   color: var(--muted, #555);
   white-space: normal;
   overflow-wrap: anywhere;
+  user-select: text;
 }
 .copy-preview-label {
   display: flex;

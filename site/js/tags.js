@@ -62,7 +62,12 @@
       },
 
       addTag(tag) {
-        this.staged = Stage.stageTag(this.staged, tag);
+        if (!tag || !tag.hashtag) return;
+        if (this.isStaged(tag.hashtag)) {
+          this.staged = Stage.removeStaged(this.staged, tag.hashtag);
+        } else {
+          this.staged = Stage.stageTag(this.staged, tag);
+        }
         this.copyStatus = "";
       },
 
@@ -84,6 +89,17 @@
           this.copyStatus = "Copied";
         } catch (err) {
           this.copyStatus = "Copy failed — select preview and copy manually";
+        }
+      },
+
+      async copyHashtag(hashtag) {
+        const text = (hashtag || "").trim();
+        if (!text) return;
+        try {
+          await writeClipboard(text);
+          this.copyStatus = "Copied " + text;
+        } catch (err) {
+          this.copyStatus = "Copy failed — select the hashtag and copy manually";
         }
       },
     };

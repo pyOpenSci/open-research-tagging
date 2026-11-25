@@ -141,7 +141,7 @@ Shared chrome under `site/` (Alpine.js + DataTables from CDN). Local preview: `c
 |------|------|
 | `index.html` | Comment browser (filters, quotes, deep links) |
 | `projects.html` | Overall codes + evidence links into the browser |
-| `tags.html` | Passage **tag picker** (search / stage / Copy hashtags); staged panel sticky while the catalog scrolls (**14e**) |
+| `tags.html` | Passage **tag picker** (search / click-to-stage / Copy hashtags); staged panel sticky while the catalog scrolls (**14e**); per-card selectable hashtag + **Copy** chip (**14f**) |
 | `coding.html?project=<slug>` | Overall **coding view** (evidence + metadata + schema form + Copy full `project.yaml`) |
 
 **Comment browser URL params** (same shapes the projects join emits):

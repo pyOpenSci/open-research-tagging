@@ -54,10 +54,10 @@ def test_picker_stage_copy_preview_parses_as_review_comment(page, site_base_url)
     ]
     for hashtag in expected:
         page.fill("#tag-search", hashtag)
-        page.wait_for_selector(f'.tag-row:not([disabled]) .tag-hashtag:text-is("{hashtag}")')
-        page.locator(
-            f'.tag-row:not([disabled]):has(.tag-hashtag:text-is("{hashtag}"))'
-        ).click()
+        page.wait_for_selector(f'.tag-item:has(.tag-hashtag:text-is("{hashtag}"))')
+        row = page.locator(f'.tag-item:has(.tag-hashtag:text-is("{hashtag}"))')
+        # Stage via card label (hashtag / Copy use click.stop).
+        row.locator(".tag-label").click()
 
     page.wait_for_selector("#copy-preview")
     copy_text = page.locator("#copy-preview").input_value()
@@ -77,7 +77,7 @@ def test_staged_panel_stays_in_view_while_catalog_scrolls(page, site_base_url):
     """14e: sticky staged panel remains near the top after scrolling the catalog."""
     page.set_viewport_size({"width": 420, "height": 640})
     page.goto(f"{site_base_url}/tags.html", wait_until="networkidle")
-    page.wait_for_selector(".tag-row")
+    page.wait_for_selector(".tag-item")
     page.wait_for_selector(".staged-panel")
 
     catalog = page.locator(".tag-catalog")
@@ -91,3 +91,33 @@ def test_staged_panel_stays_in_view_while_catalog_scrolls(page, site_base_url):
     )
     # Stuck near the top of the viewport (allow a little chrome padding).
     assert 0 <= top <= 80, f"staged panel top={top} after scroll (expected sticky)"
+
+
+def test_catalog_copy_hashtag_without_staging(page, context, site_base_url):
+    """14f: per-row Copy puts one hashtag on the clipboard; does not stage."""
+    context.grant_permissions(["clipboard-read", "clipboard-write"])
+    page.goto(f"{site_base_url}/tags.html", wait_until="networkidle")
+    page.wait_for_selector(".tag-item")
+    hashtag = "#stance/ban"
+    page.fill("#tag-search", hashtag)
+    row = page.locator(f'.tag-item:has(.tag-hashtag:text-is("{hashtag}"))')
+    row.wait_for()
+    row.locator(".tag-copy").first.click()
+    page.wait_for_selector("#copy-status:text-matches('Copied')")
+    # Single-tag copy must not force the multi-stage workflow.
+    assert page.locator("#staged-list li").count() == 0
+    clip = page.evaluate("navigator.clipboard.readText()")
+    assert clip.strip() == hashtag
+
+
+def test_catalog_click_toggles_stage(page, site_base_url):
+    """Card body click stages, then unstages."""
+    page.goto(f"{site_base_url}/tags.html", wait_until="networkidle")
+    page.wait_for_selector(".tag-item")
+    hashtag = "#stance/ban"
+    page.fill("#tag-search", hashtag)
+    row = page.locator(f'.tag-item:has(.tag-hashtag:text-is("{hashtag}"))')
+    row.locator(".tag-label").click()
+    assert page.locator(f'#staged-list li:has(.tag-hashtag:text-is("{hashtag}"))').count() == 1
+    row.locator(".tag-label").click()
+    assert page.locator("#staged-list li").count() == 0
