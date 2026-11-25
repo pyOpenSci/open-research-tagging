@@ -1,4 +1,4 @@
-"""11e: PR template + README enable-Pages / demo-prep checklist."""
+"""PR template + README onboarding / Pages checklist (11e, 12c)."""
 
 from __future__ import annotations
 
@@ -31,3 +31,37 @@ def test_readme_enable_pages_checklist():
     assert "tag picker" in lower
     assert "coding view" in lower or "coding.html" in text
     assert "enable" in lower or "settings" in lower
+
+
+def test_readme_onboarding_covers_layout_workflows_and_demo():
+    """12c: cold-reader README — layout, workflows, draft policy, live URL."""
+    text = README.read_text(encoding="utf-8")
+    lower = text.lower()
+    assert "## Layout" in text or "## layout" in lower
+    assert "projects/" in text
+    assert "codebook/" in text
+    assert "src/open_research_tagging" in text or "open_research_tagging/" in text
+    assert "ARCHITECTURE.md" in text
+    assert "COMMENTING.md" in text
+    assert "www.pyopensci.org/open-research-tagging" in text
+    # Personal Pages may remain as an intentional staging note only.
+    assert "malformed" in lower
+    assert "fixture" in lower
+    assert "test.yml" in text or "**Tests**" in text
+    assert "check-comment-tags" in text or "Check comment tags" in text
+    assert "update-comments" in text or "Update comment data" in text
+    assert "deploy-pages" in text or "Deploy Pages" in text
+
+
+def test_readme_how_to_add_a_project():
+    """13k: short add-project path — template, provenance/files, branch then PR."""
+    text = README.read_text(encoding="utf-8")
+    lower = text.lower()
+    assert "## How to add a project" in text
+    assert "projects/_template" in text or "projects/_template/" in text
+    assert "provenance" in lower
+    assert "files" in lower
+    assert "branch" in lower
+    assert "pull request" in lower or " pr" in lower or "open a pr" in lower
+    assert "files tab" in lower or "files-tab" in lower
+    assert "COMMENTING.md" in text

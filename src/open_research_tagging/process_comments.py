@@ -11,8 +11,10 @@ from pathlib import Path
 from open_research_tagging.codebook import load_codebook
 from open_research_tagging.comments import (
     build_comments_payload,
+    is_bot_login,
     load_raw_comments,
     normalize,
+    user_login_from_comment,
     write_comments_json,
 )
 
@@ -58,9 +60,13 @@ def main(argv: list[str] | None = None) -> None:
         raise SystemExit(f"Missing input: {args.infile}")
     codebook = load_codebook(args.codebook)
     raw = load_raw_comments(args.infile)
-    rows = [
-        normalize(comment, codebook, repo_root=args.repo_root) for comment in raw
-    ]
+    rows = []
+    skipped_bots = 0
+    for comment in raw:
+        if is_bot_login(user_login_from_comment(comment)):
+            skipped_bots += 1
+            continue
+        rows.append(normalize(comment, codebook, repo_root=args.repo_root))
     payload = build_comments_payload(
         rows,
         source_file=args.infile,
@@ -68,7 +74,8 @@ def main(argv: list[str] | None = None) -> None:
         repo_root=args.repo_root,
     )
     write_comments_json(payload, args.out)
-    print(f"Wrote {len(rows)} comments → {args.out}")
+    extra = f" (skipped {skipped_bots} bot)" if skipped_bots else ""
+    print(f"Wrote {len(rows)} comments{extra} → {args.out}")
 
 
 if __name__ == "__main__":

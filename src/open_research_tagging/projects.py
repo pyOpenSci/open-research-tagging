@@ -11,6 +11,11 @@ import yaml
 
 from open_research_tagging.codebook import Codebook
 from open_research_tagging.coding_yaml import normalize_coding
+from open_research_tagging.project_yaml import (
+    PROVENANCE_KEYS,
+    empty_provenance,
+    resolve_display_name,
+)
 from open_research_tagging.tags import humanize
 
 
@@ -45,6 +50,66 @@ def load_project_yaml(path: str | Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ProjectYamlError(f"Expected mapping in {path}")
     return data
+
+
+def discover_project_file_paths(project_dir: str | Path) -> list[str]:
+    """
+    List policy files under a project folder (13l).
+
+    Recursive; skips ``project.yaml`` and any path with a dotfile segment.
+    Paths are relative to the project folder (posix).
+    """
+    root = Path(project_dir)
+    if not root.is_dir():
+        return []
+    found: list[str] = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(root)
+        if any(part.startswith(".") for part in rel.parts):
+            continue
+        if path.name == "project.yaml":
+            continue
+        found.append(rel.as_posix())
+    return found
+
+
+def merge_project_files(
+    discovered_paths: list[str],
+    yaml_files: Any,
+) -> list[dict[str, Any]]:
+    """
+    Folder membership + YAML descriptions (13l).
+
+    Discovered paths win for membership. Matching YAML entries contribute
+    description/notes (and other keys). Orphan YAML paths are dropped.
+    """
+    by_path: dict[str, dict[str, Any]] = {}
+    if isinstance(yaml_files, list):
+        for entry in yaml_files:
+            if isinstance(entry, Mapping):
+                path = str(entry.get("path") or "").strip()
+                if not path:
+                    continue
+                by_path[path] = dict(entry)
+            else:
+                path = str(entry).strip()
+                if path:
+                    by_path[path] = {"path": path}
+    merged: list[dict[str, Any]] = []
+    for path in discovered_paths:
+        row: dict[str, Any] = {"path": path}
+        prior = by_path.get(path)
+        if prior is not None:
+            for key, val in prior.items():
+                if key == "path":
+                    continue
+                row[key] = val
+        else:
+            row["description"] = ""
+        merged.append(row)
+    return merged
 
 
 def normalize_scope_key(key: str) -> str:
@@ -110,12 +175,15 @@ def jsonable(value: Any) -> Any:
 
 
 def coerce_code_id(value: Any) -> str:
-    """YAML may turn bare yes/no into booleans; map those to codebook ids."""
+    """YAML may turn bare yes/no into booleans; map those to codebook ids.
+
+    Underscores in legacy value ids become hyphens (13h).
+    """
     if value is True:
         return "yes"
     if value is False:
         return "no"
-    return str(value)
+    return str(value).replace("_", "-")
 
 
 def _dimension_label(codebook: Codebook, dimension: str) -> str:
@@ -201,10 +269,11 @@ def build_overall(
     Map nested project.yaml coding → site overall block.
 
     Explicit adapter for the known YAML shape (not a generic codebook walker).
-    Omits scope positions that are null or not_addressed.
+    Omits scope positions that are null or not-addressed.
     """
     overall: dict[str, Any] = {}
     warnings: list[str] = []
+    coding = _coding_explicit_view(coding)
 
     stance = coding.get("stance")
     if stance:
@@ -309,10 +378,12 @@ def build_overall(
     scope_values: list[dict[str, Any]] = []
     if isinstance(scope, Mapping):
         for raw_type, position in scope.items():
-            if position in (None, "not_addressed"):
+            if position is None:
                 continue
             ctype = normalize_scope_key(str(raw_type))
             pos = coerce_code_id(position)
+            if pos in ("", "not-addressed"):
+                continue
             filter_key = f"scope:{ctype}:{pos}"
             pb = cidx.get(project) or {"by_dimension": {}, "by_filter_key": {}}
             all_scope = list(pb.get("by_dimension", {}).get("scope", []))
@@ -362,19 +433,74 @@ def build_overall(
     return overall, warnings
 
 
-def build_project(
-    path: str | Path,
+def _coding_explicit_view(coding: Mapping[str, Any]) -> dict[str, Any]:
+    """
+    Flatten draft-0.2 ``explicit`` subsections for the projects-page overall adapter.
+
+    Implicit codes stay on the raw ``coding`` passthrough; site chips still show
+    Explicit-only overall for now.
+    """
+    if not isinstance(coding, Mapping):
+        return {}
+    out: dict[str, Any] = {}
+
+    stance = coding.get("stance")
+    if isinstance(stance, Mapping):
+        if stance.get("explicit") not in (None, ""):
+            out["stance"] = stance["explicit"]
+    elif stance not in (None, ""):
+        out["stance"] = stance
+
+    scope = coding.get("scope")
+    if isinstance(scope, Mapping):
+        if isinstance(scope.get("explicit"), Mapping):
+            out["scope"] = scope["explicit"]
+        elif "explicit" not in scope and "implicit" not in scope:
+            out["scope"] = scope
+
+    rationale = coding.get("stated_rationale")
+    if isinstance(rationale, Mapping):
+        out["stated_rationale"] = rationale.get("explicit") or []
+    elif isinstance(rationale, list):
+        out["stated_rationale"] = rationale
+
+    guidance = coding.get("guidance_on_use")
+    if isinstance(guidance, Mapping):
+        if isinstance(guidance.get("explicit"), Mapping):
+            out["guidance_on_use"] = guidance["explicit"]
+        elif "level" in guidance or "types" in guidance:
+            out["guidance_on_use"] = guidance
+
+    acct = coding.get("accountability")
+    if isinstance(acct, Mapping):
+        if isinstance(acct.get("explicit"), Mapping):
+            out["accountability"] = acct["explicit"]
+        elif "disclosure" in acct or "human_responsibility" in acct:
+            out["accountability"] = acct
+
+    return out
+
+
+def build_project_from_data(
+    data: Mapping[str, Any],
+    *,
     codebook: Codebook,
     cidx: Mapping[str, Any],
-    *,
-    repo_root: Path | None = None,
+    yaml_path: str,
+    slug_fallback: str | None = None,
+    from_open_pr: bool = False,
+    pr_number: int | None = None,
+    discovered_paths: list[str] | None = None,
 ) -> dict[str, Any] | None:
-    """Build one projects.json row from a project.yaml path."""
-    path = Path(path)
-    root = repo_root if repo_root is not None else path.parents[1]
-    data = load_project_yaml(path)
-    slug = str(data.get("slug") or path.parent.name)
-    if slug.startswith("_"):
+    """
+    Build one projects.json row from an already-loaded project.yaml mapping.
+
+    Used for on-disk projects and open-PR YAMLs (13a). Skips _-prefixed slugs.
+    When ``discovered_paths`` is set (13l), ``files`` membership comes from the
+    folder/tree and descriptions merge from YAML by path.
+    """
+    slug = str(data.get("slug") or slug_fallback or "")
+    if not slug or slug.startswith("_"):
         return None
     coding = data.get("coding") or {}
     if not isinstance(coding, Mapping):
@@ -382,25 +508,29 @@ def build_project(
     provenance = data.get("provenance") or {}
     if not isinstance(provenance, Mapping):
         provenance = {}
-    context = coding.get("context") or {}
-    if not isinstance(context, Mapping):
-        context = {}
+    context_raw = coding.get("context") or {}
+    if not isinstance(context_raw, Mapping):
+        context_raw = {}
+    if isinstance(context_raw.get("explicit"), Mapping):
+        context = context_raw["explicit"]
+    else:
+        context = context_raw
     overall, warnings = build_overall(coding, slug, codebook, cidx)
     pb = cidx.get(slug) or {"all_ids": []}
-    try:
-        yaml_rel = str(path.resolve().relative_to(Path(root).resolve()))
-    except ValueError:
-        yaml_rel = str(path)
-    return {
+    yaml_files = data.get("files")
+    if discovered_paths is not None:
+        files = merge_project_files(discovered_paths, yaml_files)
+    else:
+        files = list(yaml_files) if isinstance(yaml_files, list) else []
+    # Full provenance for coding-view meta form (13e); dates jsonable for JSON.
+    prov_out = empty_provenance()
+    for key in PROVENANCE_KEYS:
+        if key in provenance:
+            prov_out[key] = jsonable(provenance.get(key))
+    row: dict[str, Any] = {
         "slug": slug,
-        "display_name": data.get("display_name") or slug,
-        "provenance": {
-            "source_repo": provenance.get("source_repo"),
-            "source_commit": provenance.get("source_commit"),
-            "source_url": provenance.get("source_url"),
-            "policy_location": provenance.get("policy_location"),
-            "retrieved_at": jsonable(provenance.get("retrieved_at")),
-        },
+        "display_name": resolve_display_name(data.get("display_name"), slug),
+        "provenance": prov_out,
         "context": {
             "governance": context.get("governance"),
             "domain": context.get("domain"),
@@ -412,9 +542,40 @@ def build_project(
         "overall": overall,
         "comment_count": len(pb.get("all_ids") or []),
         "comments_href": f"index.html?project={slug}",
-        "yaml_path": yaml_rel,
+        "yaml_path": yaml_path,
         "coding_warnings": warnings,
+        "files": files,
     }
+    if from_open_pr:
+        row["from_open_pr"] = True
+        if pr_number is not None:
+            row["pr_number"] = pr_number
+    return row
+
+
+def build_project(
+    path: str | Path,
+    codebook: Codebook,
+    cidx: Mapping[str, Any],
+    *,
+    repo_root: Path | None = None,
+) -> dict[str, Any] | None:
+    """Build one projects.json row from a project.yaml path."""
+    path = Path(path)
+    root = repo_root if repo_root is not None else path.parents[1]
+    data = load_project_yaml(path)
+    try:
+        yaml_rel = str(path.resolve().relative_to(Path(root).resolve()))
+    except ValueError:
+        yaml_rel = str(path)
+    return build_project_from_data(
+        data,
+        codebook=codebook,
+        cidx=cidx,
+        yaml_path=yaml_rel,
+        slug_fallback=path.parent.name,
+        discovered_paths=discover_project_file_paths(path.parent),
+    )
 
 
 def collect_project_rows(

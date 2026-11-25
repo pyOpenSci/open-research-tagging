@@ -18,27 +18,51 @@ class TagWarning:
     message: str
     kind: WarningKind
 
-# #namespace/value or #namespace:value; optional :qualifier (scope type:position)
+# #namespace/value or #namespace:value; optional :qualifier (scope type:position).
+# Underscores are accepted then canonicalized to hyphens (13h).
 TAG_RE = re.compile(
-    r"#(?P<ns>[a-z0-9-]+)[/:](?P<val>[a-z0-9-]+)(?::(?P<qual>[a-z0-9-]+))?",
+    r"#(?P<ns>[a-z0-9_-]+)[/:](?P<val>[a-z0-9_-]+)(?::(?P<qual>[a-z0-9_-]+))?",
     re.IGNORECASE,
 )
 # Any #Word token — used to flag malformed tags like #Disclosure with no /value
 HASH_TOKEN_RE = re.compile(r"#([A-Za-z][\w-]*)")
 
 
+def canonicalize_tag_id(part: str) -> str:
+    """Lowercase and map underscores to hyphens for codebook lookup."""
+    return part.lower().replace("_", "-")
+
+
+def _tag_identity(tag: Mapping[str, Any]) -> tuple[str, str, str]:
+    """Canonical identity for dedupe (slash/colon and _/- variants match)."""
+    return (
+        str(tag.get("namespace") or ""),
+        str(tag.get("value") or ""),
+        str(tag.get("qualifier") or ""),
+    )
+
+
 def parse_tags(body: str | None) -> list[dict[str, Any]]:
-    """Extract raw tag dicts from a comment body (no codebook enrichment)."""
+    """Extract raw tag dicts from a comment body (no codebook enrichment).
+
+    Duplicate hashtags (same namespace/value/qualifier after canonicalize) are
+    kept once, first-seen order (13i).
+    """
     tags: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
     for match in TAG_RE.finditer(body or ""):
         raw = {
             "raw": match.group(0).lower(),
-            "namespace": match.group("ns").lower(),
-            "value": match.group("val").lower(),
+            "namespace": canonicalize_tag_id(match.group("ns")),
+            "value": canonicalize_tag_id(match.group("val")),
         }
         qualifier = match.group("qual")
         if qualifier:
-            raw["qualifier"] = qualifier.lower()
+            raw["qualifier"] = canonicalize_tag_id(qualifier)
+        key = _tag_identity(raw)
+        if key in seen:
+            continue
+        seen.add(key)
         tags.append(raw)
     return tags
 
@@ -72,7 +96,7 @@ def enrich_tag(raw_tag: Mapping[str, Any], codebook: Codebook) -> dict[str, Any]
 
     if kind == "scope":
         contribution = value
-        position = str(qualifier) if qualifier else "not_addressed"
+        position = str(qualifier) if qualifier else "not-addressed"
         contrib_label = codebook.scope_type_label(contribution) or humanize(
             contribution
         )

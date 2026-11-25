@@ -62,3 +62,38 @@ def test_bare_hash_word_is_not_a_parsed_tag():
     """Incomplete #stance alone is not valid grammar; warnings come in 3c."""
     assert parse_tags("#stance") == []
     assert parse_tags("#Disclosure") == []
+
+
+def test_parse_accepts_underscores_and_canonicalizes_to_hyphens():
+    """13h: #scope/code:not_addressed must not stop at the underscore."""
+    tags = parse_tags("#scope/code:not_addressed")
+    assert len(tags) == 1
+    assert tags[0]["value"] == "code"
+    assert tags[0]["qualifier"] == "not-addressed"
+    assert tags[0]["raw"] == "#scope/code:not_addressed"
+
+
+def test_parse_hyphen_form_unchanged():
+    tags = parse_tags("#scope/code:not-addressed")
+    assert tags[0]["qualifier"] == "not-addressed"
+
+
+def test_parse_dedupes_identical_tags_keeping_first():
+    """13i: same hashtag twice → one entry; first-seen order."""
+    tags = parse_tags("#stance/ban\n#disclosure/required\n#stance/ban")
+    assert [t["namespace"] for t in tags] == ["stance", "disclosure"]
+    assert [t["value"] for t in tags] == ["ban", "required"]
+
+
+def test_parse_dedupes_slash_and_colon_forms():
+    tags = parse_tags("#stance/ban #stance:ban")
+    assert len(tags) == 1
+    assert tags[0]["raw"] == "#stance/ban"
+
+
+def test_parse_dedupes_underscore_and_hyphen_scope_ids():
+    tags = parse_tags(
+        "#scope/code:not_addressed\nnote\n#scope/code:not-addressed"
+    )
+    assert len(tags) == 1
+    assert tags[0]["qualifier"] == "not-addressed"

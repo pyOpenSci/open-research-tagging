@@ -17,6 +17,7 @@
     const fields = [
       tag.hashtag,
       tag.label,
+      tag.description,
       tag.namespace,
       tag.dimension,
       tag.dimension_label,

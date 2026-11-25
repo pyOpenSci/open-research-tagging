@@ -11,6 +11,7 @@ from open_research_tagging.codebook import Codebook, validate_codebook
 from open_research_tagging.comments import (
     ProcessedCommentsError,
     build_comments_payload,
+    is_bot_login,
     load_raw_comments,
     normalize,
     write_comments_json,
@@ -159,6 +160,14 @@ def test_load_raw_comments_unrecognized_shape(tmp_path: Path):
         load_raw_comments(path)
 
 
+def test_is_bot_login():
+    assert is_bot_login("github-actions[bot]") is True
+    assert is_bot_login("dependabot[bot]") is True
+    assert is_bot_login("alice") is False
+    assert is_bot_login(None) is False
+    assert is_bot_login("") is False
+
+
 def test_process_comments_cli(tmp_path: Path):
     from codebook_fixtures import REAL_CODEBOOK_PATH
     from open_research_tagging.process_comments import main
@@ -182,3 +191,39 @@ def test_process_comments_cli(tmp_path: Path):
     assert loaded["meta"]["is_fixture"] is True
     assert loaded["meta"]["count"] == 1
     assert "disclosure:required" in loaded["data"][0]["filter_keys"]
+
+
+def test_process_comments_skips_bot_logins(tmp_path: Path):
+    """Tag-check bot replies quote bad hashtags; they must not become site rows."""
+    from codebook_fixtures import REAL_CODEBOOK_PATH
+    from open_research_tagging.process_comments import main
+
+    human = _sample_raw(id=1, body="#disclosure/required\n\nok")
+    bot = _sample_raw(
+        id=2,
+        body=(
+            "⚠️ **Tag format check** — …\n"
+            "- #MadeUpTag looks like a tag but needs #namespace/value\n"
+            "\n```\n#disclosure/required\n```\n"
+        ),
+        user={"login": "github-actions[bot]"},
+    )
+    raw_path = tmp_path / "raw_comments.json"
+    raw_path.write_text(json.dumps([human, bot]), encoding="utf-8")
+    out = tmp_path / "comments.json"
+    main(
+        [
+            "--in",
+            str(raw_path),
+            "--out",
+            str(out),
+            "--codebook",
+            str(REAL_CODEBOOK_PATH),
+            "--repo-root",
+            str(tmp_path),
+        ]
+    )
+    loaded = json.loads(out.read_text(encoding="utf-8"))
+    assert loaded["meta"]["count"] == 1
+    assert [row["id"] for row in loaded["data"]] == [1]
+    assert loaded["data"][0]["user"] == "alice"

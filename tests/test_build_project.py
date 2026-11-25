@@ -20,7 +20,7 @@ def test_build_overall_stance_links_and_omits_not_addressed_scope():
     coding = {
         "stance": "allow",
         "stated_rationale": ["security"],
-        "scope": {"code": "banned", "tests": "not_addressed"},
+        "scope": {"code": "banned", "tests": "not-addressed"},
         "guidance_on_use": {"level": "none", "types": ["design"]},
         "accountability": {"disclosure": "required"},
     }
@@ -113,9 +113,9 @@ def test_build_project_row(tmp_path: Path):
     assert row["context"]["governance"] == "community"
     assert row["overall"]["stance"]["values"][0]["id"] == "allow"
     assert row["coding_warnings"] == []
-    # Raw nested coding for coding-view form pre-fill (10c)
-    assert row["coding"]["stance"] == "allow"
-    assert row["coding"]["context"]["domain"] == "test"
+    # Normalized nested coding for coding-view form pre-fill (10c / 12e)
+    assert row["coding"]["stance"]["explicit"] == "allow"
+    assert row["coding"]["context"]["explicit"]["domain"] == "test"
 
 
 def test_build_project_coerces_yaml_yes_bool_in_coding(tmp_path: Path):
@@ -129,7 +129,9 @@ def test_build_project_coerces_yaml_yes_bool_in_coding(tmp_path: Path):
     )
     row = build_project(yaml_path, _codebook(), {}, repo_root=tmp_path)
     assert row is not None
-    assert row["coding"]["accountability"]["human_responsibility"] == "yes"
+    assert (
+        row["coding"]["accountability"]["explicit"]["human_responsibility"] == "yes"
+    )
 
 
 def test_build_project_skips_underscore_slug(tmp_path: Path):
@@ -141,3 +143,42 @@ def test_build_project_skips_underscore_slug(tmp_path: Path):
         encoding="utf-8",
     )
     assert build_project(yaml_path, _codebook(), {}, repo_root=tmp_path) is None
+
+
+def test_build_project_placeholder_display_name_uses_slug(tmp_path: Path):
+    """13g: template display_name 'Example Project' must not appear on the site."""
+    proj = tmp_path / "projects" / "acme-ai"
+    proj.mkdir(parents=True)
+    yaml_path = proj / "project.yaml"
+    yaml_path.write_text(
+        yaml.dump(
+            {
+                "slug": "acme-ai",
+                "display_name": "Example Project",
+                "coding": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    row = build_project(yaml_path, _codebook(), {}, repo_root=tmp_path)
+    assert row is not None
+    assert row["display_name"] == "acme-ai"
+
+
+def test_build_project_keeps_real_display_name(tmp_path: Path):
+    proj = tmp_path / "projects" / "acme-ai"
+    proj.mkdir(parents=True)
+    yaml_path = proj / "project.yaml"
+    yaml_path.write_text(
+        yaml.dump(
+            {
+                "slug": "acme-ai",
+                "display_name": "Acme AI Policy",
+                "coding": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    row = build_project(yaml_path, _codebook(), {}, repo_root=tmp_path)
+    assert row is not None
+    assert row["display_name"] == "Acme AI Policy"

@@ -1,6 +1,5 @@
 /**
- * Coding view: resolve ?project=, evidence pane, nested coding form (10c).
- * Copy YAML lands in 10d.
+ * Coding view: resolve ?project=, evidence pane, schema-driven form (12f).
  */
 (function (global) {
   "use strict";
@@ -23,10 +22,9 @@
       slug: null,
       project: null,
       comments: [],
-      /** "" = all comments; else codebook dimension key */
       evidenceDim: "",
-      /** Nested coding: block (mirrors project.yaml) */
-      coding: Form ? Form.emptyCoding() : null,
+      coding: null,
+      meta: null,
       copyStatus: "",
 
       async init() {
@@ -39,7 +37,6 @@
             fetchJson("data/projects.json"),
             fetchJson("data/comments.json"),
           ]);
-          this.codebook = codebook;
           this.allProjects = projectsPayload.data || [];
           const resolved = Resolve.resolveCodingView(
             params,
@@ -50,16 +47,35 @@
           this.slug = resolved.slug;
           this.project = resolved.project;
           this.comments = resolved.comments;
+          // Prefill coding + meta BEFORE assigning codebook. schemaDimensions is
+          // derived from codebook; if codebook is set first, Alpine renders the
+          // form while coding is still null and the bindings throw (empty form).
           if (Form) {
             this.coding = Form.prefillCoding(
-              resolved.project && resolved.project.coding
+              resolved.project && resolved.project.coding,
+              codebook
             );
+            this.meta = Form.normalizeMeta(resolved.project || { slug: resolved.slug });
           }
+          this.codebook = codebook;
           this.loading = false;
         } catch (err) {
           this.loading = false;
           this.error = String(err);
         }
+      },
+
+      get provenanceKeys() {
+        return (Form && Form.PROVENANCE_KEYS) || [];
+      },
+
+      provenanceLabel(key) {
+        return String(key || "").replace(/_/g, " ");
+      },
+
+      get schemaDimensions() {
+        if (!Form || !this.codebook) return [];
+        return Form.schemaFrom(this.codebook).dimensions || [];
       },
 
       get evidenceDimensions() {
@@ -99,48 +115,104 @@
 
       focusSection(section) {
         if (!Form) return;
-        this.evidenceDim = Form.evidenceDimForSection(section);
-      },
-
-      options(dimension) {
-        return Form ? Form.valueOptions(this.codebook, dimension) : [];
-      },
-
-      scopeRows() {
-        return Form ? Form.scopeTypeRows(this.codebook) : [];
-      },
-
-      scopePositions() {
-        return Form ? Form.scopePositionOptions(this.codebook) : [];
-      },
-
-      disclosureFormats() {
-        return Form ? Form.disclosureFormatOptions() : [];
-      },
-
-      governances() {
-        return Form ? Form.governanceOptions() : [];
+        this.evidenceDim = Form.evidenceDimForSection(section, this.codebook);
       },
 
       multiHas(list, id) {
         return (list || []).indexOf(id) >= 0;
       },
 
-      setMulti(path, id, on) {
-        if (!Form || !this.coding) return;
-        const parts = path.split(".");
-        let parent = this.coding;
-        for (let i = 0; i < parts.length - 1; i++) {
-          parent = parent[parts[i]];
+      /** Stable accessors for Alpine bindings on dynamic schema paths. */
+      getScalar(dimId, layerId) {
+        if (!this.coding || !this.coding[dimId]) return "";
+        const v = this.coding[dimId][layerId];
+        return v == null ? "" : String(v);
+      },
+
+      setScalar(dimId, layerId, value) {
+        if (!this.coding || !this.coding[dimId]) return;
+        this.coding[dimId][layerId] = value || null;
+        this.copyStatus = "";
+      },
+
+      getField(dimId, layerId, fieldId) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return "";
         }
-        const key = parts[parts.length - 1];
-        parent[key] = Form.toggleMulti(parent[key], id, on);
+        const v = this.coding[dimId][layerId][fieldId];
+        return v == null ? "" : String(v);
+      },
+
+      setField(dimId, layerId, fieldId, value) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return;
+        }
+        this.coding[dimId][layerId][fieldId] = value || null;
+        this.copyStatus = "";
+      },
+
+      getScope(dimId, layerId, yamlKey) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return "";
+        }
+        const v = this.coding[dimId][layerId][yamlKey];
+        return v == null ? "" : String(v);
+      },
+
+      setScope(dimId, layerId, yamlKey, value) {
+        if (!this.coding || !this.coding[dimId] || !this.coding[dimId][layerId]) {
+          return;
+        }
+        this.coding[dimId][layerId][yamlKey] = value || null;
+        this.copyStatus = "";
+      },
+
+      setScalarMulti(dimId, layerId, id, on) {
+        if (!Form || !this.coding) return;
+        this.coding[dimId][layerId] = Form.toggleMulti(
+          this.coding[dimId][layerId],
+          id,
+          on
+        );
+        this.copyStatus = "";
+      },
+
+      setObjectMulti(dimId, layerId, fieldId, id, on) {
+        if (!Form || !this.coding) return;
+        this.coding[dimId][layerId][fieldId] = Form.toggleMulti(
+          this.coding[dimId][layerId][fieldId],
+          id,
+          on
+        );
         this.copyStatus = "";
       },
 
       get yamlPreview() {
-        if (!Form || !this.coding) return "";
-        return Form.emitCodingYaml(this.coding);
+        if (!Form || !this.coding || !this.meta) return "";
+        return Form.emitProjectYaml(this.meta, this.coding, this.codebook);
+      },
+
+      touchMeta() {
+        this.copyStatus = "";
+      },
+
+      addFile() {
+        if (!this.meta) return;
+        if (!Array.isArray(this.meta.files)) this.meta.files = [];
+        this.meta.files.push({
+          path: "",
+          description: "",
+          on_disk: false,
+        });
+        this.touchMeta();
+      },
+
+      removeFile(index) {
+        if (!this.meta || !Array.isArray(this.meta.files)) return;
+        const row = this.meta.files[index];
+        if (!row || row.on_disk) return;
+        this.meta.files.splice(index, 1);
+        this.touchMeta();
       },
 
       async copyYaml() {

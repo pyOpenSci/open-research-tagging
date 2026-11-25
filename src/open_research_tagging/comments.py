@@ -48,6 +48,11 @@ def user_login_from_comment(comment: Mapping[str, Any]) -> str | None:
     return str(login) if isinstance(login, str) and login else None
 
 
+def is_bot_login(login: str | None) -> bool:
+    """True for GitHub App bot logins (e.g. github-actions[bot])."""
+    return bool(login) and str(login).endswith("[bot]")
+
+
 def comment_refs(comment: Mapping[str, Any]) -> dict[str, Any]:
     """Path, project slug, user, PR number, and html_url from a raw comment."""
     path = comment.get("path")

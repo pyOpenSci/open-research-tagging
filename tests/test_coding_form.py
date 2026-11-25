@@ -1,4 +1,4 @@
-"""Coding view form helpers + page wiring (10c)."""
+"""Coding view form helpers + page wiring (schema-driven, 12f)."""
 
 from __future__ import annotations
 
@@ -8,37 +8,37 @@ from pathlib import Path
 
 import pytest
 
+from open_research_tagging.codebook import load_codebook_file
+from open_research_tagging.codebook_emit import emit_codebook_json
+
 REPO = Path(__file__).resolve().parents[1]
 SITE = REPO / "site"
 FORM_JS = SITE / "js" / "coding_form.js"
 CODING_HTML = SITE / "coding.html"
+CODEBOOK_YAML = REPO / "codebook" / "codebook.yaml"
 
 
-def test_coding_page_wires_form_sections():
+def test_coding_page_wires_schema_form():
     html = CODING_HTML.read_text(encoding="utf-8")
     assert "coding-form" in html or 'id="coding-form"' in html
-    for needle in (
-        "stance",
-        "scope",
-        "stated_rationale",
-        "guidance_on_use",
-        "accountability",
-        "context",
-    ):
-        assert needle in html
+    assert "schemaDimensions" in html
     assert "coding_form.js" in html
     assert "section-evidence-btn" in html
-    assert "focusSection(" in html
     assert FORM_JS.is_file()
     src = FORM_JS.read_text(encoding="utf-8")
     assert "emptyCoding" in src
     assert "prefillCoding" in src
-    assert "evidenceDimForSection" in src
+    assert "coding_schema" in src or "schemaFrom" in src
 
 
-def _run_node(script: str) -> str:
+def _codebook_json() -> dict:
+    return emit_codebook_json(load_codebook_file(CODEBOOK_YAML))
+
+
+def _run_node(script: str, codebook: dict | None = None) -> str:
     if not FORM_JS.is_file():
         pytest.fail(f"missing {FORM_JS}")
+    cb = codebook if codebook is not None else _codebook_json()
     prelude = f"""
 const fs = require('fs');
 const vm = require('vm');
@@ -49,6 +49,7 @@ vm.createContext(sandbox);
 vm.runInContext(code, sandbox);
 const F = sandbox.OrtCodingForm;
 if (!F) throw new Error('OrtCodingForm missing');
+const codebook = {json.dumps(cb)};
 """
     proc = subprocess.run(
         ["node", "-e", prelude + script],
@@ -65,19 +66,21 @@ if (!F) throw new Error('OrtCodingForm missing');
 def test_empty_coding_defaults_and_prefill():
     out = _run_node(
         r"""
-const empty = F.emptyCoding();
-if (empty.stance !== null) throw new Error('stance');
-if (!empty.scope || empty.scope.code !== 'not_addressed') throw new Error('scope');
-if (!Array.isArray(empty.stated_rationale) || empty.stated_rationale.length !== 0) {
+const empty = F.emptyCoding(codebook);
+if (empty.stance.explicit !== null) throw new Error('stance');
+if (!empty.scope.explicit || empty.scope.explicit.code !== null) {
+  throw new Error('scope');
+}
+if (!Array.isArray(empty.stated_rationale.explicit) || empty.stated_rationale.explicit.length !== 0) {
   throw new Error('rationale');
 }
-if (empty.guidance_on_use.level !== null) throw new Error('glevel');
-if (empty.accountability.disclosure !== 'none') throw new Error('disclosure');
-if (empty.context.notes !== '') throw new Error('notes');
+if (empty.guidance_on_use.explicit.level !== null) throw new Error('glevel');
+if (empty.accountability.explicit.disclosure !== null) throw new Error('disclosure');
+if (empty.context.explicit.notes !== '') throw new Error('notes');
 
 const raw = {
   stance: 'permissive-with-conditions',
-  scope: { code: 'restricted', tests: 'not_addressed', docs_and_text: 'restricted' },
+  scope: { code: 'restricted', tests: 'not-addressed', docs_and_text: 'restricted' },
   stated_rationale: ['security'],
   guidance_on_use: { level: 'some-guidance', types: ['design'] },
   accountability: {
@@ -88,25 +91,25 @@ const raw = {
   },
   context: { governance: 'community', domain: 'sci', project_size: 'big', notes: 'n' },
 };
-const filled = F.prefillCoding(raw);
-if (filled.stance !== 'permissive-with-conditions') throw new Error('pref stance');
-if (filled.scope.code !== 'restricted') throw new Error('pref scope');
-if (filled.scope.docs_and_text !== 'restricted') throw new Error('pref docs');
-if (filled.stated_rationale[0] !== 'security') throw new Error('pref rat');
-if (filled.accountability.disclosure_format[0] !== 'free-text') throw new Error('pref df');
-if (filled.context.notes !== 'n') throw new Error('pref notes');
+const filled = F.prefillCoding(raw, codebook);
+if (filled.stance.explicit !== 'permissive-with-conditions') throw new Error('pref stance');
+if (filled.scope.explicit.code !== 'restricted') throw new Error('pref scope');
+if (filled.scope.explicit.docs_and_text !== 'restricted') throw new Error('pref docs');
+if (filled.stated_rationale.explicit[0] !== 'security') throw new Error('pref rat');
+if (filled.accountability.explicit.disclosure_format[0] !== 'free-text') throw new Error('pref df');
+if (filled.context.explicit.notes !== 'n') throw new Error('pref notes');
 
-const fromNull = F.prefillCoding(null);
-if (fromNull.stance !== null) throw new Error('null pref');
-const fromEmpty = F.prefillCoding({});
-if (fromEmpty.accountability.disclosure !== 'none') throw new Error('empty pref');
+const fromNull = F.prefillCoding(null, codebook);
+if (fromNull.stance.explicit !== null) throw new Error('null pref');
+const fromEmpty = F.prefillCoding({}, codebook);
+if (fromEmpty.accountability.explicit.disclosure !== null) throw new Error('empty pref');
 console.log('ok');
 """
     )
     assert out == "ok"
 
 
-def test_toggle_multi_and_scope_key_helpers():
+def test_toggle_multi_and_evidence_from_schema():
     out = _run_node(
         r"""
 let list = [];
@@ -116,14 +119,8 @@ list = F.toggleMulti(list, 'a', false);
 if (list.join(',') !== 'b') throw new Error('toggle: ' + list);
 const y = F.yamlScopeKey('docs-and-text');
 if (y !== 'docs_and_text') throw new Error('yaml key');
-const h = F.hashtagScopeKey('docs_and_text');
-if (h !== 'docs-and-text') throw new Error('hash key');
-if (F.evidenceDimForSection('stance') !== 'stance') throw new Error('ev stance');
-if (F.evidenceDimForSection('context') !== '') throw new Error('ev context');
-if (F.valueOptions(null, 'stance').length !== 0) throw new Error('opts null');
-if (F.valueOptions({ values: { stance: { ban: 'Ban' } } }, 'stance')[0].id !== 'ban') {
-  throw new Error('opts');
-}
+if (F.evidenceDimForSection('stance', codebook) !== 'stance') throw new Error('ev stance');
+if (F.evidenceDimForSection('context', codebook) !== '') throw new Error('ev context');
 console.log('ok');
 """
     )

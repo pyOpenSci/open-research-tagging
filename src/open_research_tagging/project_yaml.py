@@ -1,0 +1,151 @@
+"""Emit a full ``project.yaml`` for the coding-view Copy action (13e / 13l).
+
+Python is the contract; the browser mirrors formatting. The ``coding:`` section
+reuses ``emit_coding_block``. File membership comes from the project folder;
+descriptions are edited on the coding view and emitted under ``files:``
+(after provenance, before coding).
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any, Mapping
+
+from open_research_tagging.coding_yaml import (
+    _scalar,
+    emit_coding_block,
+)
+
+# Slim v1 set (13f). policy_location lives under coding.context when needed.
+PROVENANCE_KEYS: tuple[str, ...] = (
+    "source_repo",
+    "source_commit",
+    "source_url",
+    "retrieved_at",
+    "notes",
+)
+
+# Preferred order for files: entries; other keys still passthrough after these.
+FILE_ENTRY_KEYS: tuple[str, ...] = ("path", "description", "notes")
+# Coding-view UI flags — never write into project.yaml.
+FILE_UI_KEYS: frozenset[str] = frozenset({"on_disk", "pending"})
+
+# Template placeholder — site rows substitute the slug (13g).
+PLACEHOLDER_DISPLAY_NAME = "Example Project"
+
+
+def resolve_display_name(display_name: Any, slug: str) -> str:
+    """Return a site-facing name; treat template placeholder as unset."""
+    slug = str(slug or "").strip()
+    if display_name is None:
+        return slug
+    text = str(display_name).strip()
+    if not text or text == PLACEHOLDER_DISPLAY_NAME:
+        return slug
+    return text
+
+
+def empty_provenance() -> dict[str, Any]:
+    """Default provenance mapping (nulls / empty notes)."""
+    out: dict[str, Any] = {key: None for key in PROVENANCE_KEYS}
+    out["notes"] = ""
+    return out
+
+
+def empty_meta() -> dict[str, Any]:
+    """Empty project meta for the coding form (slug, name, provenance, files)."""
+    return {
+        "slug": "",
+        "display_name": "",
+        "provenance": empty_provenance(),
+        "files": [],
+    }
+
+
+def normalize_meta(raw: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Merge project row / form state into a complete meta dict."""
+    base = empty_meta()
+    if not raw:
+        return base
+    slug = str(raw.get("slug") or "").strip()
+    base["slug"] = slug
+    display = raw.get("display_name")
+    base["display_name"] = (
+        str(display).strip() if display not in (None, "") else slug
+    )
+    prov_in = raw.get("provenance") if isinstance(raw.get("provenance"), Mapping) else {}
+    prov = empty_provenance()
+    for key in PROVENANCE_KEYS:
+        if key in prov_in:
+            val = prov_in[key]
+            if key == "notes" and val is None:
+                prov[key] = ""
+            else:
+                prov[key] = val
+    base["provenance"] = prov
+    files = raw.get("files")
+    if isinstance(files, list):
+        base["files"] = [dict(f) if isinstance(f, Mapping) else {"path": str(f)} for f in files]
+    return base
+
+
+def emit_project_yaml(
+    *,
+    slug: str,
+    display_name: str | None = None,
+    provenance: Mapping[str, Any] | None = None,
+    coding: Mapping[str, Any] | None = None,
+    files: list[Any] | None = None,
+    codebook_path: str | Path | None = None,
+) -> str:
+    """
+    Return a paste-ready full ``project.yaml`` (trailing newline).
+
+    Does not include the template comment header — coder pastes over the file body.
+    """
+    meta = normalize_meta(
+        {
+            "slug": slug,
+            "display_name": display_name,
+            "provenance": provenance or {},
+            "files": files or [],
+        }
+    )
+    lines: list[str] = [
+        f"slug: {_scalar(meta['slug'] or 'example-project')}",
+        f"display_name: {_scalar(meta['display_name'] or meta['slug'] or 'Example Project')}",
+        "",
+        "provenance:",
+    ]
+    for key in PROVENANCE_KEYS:
+        lines.append(f"  {key}: {_scalar(meta['provenance'].get(key))}")
+    lines.append("")
+    lines.append("files:")
+    file_rows = [
+        row
+        for row in (meta["files"] or [])
+        if (
+            (isinstance(row, Mapping) and str(row.get("path") or "").strip())
+            or (not isinstance(row, Mapping) and str(row).strip())
+        )
+    ]
+    if not file_rows:
+        lines.append("  []")
+    else:
+        for row in file_rows:
+            if not isinstance(row, Mapping):
+                lines.append(f"  - path: {_scalar(row)}")
+                continue
+            lines.append(f"  - path: {_scalar(str(row.get('path')).strip())}")
+            for key in FILE_ENTRY_KEYS[1:]:
+                if key in row:
+                    lines.append(f"    {key}: {_scalar(row.get(key))}")
+            for extra_key, extra_val in row.items():
+                if extra_key in FILE_ENTRY_KEYS or extra_key in FILE_UI_KEYS:
+                    continue
+                lines.append(f"    {extra_key}: {_scalar(extra_val)}")
+    lines.append("")
+    coding_text = emit_coding_block(coding, codebook_path=codebook_path)
+    # emit_coding_block already ends with newline; drop trailing blank join
+    lines.append(coding_text.rstrip("\n"))
+    return "\n".join(lines) + "\n"

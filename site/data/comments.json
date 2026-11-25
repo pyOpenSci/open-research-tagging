@@ -3,7 +3,7 @@
     "source_file": "site/data/raw_comments.fixture.json",
     "count": 7,
     "is_fixture": true,
-    "codebook_version": "draft-0.1"
+    "codebook_version": "draft-0.2"
   },
   "data": [
     {

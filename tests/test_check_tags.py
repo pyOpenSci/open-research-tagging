@@ -20,6 +20,11 @@ def test_check_body_valid_tags_no_warnings():
     assert check_body(body, _codebook()) == []
 
 
+def test_check_body_duplicate_valid_tags_ok():
+    """13i: same hashtag twice must not fail tag-check."""
+    assert check_body("#stance/ban\n#stance/ban", _codebook()) == []
+
+
 def test_check_body_bare_hash_warns_malformed():
     records = check_body_records("#Design", _codebook())
     assert records

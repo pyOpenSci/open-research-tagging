@@ -13,7 +13,7 @@ Short free-text note about why this passage matters.
 
 **Scope** needs type and position: `#scope/code:restricted`.
 
-**Overall codes:** after refresh puts comments on the site, use the **coding view** (`coding.html?project=<slug>`) → Copy YAML → paste over the `coding:` block in `projects/<slug>/project.yaml`. Do not invent overall YAML by pasting random hashtags into `project.yaml`.
+**Overall codes:** after refresh puts comments on the site, use the **coding view** (`coding.html?project=<slug>`) → Copy YAML → paste over the whole `projects/<slug>/project.yaml`. Do not invent overall YAML by pasting random hashtags into `project.yaml`.
 
 ### Common mistakes
 
@@ -33,4 +33,4 @@ Short free-text note about why this passage matters.
 
 - [ ] Provenance filled in `projects/<slug>/project.yaml` (source URL + commit hash) when adding a project
 - [ ] Passage line comments use hashtags from the tag picker (`#namespace/value`)
-- [ ] Overall `coding:` updated via coding view Copy YAML when coding the whole policy
+- [ ] `project.yaml` updated via coding view Copy YAML when coding the whole policy

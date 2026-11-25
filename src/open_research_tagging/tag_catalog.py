@@ -15,9 +15,12 @@ def canonical_tag_entries(codebook: Codebook) -> list[dict[str, Any]]:
     """
     Ordered catalog of every valid codebook hashtag.
 
-    Each entry: hashtag, label, dimension, dimension_label, namespace, kind.
-    Value tags use ``#namespace/value``; scope uses ``#scope/type:position``
-    for every contribution-type × position pair.
+    Each entry: hashtag, label, description, dimension, dimension_label,
+    namespace, kind. Value tags use ``#namespace/value``; scope uses
+    ``#scope/type:position`` for every contribution-type × position pair.
+
+    ``description`` prefers the value/type description, then the leaf
+    description the namespace path points at (may be empty).
     """
     entries: list[dict[str, Any]] = []
     # Stable order: namespaces as indexed, then scope pairs
@@ -39,6 +42,25 @@ def canonical_tag_strings(codebook: Codebook) -> list[str]:
     return [entry["hashtag"] for entry in canonical_tag_entries(codebook)]
 
 
+def resolve_tag_description(
+    codebook: Codebook,
+    *,
+    dimension: str,
+    value_id: str | None = None,
+    scope_type_id: str | None = None,
+) -> str:
+    """Pick the best available definition text for a catalog entry."""
+    if value_id is not None:
+        specific = codebook.description_for(dimension, value_id)
+        if specific:
+            return specific
+    if scope_type_id is not None:
+        specific = codebook.scope_type_description(scope_type_id)
+        if specific:
+            return specific
+    return codebook.leaf_description_for(dimension) or ""
+
+
 def _value_entries(
     codebook: Codebook, namespace: str, info: NamespaceInfo
 ) -> list[dict[str, Any]]:
@@ -50,6 +72,9 @@ def _value_entries(
             {
                 "hashtag": f"#{namespace}/{value_id}",
                 "label": label,
+                "description": resolve_tag_description(
+                    codebook, dimension=info.dimension, value_id=value_id
+                ),
                 "dimension": info.dimension,
                 "dimension_label": info.label,
                 "namespace": namespace,
@@ -79,6 +104,11 @@ def _scope_entries(
                 {
                     "hashtag": f"#{namespace}/{type_id}:{pos_id}",
                     "label": f"{type_label} → {pos_label}",
+                    "description": resolve_tag_description(
+                        codebook,
+                        dimension=info.dimension,
+                        scope_type_id=type_id,
+                    ),
                     "dimension": info.dimension,
                     "dimension_label": info.label,
                     "namespace": namespace,

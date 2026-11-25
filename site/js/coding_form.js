@@ -1,125 +1,182 @@
 /**
- * Explicit adapter: nested project.yaml coding shape for the coding form.
- * Not a generic codebook→form engine (same mindset as build_overall / 5c).
+ * Coding form driven by codebook.coding_schema (12f).
+ * Python emit_coding_block remains the YAML contract; JS mirrors schema walk.
  */
 (function (global) {
   "use strict";
 
-  /** YAML scope keys matching projects/_template/project.yaml */
-  const DEFAULT_SCOPE_KEYS = [
-    "code",
-    "tests",
-    "docs_and_text",
-    "issues_and_pr_descriptions",
-    "review",
-    "autonomous_agents",
-    "contribution_types_not_defined",
-  ];
+  const QUOTE_WORDS = {
+    yes: 1,
+    no: 1,
+    true: 1,
+    false: 1,
+    null: 1,
+    on: 1,
+    off: 1,
+    y: 1,
+    n: 1,
+  };
 
-  /** Not emitted in codebook.json values (no comment namespace); template ids. */
-  const DISCLOSURE_FORMAT_OPTIONS = [
-    { id: "label-or-tag", label: "Label or tag" },
-    { id: "free-text", label: "Free text" },
-    { id: "other", label: "Other" },
-  ];
+  function schemaFrom(codebook) {
+    return (codebook && codebook.coding_schema) || { dimensions: [] };
+  }
 
-  const GOVERNANCE_OPTIONS = [
-    { id: "solo", label: "Solo" },
-    { id: "community", label: "Community" },
-    { id: "foundation-backed", label: "Foundation-backed" },
-    { id: "corporate-backed", label: "Corporate-backed" },
-  ];
+  function emptyCoding(codebook) {
+    return emptyFromSchema(schemaFrom(codebook));
+  }
 
-  function emptyScope() {
-    const scope = {};
-    DEFAULT_SCOPE_KEYS.forEach(function (key) {
-      scope[key] = "not_addressed";
+  function emptyFromSchema(schema) {
+    const coding = {};
+    (schema.dimensions || []).forEach(function (dim) {
+      const dimObj = {};
+      (dim.layers || []).forEach(function (layer) {
+        dimObj[layer.id] = emptyLayerValue(layer);
+      });
+      coding[dim.id] = dimObj;
     });
-    return scope;
+    return coding;
   }
 
-  function emptyCoding() {
-    return {
-      stance: null,
-      scope: emptyScope(),
-      stated_rationale: [],
-      guidance_on_use: { level: null, types: [] },
-      accountability: {
-        human_responsibility: "not_stated",
-        disclosure: "none",
-        disclosure_format: [],
-        enforcement: [],
-      },
-      context: {
-        project_size: "",
-        governance: null,
-        domain: "",
-        notes: "",
-      },
-    };
+  function emptyLayerValue(layer) {
+    const storage = layer.storage || "object";
+    const fields = layer.fields || [];
+    if (storage === "scalar") {
+      return defaultForField(fields[0] || {});
+    }
+    if (storage === "scope_map") {
+      const field = fields[0] || {};
+      // null = uncoded (do not fall back to not-addressed / not-seen)
+      const defaultPos = Object.prototype.hasOwnProperty.call(
+        field,
+        "default_position"
+      )
+        ? field.default_position
+        : null;
+      const scope = {};
+      (field.contribution_types || []).forEach(function (t) {
+        scope[t.yaml_key] = defaultPos;
+      });
+      return scope;
+    }
+    const obj = {};
+    fields.forEach(function (field) {
+      obj[field.id] = defaultForField(field);
+    });
+    return obj;
   }
 
-  /**
-   * Deep-ish merge of raw project.coding into empty defaults.
-   * @param {object|null|undefined} raw
-   * @returns {object}
-   */
-  function prefillCoding(raw) {
-    const base = emptyCoding();
+  function defaultForField(field) {
+    if (Object.prototype.hasOwnProperty.call(field, "default")) {
+      return field.default;
+    }
+    if (field.kind === "multi") return [];
+    if (field.kind === "text") return "";
+    return null;
+  }
+
+  function liftFlatCoding(raw) {
+    if (!raw || typeof raw !== "object") return raw;
+    const out = Object.assign({}, raw);
+    if (out.stance != null && typeof out.stance !== "object") {
+      out.stance = { explicit: out.stance, implicit: [] };
+    }
+    if (
+      out.scope &&
+      typeof out.scope === "object" &&
+      out.scope.explicit == null &&
+      out.scope.implicit == null
+    ) {
+      out.scope = { explicit: Object.assign({}, out.scope), implicit: {} };
+    }
+    if (Array.isArray(out.stated_rationale)) {
+      out.stated_rationale = { explicit: out.stated_rationale, implicit: [] };
+    }
+    if (
+      out.guidance_on_use &&
+      typeof out.guidance_on_use === "object" &&
+      out.guidance_on_use.explicit == null &&
+      (out.guidance_on_use.level != null || out.guidance_on_use.types != null)
+    ) {
+      out.guidance_on_use = {
+        explicit: {
+          level: out.guidance_on_use.level,
+          types: out.guidance_on_use.types || [],
+        },
+        implicit: {},
+      };
+    }
+    if (
+      out.accountability &&
+      typeof out.accountability === "object" &&
+      out.accountability.explicit == null &&
+      (out.accountability.disclosure != null ||
+        out.accountability.human_responsibility != null)
+    ) {
+      out.accountability = {
+        explicit: Object.assign({}, out.accountability),
+        implicit: {},
+      };
+    }
+    if (
+      out.context &&
+      typeof out.context === "object" &&
+      out.context.explicit == null &&
+      out.context.implicit == null
+    ) {
+      out.context = { explicit: Object.assign({}, out.context), implicit: {} };
+    }
+    return out;
+  }
+
+  function prefillCoding(raw, codebook) {
+    const schema = schemaFrom(codebook);
+    const base = emptyFromSchema(schema);
+    raw = liftFlatCoding(raw);
     if (!raw || typeof raw !== "object") return base;
 
-    if (raw.stance != null && raw.stance !== "") {
-      base.stance = String(raw.stance);
-    }
-
-    const scopeIn = raw.scope;
-    if (scopeIn && typeof scopeIn === "object") {
-      Object.keys(scopeIn).forEach(function (key) {
-        const yamlKey = yamlScopeKey(key);
-        if (scopeIn[key] != null && scopeIn[key] !== "") {
-          base.scope[yamlKey] = String(scopeIn[key]);
+    (schema.dimensions || []).forEach(function (dim) {
+      const rawDim = raw[dim.id];
+      if (!rawDim || typeof rawDim !== "object") return;
+      (dim.layers || []).forEach(function (layer) {
+        if (!(layer.id in rawDim)) return;
+        const storage = layer.storage || "object";
+        const rawLayer = rawDim[layer.id];
+        if (storage === "scalar") {
+          const field = (layer.fields || [])[0] || {};
+          if (field.kind === "multi") {
+            base[dim.id][layer.id] = asStringList(rawLayer);
+          } else if (rawLayer != null && rawLayer !== "") {
+            base[dim.id][layer.id] = String(rawLayer);
+          } else {
+            base[dim.id][layer.id] = null;
+          }
+        } else if (storage === "scope_map" && rawLayer && typeof rawLayer === "object") {
+          const dest = base[dim.id][layer.id];
+          Object.keys(rawLayer).forEach(function (key) {
+            const yamlKey = yamlScopeKey(key);
+            if (rawLayer[key] != null && rawLayer[key] !== "") {
+              dest[yamlKey] = String(rawLayer[key]);
+            }
+          });
+        } else if (storage === "object" && rawLayer && typeof rawLayer === "object") {
+          const dest = base[dim.id][layer.id];
+          (layer.fields || []).forEach(function (field) {
+            if (!(field.id in rawLayer)) return;
+            const val = rawLayer[field.id];
+            if (field.kind === "multi") {
+              dest[field.id] = asStringList(val);
+            } else if (field.kind === "text") {
+              if (val != null) dest[field.id] = String(val);
+            } else if (field.kind === "single") {
+              if (val == null || val === "") dest[field.id] = null;
+              else dest[field.id] = boolishId(val);
+            } else if (val != null && val !== "") {
+              dest[field.id] = boolishId(val);
+            }
+          });
         }
       });
-    }
-
-    base.stated_rationale = asStringList(raw.stated_rationale);
-
-    const guid = raw.guidance_on_use;
-    if (guid && typeof guid === "object") {
-      if (guid.level != null && guid.level !== "") {
-        base.guidance_on_use.level = String(guid.level);
-      }
-      base.guidance_on_use.types = asStringList(guid.types);
-    }
-
-    const acct = raw.accountability;
-    if (acct && typeof acct === "object") {
-      if (acct.human_responsibility != null && acct.human_responsibility !== "") {
-        base.accountability.human_responsibility = boolishId(
-          acct.human_responsibility
-        );
-      }
-      if (acct.disclosure != null && acct.disclosure !== "") {
-        base.accountability.disclosure = String(acct.disclosure);
-      }
-      base.accountability.disclosure_format = asStringList(
-        acct.disclosure_format
-      );
-      base.accountability.enforcement = asStringList(acct.enforcement);
-    }
-
-    const ctx = raw.context;
-    if (ctx && typeof ctx === "object") {
-      if (ctx.project_size != null) {
-        base.context.project_size = String(ctx.project_size);
-      }
-      if (ctx.governance != null && ctx.governance !== "") {
-        base.context.governance = String(ctx.governance);
-      }
-      if (ctx.domain != null) base.context.domain = String(ctx.domain);
-      if (ctx.notes != null) base.context.notes = String(ctx.notes);
-    }
-
+    });
     return base;
   }
 
@@ -135,7 +192,6 @@
     return [String(value)];
   }
 
-  /** YAML 1.1 may load bare yes/no as booleans; map to codebook ids. */
   function boolishId(value) {
     if (value === true) return "yes";
     if (value === false) return "no";
@@ -161,147 +217,179 @@
     return String(key || "").replace(/_/g, "-");
   }
 
-  /**
-   * @param {object} codebook
-   * @param {string} dimension
-   * @returns {{id: string, label: string}[]}
-   */
-  function valueOptions(codebook, dimension) {
-    const map = (codebook && codebook.values && codebook.values[dimension]) || {};
-    return Object.keys(map).map(function (id) {
-      return { id: id, label: map[id] || id };
-    });
-  }
-
-  /**
-   * Scope rows for the form: yaml key + label + position options.
-   * @param {object} codebook
-   * @returns {{key: string, label: string}[]}
-   */
-  function scopeTypeRows(codebook) {
-    const types =
-      (codebook && codebook.scope && codebook.scope.contribution_types) || {};
-    const keys = Object.keys(types);
-    if (keys.length === 0) {
-      return DEFAULT_SCOPE_KEYS.map(function (key) {
-        return { key: key, label: humanize(key) };
-      });
+  function evidenceDimForSection(section, codebook) {
+    const dims = schemaFrom(codebook).dimensions || [];
+    for (let i = 0; i < dims.length; i++) {
+      if (dims[i].id === section) {
+        return dims[i].evidence_dimension || "";
+      }
     }
-    return keys.map(function (hashKey) {
-      return {
-        key: yamlScopeKey(hashKey),
-        label: types[hashKey] || humanize(hashKey),
-      };
-    });
+    return "";
   }
 
-  function scopePositionOptions(codebook) {
-    const positions =
-      (codebook && codebook.scope && codebook.scope.positions) || {};
-    const keys = Object.keys(positions);
-    if (keys.length === 0) {
-      return ["allowed", "restricted", "banned", "not_addressed"].map(
-        function (id) {
-          return { id: id, label: humanize(id) };
-        }
-      );
-    }
-    return keys.map(function (id) {
-      return { id: id, label: positions[id] || humanize(id) };
-    });
-  }
-
-  function disclosureFormatOptions() {
-    return DISCLOSURE_FORMAT_OPTIONS.slice();
-  }
-
-  function governanceOptions() {
-    return GOVERNANCE_OPTIONS.slice();
-  }
-
-  /**
-   * Evidence-pane dimension key for a form section id.
-   * @param {string} section
-   * @returns {string} empty string = all comments
-   */
-  function evidenceDimForSection(section) {
-    const map = {
-      stance: "stance",
-      scope: "scope",
-      stated_rationale: "stated_rationale",
-      guidance_on_use: "guidance_level",
-      accountability: "disclosure",
-      context: "",
-    };
-    return map[section] != null ? map[section] : "";
-  }
-
-  function humanize(slug) {
-    return String(slug || "")
-      .replace(/[_-]+/g, " ")
-      .replace(/\b\w/g, function (c) {
-        return c.toUpperCase();
-      });
-  }
-
-  const QUOTE_WORDS = {
-    yes: 1,
-    no: 1,
-    true: 1,
-    false: 1,
-    null: 1,
-    on: 1,
-    off: 1,
-    y: 1,
-    n: 1,
-  };
-
-  /**
-   * Paste-ready coding: YAML block. Must match Python emit_coding_block.
-   * @param {object|null|undefined} raw
-   * @returns {string}
-   */
-  function emitCodingYaml(raw) {
-    const c = prefillCoding(raw);
+  function emitCodingYaml(raw, codebook) {
+    const schema = schemaFrom(codebook);
+    const c = prefillCoding(raw, codebook);
     const lines = ["coding:"];
-    lines.push("  stance: " + yamlScalar(c.stance));
-    lines.push("  scope:");
-    DEFAULT_SCOPE_KEYS.forEach(function (key) {
-      if (Object.prototype.hasOwnProperty.call(c.scope, key)) {
-        lines.push("    " + key + ": " + yamlScalar(c.scope[key]));
-      }
+    (schema.dimensions || []).forEach(function (dim) {
+      const dimVal = c[dim.id] || {};
+      lines.push("  " + dim.id + ":");
+      (dim.layers || []).forEach(function (layer) {
+        emitLayer(lines, "    ", layer, dimVal[layer.id]);
+      });
     });
-    Object.keys(c.scope).forEach(function (key) {
-      if (DEFAULT_SCOPE_KEYS.indexOf(key) < 0) {
-        lines.push("    " + key + ": " + yamlScalar(c.scope[key]));
-      }
-    });
-    appendListField(lines, "  stated_rationale", c.stated_rationale);
-    lines.push("  guidance_on_use:");
-    lines.push("    level: " + yamlScalar(c.guidance_on_use.level));
-    appendListField(lines, "    types", c.guidance_on_use.types);
-    lines.push("  accountability:");
-    lines.push(
-      "    human_responsibility: " +
-        yamlScalar(c.accountability.human_responsibility)
-    );
-    lines.push(
-      "    disclosure: " + yamlScalar(c.accountability.disclosure)
-    );
-    appendListField(
-      lines,
-      "    disclosure_format",
-      c.accountability.disclosure_format
-    );
-    appendListField(lines, "    enforcement", c.accountability.enforcement);
-    lines.push("  context:");
-    lines.push(
-      "    project_size: " + yamlScalar(c.context.project_size)
-    );
-    lines.push("    governance: " + yamlScalar(c.context.governance));
-    lines.push("    domain: " + yamlScalar(c.context.domain));
-    lines.push("    notes: " + yamlScalar(c.context.notes));
     return lines.join("\n") + "\n";
+  }
+
+  /** Provenance key order — keep in sync with Python project_yaml.PROVENANCE_KEYS. */
+  const PROVENANCE_KEYS = [
+    "source_repo",
+    "source_commit",
+    "source_url",
+    "retrieved_at",
+    "notes",
+  ];
+
+  function emptyProvenance() {
+    const out = {};
+    PROVENANCE_KEYS.forEach(function (key) {
+      out[key] = key === "notes" ? "" : null;
+    });
+    return out;
+  }
+
+  function emptyMeta() {
+    return {
+      slug: "",
+      display_name: "",
+      provenance: emptyProvenance(),
+      files: [],
+    };
+  }
+
+  function normalizeMeta(raw) {
+    const base = emptyMeta();
+    if (!raw || typeof raw !== "object") return base;
+    const slug = String(raw.slug || "").trim();
+    base.slug = slug;
+    const display = raw.display_name;
+    base.display_name =
+      display != null && String(display).trim() !== ""
+        ? String(display).trim()
+        : slug;
+    const provIn =
+      raw.provenance && typeof raw.provenance === "object" ? raw.provenance : {};
+    const prov = emptyProvenance();
+    PROVENANCE_KEYS.forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(provIn, key)) {
+        prov[key] = key === "notes" && provIn[key] == null ? "" : provIn[key];
+      }
+    });
+    base.provenance = prov;
+    if (Array.isArray(raw.files)) {
+      base.files = raw.files.map(function (f) {
+        if (f && typeof f === "object") {
+          const row = Object.assign({}, f);
+          // Site rows are discovered on disk; client-added pending rows set on_disk false.
+          if (!Object.prototype.hasOwnProperty.call(row, "on_disk")) {
+            row.on_disk = true;
+          }
+          return row;
+        }
+        return { path: String(f), on_disk: true };
+      });
+    }
+    return base;
+  }
+
+  function emitProjectYaml(meta, coding, codebook) {
+    const m = normalizeMeta(meta);
+    const lines = [
+      "slug: " + yamlScalar(m.slug || "example-project"),
+      "display_name: " + yamlScalar(m.display_name || m.slug || "Example Project"),
+      "",
+      "provenance:",
+    ];
+    PROVENANCE_KEYS.forEach(function (key) {
+      lines.push("  " + key + ": " + yamlScalar(m.provenance[key]));
+    });
+    lines.push("");
+    lines.push("files:");
+    const fileRows = (m.files || []).filter(function (row) {
+      const path = row && row.path != null ? String(row.path) : String(row);
+      return path.trim() !== "";
+    });
+    if (!fileRows.length) {
+      lines.push("  []");
+    } else {
+      fileRows.forEach(function (row) {
+        const path = row && row.path != null ? String(row.path).trim() : String(row);
+        lines.push("  - path: " + yamlScalar(path));
+        if (row && typeof row === "object") {
+          ["description", "notes"].forEach(function (key) {
+            if (Object.prototype.hasOwnProperty.call(row, key)) {
+              lines.push("    " + key + ": " + yamlScalar(row[key]));
+            }
+          });
+          Object.keys(row).forEach(function (extra) {
+            if (
+              extra === "path" ||
+              extra === "description" ||
+              extra === "notes" ||
+              extra === "on_disk" ||
+              extra === "pending"
+            ) {
+              return;
+            }
+            lines.push("    " + extra + ": " + yamlScalar(row[extra]));
+          });
+        }
+      });
+    }
+    lines.push("");
+    const codingText = emitCodingYaml(coding, codebook).replace(/\n$/, "");
+    lines.push(codingText);
+    return lines.join("\n") + "\n";
+  }
+
+  function emitLayer(lines, indent, layer, layerVal) {
+    const storage = layer.storage || "object";
+    const fields = layer.fields || [];
+    if (storage === "scalar") {
+      const field = fields[0] || {};
+      if (field.kind === "multi") {
+        appendListField(lines, indent + layer.id, asStringList(layerVal));
+      } else {
+        lines.push(indent + layer.id + ": " + yamlScalar(layerVal));
+      }
+      return;
+    }
+    lines.push(indent + layer.id + ":");
+    const inner = indent + "  ";
+    if (storage === "scope_map") {
+      const field = fields[0] || {};
+      const scope = layerVal && typeof layerVal === "object" ? layerVal : {};
+      const seen = {};
+      (field.contribution_types || []).forEach(function (t) {
+        lines.push(inner + t.yaml_key + ": " + yamlScalar(scope[t.yaml_key]));
+        seen[t.yaml_key] = 1;
+      });
+      Object.keys(scope).forEach(function (key) {
+        if (!seen[key]) {
+          lines.push(inner + key + ": " + yamlScalar(scope[key]));
+        }
+      });
+      return;
+    }
+    const obj = layerVal && typeof layerVal === "object" ? layerVal : {};
+    fields.forEach(function (field) {
+      const val = obj[field.id];
+      if (field.kind === "multi") {
+        appendListField(lines, inner + field.id, asStringList(val));
+      } else {
+        lines.push(inner + field.id + ": " + yamlScalar(val));
+      }
+    });
   }
 
   function appendListField(lines, keyLine, items) {
@@ -329,19 +417,28 @@
     return s;
   }
 
+  /** @deprecated — prefer schema field.options */
+  function valueOptions(codebook, dimension) {
+    const map = (codebook && codebook.values && codebook.values[dimension]) || {};
+    return Object.keys(map).map(function (id) {
+      return { id: id, label: map[id] || id };
+    });
+  }
+
   global.OrtCodingForm = {
     emptyCoding: emptyCoding,
+    emptyFromSchema: emptyFromSchema,
     prefillCoding: prefillCoding,
     emitCodingYaml: emitCodingYaml,
+    emitProjectYaml: emitProjectYaml,
+    emptyMeta: emptyMeta,
+    normalizeMeta: normalizeMeta,
+    PROVENANCE_KEYS: PROVENANCE_KEYS,
     toggleMulti: toggleMulti,
     yamlScopeKey: yamlScopeKey,
     hashtagScopeKey: hashtagScopeKey,
-    valueOptions: valueOptions,
-    scopeTypeRows: scopeTypeRows,
-    scopePositionOptions: scopePositionOptions,
-    disclosureFormatOptions: disclosureFormatOptions,
-    governanceOptions: governanceOptions,
     evidenceDimForSection: evidenceDimForSection,
-    DEFAULT_SCOPE_KEYS: DEFAULT_SCOPE_KEYS,
+    valueOptions: valueOptions,
+    schemaFrom: schemaFrom,
   };
 })(typeof window !== "undefined" ? window : globalThis);

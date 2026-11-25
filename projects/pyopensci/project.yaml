@@ -1,20 +1,25 @@
+# Demo project-level coding for pyOpenSci generative AI peer-review policy.
+# Passage-level tags live in PR review comments — see codebook/COMMENTING.md.
+# Codes are illustrative for the demo, not a final research judgment.
+# draft-0.2: Explicit / Implicit subsections.
+
 slug: pyopensci
 display_name: pyOpenSci
 
 provenance:
-  source_repo: "https://github.com/pyOpenSci/software-peer-review"
+  source_repo: https://github.com/pyOpenSci/software-peer-review
   source_commit: 499a7e2bedf55f78a39ab77edcb1ed36c04ecbd7
   source_url: "https://github.com/pyOpenSci/software-peer-review/blob/499a7e2bedf55f78a39ab77edcb1ed36c04ecbd7/our-process/generative-ai-policy.md"
   retrieved_at: 2026-10-13
-  notes: "Also copied appendices/gen-ai-checklist.md from the same commit (our-process/generative-ai-policy.md). Policy is for pyOpenSci software peer review submissions.\n"
+  notes: >
+    Also copied appendices/gen-ai-checklist.md from the same commit
+    (our-process/generative-ai-policy.md). Policy is for pyOpenSci software
+    peer review submissions.
 
-files:
-  - path: gen-ai-checklist.md
-    description: "Submission checklist included by the policy"
-  - path: generative-ai-policy.md
-    description: "Primary generative AI / LLM policy for peer review"
-  - path: test.md
-    description: "a test file to test the github workflow detecting mismatches"
+coding:
+  stance:
+    explicit: permissive-with-conditions
+    implicit: []
 
 coding:
   stance:
@@ -37,12 +42,14 @@ coding:
       issues_and_pr_descriptions: not-seen
       review: not-seen
       autonomous_agents: not-seen
+
   stated_rationale:
     explicit:
       - code-quality
       - maintainer-and-reviewer-burden
       - social-and-ethical
     implicit: []
+
   guidance_on_use:
     explicit:
       level: substantive-guidance
@@ -57,9 +64,10 @@ coding:
       notes: ""
       written_for: ""
       not_ai_specific: ""
+
   accountability:
     explicit:
-      human_responsibility: "yes"
+      human_responsibility: yes
       disclosure: required
       disclosure_format:
         - free-text
@@ -70,15 +78,16 @@ coding:
     implicit:
       disclosure_in_practice: none-seen
       notes: ""
+
   context:
     explicit:
       project_size: "Peer-review org for scientific Python packages; size not coded for demo"
       governance: community
       decision_process: ""
-      domain: "scientific Python / peer review"
+      domain: scientific Python / peer review
       policy_date: ""
       policy_location: standalone-file
-      notes: "Foundation-adjacent community; policy co-developed with community input."
+      notes: Foundation-adjacent community; policy co-developed with community input.
     implicit:
       contributors: ""
       who_decides: ""
@@ -86,3 +95,11 @@ coding:
       when_ai_began: ""
       ai_file_locations: ""
       notes: ""
+
+files:
+  - path: generative-ai-policy.md
+    description: Primary generative AI / LLM policy for peer review
+  - path: gen-ai-checklist.md
+    description: Submission checklist included by the policy
+  - path: test.md
+    description: "a test file to test the github workflow detecting mismatches"

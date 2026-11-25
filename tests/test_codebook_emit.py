@@ -25,7 +25,9 @@ def test_emit_has_expected_top_level_keys():
         "scope",
         "filter_order",
         "tag_catalog",
+        "coding_schema",
     }
+    assert "dimensions" in payload["coding_schema"]
     assert payload["tag_catalog"]
     assert payload["tag_catalog"][0]["hashtag"].startswith("#")
     assert payload["version"] == "test-0.1"

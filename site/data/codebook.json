@@ -1,14 +1,24 @@
 {
-  "version": "draft-0.1",
+  "version": "draft-0.2",
   "namespaces": {
     "stance": {
       "dimension": "stance",
       "label": "Stance",
       "kind": "value"
     },
+    "stance-implicit": {
+      "dimension": "stance_implicit",
+      "label": "Stance (implicit)",
+      "kind": "value"
+    },
     "rationale": {
       "dimension": "stated_rationale",
       "label": "Stated rationale",
+      "kind": "value"
+    },
+    "rationale-implicit": {
+      "dimension": "rationale_implicit",
+      "label": "Stated rationale (implicit)",
       "kind": "value"
     },
     "guidance-level": {
@@ -19,6 +29,16 @@
     "guidance": {
       "dimension": "guidance_type",
       "label": "Guidance type",
+      "kind": "value"
+    },
+    "guidance-level-implicit": {
+      "dimension": "guidance_level_implicit",
+      "label": "Guidance level (implicit)",
+      "kind": "value"
+    },
+    "guidance-implicit": {
+      "dimension": "guidance_type_implicit",
+      "label": "Guidance type (implicit)",
       "kind": "value"
     },
     "disclosure": {
@@ -36,6 +56,16 @@
       "label": "Enforcement",
       "kind": "value"
     },
+    "new-contributors": {
+      "dimension": "new_contributors",
+      "label": "New contributors",
+      "kind": "value"
+    },
+    "disclosure-in-practice": {
+      "dimension": "disclosure_in_practice",
+      "label": "Disclosure in practice",
+      "kind": "value"
+    },
     "scope": {
       "dimension": "scope",
       "label": "Scope",
@@ -51,7 +81,24 @@
       "permissive": "Permissive",
       "no-policy": "No policy"
     },
+    "stance_implicit": {
+      "maintainers-use-ai-tools": "Maintainers use of AI tools",
+      "outside-ai-assisted-accepted": "External/outside AI-assisted work is accepted",
+      "outside-ai-assisted-turned-away": "Outside AI-assisted work is turned away",
+      "defensive-instructions": "Defensive instructions",
+      "no-signals": "No signals"
+    },
     "stated_rationale": {
+      "code-quality": "Code quality",
+      "maintainer-and-reviewer-burden": "Maintainer and reviewer burden",
+      "security": "Security",
+      "licensing-and-copyright": "Licensing and copyright",
+      "environmental": "Environmental",
+      "social-and-ethical": "Social and ethical (trust, transparency, community norms)",
+      "contributor-learning-and-skill-development": "Contributor learning and skill development",
+      "other": "Other (specify in free text)"
+    },
+    "rationale_implicit": {
       "code-quality": "Code quality",
       "maintainer-and-reviewer-burden": "Maintainer and reviewer burden",
       "security": "Security",
@@ -73,6 +120,18 @@
       "iteration": "Iteration (human-AI cycles rather than one-shot)",
       "learning": "Learning (supports building skills or understanding)"
     },
+    "guidance_level_implicit": {
+      "restricts-only": "Restricts only",
+      "some-guidance": "Some guidance",
+      "substantive-guidance": "Substantive guidance"
+    },
+    "guidance_type_implicit": {
+      "scoping": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "design": "Design (modularity, existing patterns, technical debt)",
+      "evaluation": "Evaluation (understand, test, and explain output)",
+      "iteration": "Iteration (human-AI cycles rather than one-shot)",
+      "learning": "Learning (supports building skills or understanding)"
+    },
     "disclosure": {
       "none": "None",
       "recommended": "Recommended",
@@ -80,14 +139,24 @@
     },
     "human_responsibility": {
       "yes": "Yes \u2014 contributor is responsible for submitted work",
-      "no": "no",
-      "not_stated": "Not stated"
+      "no": "No",
+      "not-stated": "Not stated"
     },
     "enforcement": {
       "none-stated": "None stated",
       "pr-closed": "PR closed",
       "contributor-blocked": "Contributor blocked",
       "other": "Other"
+    },
+    "new_contributors": {
+      "yes": "Yes",
+      "no": "No",
+      "not-stated": "Not stated"
+    },
+    "disclosure_in_practice": {
+      "none-seen": "None seen",
+      "tool-defaults-only": "Tool defaults only",
+      "deliberate": "Deliberate"
     }
   },
   "scope": {
@@ -104,7 +173,7 @@
       "allowed": "Allowed",
       "restricted": "Restricted",
       "banned": "Banned",
-      "not_addressed": "Not Addressed"
+      "not-addressed": "Not Addressed"
     }
   },
   "filter_order": [
@@ -121,6 +190,7 @@
     {
       "hashtag": "#disclosure/none",
       "label": "None",
+      "description": "",
       "dimension": "disclosure",
       "dimension_label": "Disclosure",
       "namespace": "disclosure",
@@ -129,6 +199,7 @@
     {
       "hashtag": "#disclosure/recommended",
       "label": "Recommended",
+      "description": "",
       "dimension": "disclosure",
       "dimension_label": "Disclosure",
       "namespace": "disclosure",
@@ -137,14 +208,43 @@
     {
       "hashtag": "#disclosure/required",
       "label": "Required",
+      "description": "",
       "dimension": "disclosure",
       "dimension_label": "Disclosure",
       "namespace": "disclosure",
       "kind": "value"
     },
     {
+      "hashtag": "#disclosure-in-practice/deliberate",
+      "label": "Deliberate",
+      "description": "none seen; tool defaults only (e.g. Claude co-author line/footer); or deliberate markers someone chose.",
+      "dimension": "disclosure_in_practice",
+      "dimension_label": "Disclosure in practice",
+      "namespace": "disclosure-in-practice",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#disclosure-in-practice/none-seen",
+      "label": "None seen",
+      "description": "none seen; tool defaults only (e.g. Claude co-author line/footer); or deliberate markers someone chose.",
+      "dimension": "disclosure_in_practice",
+      "dimension_label": "Disclosure in practice",
+      "namespace": "disclosure-in-practice",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#disclosure-in-practice/tool-defaults-only",
+      "label": "Tool defaults only",
+      "description": "none seen; tool defaults only (e.g. Claude co-author line/footer); or deliberate markers someone chose.",
+      "dimension": "disclosure_in_practice",
+      "dimension_label": "Disclosure in practice",
+      "namespace": "disclosure-in-practice",
+      "kind": "value"
+    },
+    {
       "hashtag": "#enforcement/contributor-blocked",
       "label": "Contributor blocked",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -153,6 +253,7 @@
     {
       "hashtag": "#enforcement/none-stated",
       "label": "None stated",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -161,6 +262,7 @@
     {
       "hashtag": "#enforcement/other",
       "label": "Other",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -169,6 +271,7 @@
     {
       "hashtag": "#enforcement/pr-closed",
       "label": "PR closed",
+      "description": "",
       "dimension": "enforcement",
       "dimension_label": "Enforcement",
       "namespace": "enforcement",
@@ -177,6 +280,7 @@
     {
       "hashtag": "#guidance/design",
       "label": "Design (modularity, existing patterns, technical debt)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -185,6 +289,7 @@
     {
       "hashtag": "#guidance/evaluation",
       "label": "Evaluation (understand, test, and explain output)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -193,6 +298,7 @@
     {
       "hashtag": "#guidance/iteration",
       "label": "Iteration (human-AI cycles rather than one-shot)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -201,6 +307,7 @@
     {
       "hashtag": "#guidance/learning",
       "label": "Learning (supports building skills or understanding)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
@@ -209,14 +316,61 @@
     {
       "hashtag": "#guidance/scoping",
       "label": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "description": "Type of guidance offered (when present).",
       "dimension": "guidance_type",
       "dimension_label": "Guidance type",
       "namespace": "guidance",
       "kind": "value"
     },
     {
+      "hashtag": "#guidance-implicit/design",
+      "label": "Design (modularity, existing patterns, technical debt)",
+      "description": "",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/evaluation",
+      "label": "Evaluation (understand, test, and explain output)",
+      "description": "",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/iteration",
+      "label": "Iteration (human-AI cycles rather than one-shot)",
+      "description": "",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/learning",
+      "label": "Learning (supports building skills or understanding)",
+      "description": "",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-implicit/scoping",
+      "label": "Scoping (PR size limits, scoped tasks, issue-first)",
+      "description": "",
+      "dimension": "guidance_type_implicit",
+      "dimension_label": "Guidance type (implicit)",
+      "namespace": "guidance-implicit",
+      "kind": "value"
+    },
+    {
       "hashtag": "#guidance-level/restricts-only",
       "label": "Restricts only",
+      "description": "Does the policy only restrict, or does it guide how to use AI well?",
       "dimension": "guidance_level",
       "dimension_label": "Guidance level",
       "namespace": "guidance-level",
@@ -225,6 +379,7 @@
     {
       "hashtag": "#guidance-level/some-guidance",
       "label": "Some guidance",
+      "description": "Does the policy only restrict, or does it guide how to use AI well?",
       "dimension": "guidance_level",
       "dimension_label": "Guidance level",
       "namespace": "guidance-level",
@@ -233,22 +388,52 @@
     {
       "hashtag": "#guidance-level/substantive-guidance",
       "label": "Substantive guidance",
+      "description": "Does the policy only restrict, or does it guide how to use AI well?",
       "dimension": "guidance_level",
       "dimension_label": "Guidance level",
       "namespace": "guidance-level",
       "kind": "value"
     },
     {
+      "hashtag": "#guidance-level-implicit/restricts-only",
+      "label": "Restricts only",
+      "description": "",
+      "dimension": "guidance_level_implicit",
+      "dimension_label": "Guidance level (implicit)",
+      "namespace": "guidance-level-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-level-implicit/some-guidance",
+      "label": "Some guidance",
+      "description": "",
+      "dimension": "guidance_level_implicit",
+      "dimension_label": "Guidance level (implicit)",
+      "namespace": "guidance-level-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#guidance-level-implicit/substantive-guidance",
+      "label": "Substantive guidance",
+      "description": "",
+      "dimension": "guidance_level_implicit",
+      "dimension_label": "Guidance level (implicit)",
+      "namespace": "guidance-level-implicit",
+      "kind": "value"
+    },
+    {
       "hashtag": "#human-responsibility/no",
-      "label": "no",
+      "label": "No",
+      "description": "",
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
       "kind": "value"
     },
     {
-      "hashtag": "#human-responsibility/not_stated",
+      "hashtag": "#human-responsibility/not-stated",
       "label": "Not stated",
+      "description": "",
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
@@ -257,14 +442,43 @@
     {
       "hashtag": "#human-responsibility/yes",
       "label": "Yes \u2014 contributor is responsible for submitted work",
+      "description": "",
       "dimension": "human_responsibility",
       "dimension_label": "Human responsibility",
       "namespace": "human-responsibility",
       "kind": "value"
     },
     {
+      "hashtag": "#new-contributors/no",
+      "label": "No",
+      "description": "Different rules for new contributors.",
+      "dimension": "new_contributors",
+      "dimension_label": "New contributors",
+      "namespace": "new-contributors",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#new-contributors/not-stated",
+      "label": "Not stated",
+      "description": "Different rules for new contributors.",
+      "dimension": "new_contributors",
+      "dimension_label": "New contributors",
+      "namespace": "new-contributors",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#new-contributors/yes",
+      "label": "Yes",
+      "description": "Different rules for new contributors.",
+      "dimension": "new_contributors",
+      "dimension_label": "New contributors",
+      "namespace": "new-contributors",
+      "kind": "value"
+    },
+    {
       "hashtag": "#rationale/code-quality",
       "label": "Code quality",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -273,6 +487,7 @@
     {
       "hashtag": "#rationale/contributor-learning-and-skill-development",
       "label": "Contributor learning and skill development",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -281,6 +496,7 @@
     {
       "hashtag": "#rationale/environmental",
       "label": "Environmental",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -289,6 +505,7 @@
     {
       "hashtag": "#rationale/licensing-and-copyright",
       "label": "Licensing and copyright",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -297,6 +514,7 @@
     {
       "hashtag": "#rationale/maintainer-and-reviewer-burden",
       "label": "Maintainer and reviewer burden",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -305,6 +523,7 @@
     {
       "hashtag": "#rationale/other",
       "label": "Other (specify in free text)",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -313,6 +532,7 @@
     {
       "hashtag": "#rationale/security",
       "label": "Security",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
@@ -321,14 +541,88 @@
     {
       "hashtag": "#rationale/social-and-ethical",
       "label": "Social and ethical (trust, transparency, community norms)",
+      "description": "Only code rationales the policy states.",
       "dimension": "stated_rationale",
       "dimension_label": "Stated rationale",
       "namespace": "rationale",
       "kind": "value"
     },
     {
+      "hashtag": "#rationale-implicit/code-quality",
+      "label": "Code quality",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/contributor-learning-and-skill-development",
+      "label": "Contributor learning and skill development",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/environmental",
+      "label": "Environmental",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/licensing-and-copyright",
+      "label": "Licensing and copyright",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/maintainer-and-reviewer-burden",
+      "label": "Maintainer and reviewer burden",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/other",
+      "label": "Other (specify in free text)",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/security",
+      "label": "Security",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#rationale-implicit/social-and-ethical",
+      "label": "Social and ethical (trust, transparency, community norms)",
+      "description": "The same codes, for reasons maintainers give outside the policy. Record the source next to each code (interview, policy discussion, agent-file PR, talk/blog/social). Don't infer a reason from a rule or a file alone.",
+      "dimension": "rationale_implicit",
+      "dimension_label": "Stated rationale (implicit)",
+      "namespace": "rationale-implicit",
+      "kind": "value"
+    },
+    {
       "hashtag": "#stance/ban",
       "label": "Ban",
+      "description": "AI-generated contributions prohibited",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -337,6 +631,7 @@
     {
       "hashtag": "#stance/discouraged",
       "label": "Discouraged",
+      "description": "Allowed but advised against, with no enforceable limit",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -345,6 +640,7 @@
     {
       "hashtag": "#stance/gate-restrict",
       "label": "Gate/restrict",
+      "description": "Allowed only under limits (for example, PR gating, pre-approval, issue-first)",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -353,6 +649,7 @@
     {
       "hashtag": "#stance/no-policy",
       "label": "No policy",
+      "description": "No written policy found after the search protocol",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -361,6 +658,7 @@
     {
       "hashtag": "#stance/permissive",
       "label": "Permissive",
+      "description": "Allowed, no stated requirements",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
@@ -369,14 +667,61 @@
     {
       "hashtag": "#stance/permissive-with-conditions",
       "label": "Permissive with conditions",
+      "description": "Allowed, with stated requirements",
       "dimension": "stance",
       "dimension_label": "Stance",
       "namespace": "stance",
       "kind": "value"
     },
     {
+      "hashtag": "#stance-implicit/defensive-instructions",
+      "label": "Defensive instructions",
+      "description": "Agent files or templates aimed at other people's agents, for example telling them not to open PRs.",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/maintainers-use-ai-tools",
+      "label": "Maintainers use of AI tools",
+      "description": "Agent files they committed, or AI co-author lines and footers on their commits, PRs and issues.",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/no-signals",
+      "label": "No signals",
+      "description": "None of the above after the implicit search.",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/outside-ai-assisted-accepted",
+      "label": "External/outside AI-assisted work is accepted",
+      "description": "PRs from non-maintainers that carry AI attribution have been merged.",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
+      "hashtag": "#stance-implicit/outside-ai-assisted-turned-away",
+      "label": "Outside AI-assisted work is turned away",
+      "description": "PRs or issues closed, labeled, or answered because of AI use.",
+      "dimension": "stance_implicit",
+      "dimension_label": "Stance (implicit)",
+      "namespace": "stance-implicit",
+      "kind": "value"
+    },
+    {
       "hashtag": "#scope/autonomous-agents:allowed",
       "label": "Autonomous agents \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -385,14 +730,16 @@
     {
       "hashtag": "#scope/autonomous-agents:banned",
       "label": "Autonomous agents \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/autonomous-agents:not_addressed",
+      "hashtag": "#scope/autonomous-agents:not-addressed",
       "label": "Autonomous agents \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -401,6 +748,7 @@
     {
       "hashtag": "#scope/autonomous-agents:restricted",
       "label": "Autonomous agents \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -409,6 +757,7 @@
     {
       "hashtag": "#scope/code:allowed",
       "label": "Code \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -417,14 +766,16 @@
     {
       "hashtag": "#scope/code:banned",
       "label": "Code \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/code:not_addressed",
+      "hashtag": "#scope/code:not-addressed",
       "label": "Code \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -433,6 +784,7 @@
     {
       "hashtag": "#scope/code:restricted",
       "label": "Code \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -441,6 +793,7 @@
     {
       "hashtag": "#scope/contribution-types-not-defined:allowed",
       "label": "Contribution types not defined \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -449,14 +802,16 @@
     {
       "hashtag": "#scope/contribution-types-not-defined:banned",
       "label": "Contribution types not defined \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/contribution-types-not-defined:not_addressed",
+      "hashtag": "#scope/contribution-types-not-defined:not-addressed",
       "label": "Contribution types not defined \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -465,6 +820,7 @@
     {
       "hashtag": "#scope/contribution-types-not-defined:restricted",
       "label": "Contribution types not defined \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -473,6 +829,7 @@
     {
       "hashtag": "#scope/docs-and-text:allowed",
       "label": "Docs and text \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -481,14 +838,16 @@
     {
       "hashtag": "#scope/docs-and-text:banned",
       "label": "Docs and text \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/docs-and-text:not_addressed",
+      "hashtag": "#scope/docs-and-text:not-addressed",
       "label": "Docs and text \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -497,6 +856,7 @@
     {
       "hashtag": "#scope/docs-and-text:restricted",
       "label": "Docs and text \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -505,6 +865,7 @@
     {
       "hashtag": "#scope/issues-and-pr-descriptions:allowed",
       "label": "Issues and PR descriptions \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -513,14 +874,16 @@
     {
       "hashtag": "#scope/issues-and-pr-descriptions:banned",
       "label": "Issues and PR descriptions \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/issues-and-pr-descriptions:not_addressed",
+      "hashtag": "#scope/issues-and-pr-descriptions:not-addressed",
       "label": "Issues and PR descriptions \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -529,6 +892,7 @@
     {
       "hashtag": "#scope/issues-and-pr-descriptions:restricted",
       "label": "Issues and PR descriptions \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -537,6 +901,7 @@
     {
       "hashtag": "#scope/review:allowed",
       "label": "Review \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -545,14 +910,16 @@
     {
       "hashtag": "#scope/review:banned",
       "label": "Review \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/review:not_addressed",
+      "hashtag": "#scope/review:not-addressed",
       "label": "Review \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -561,6 +928,7 @@
     {
       "hashtag": "#scope/review:restricted",
       "label": "Review \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -569,6 +937,7 @@
     {
       "hashtag": "#scope/tests:allowed",
       "label": "Tests \u2192 Allowed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -577,14 +946,16 @@
     {
       "hashtag": "#scope/tests:banned",
       "label": "Tests \u2192 Banned",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     },
     {
-      "hashtag": "#scope/tests:not_addressed",
+      "hashtag": "#scope/tests:not-addressed",
       "label": "Tests \u2192 Not Addressed",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
@@ -593,10 +964,787 @@
     {
       "hashtag": "#scope/tests:restricted",
       "label": "Tests \u2192 Restricted",
+      "description": "For each contribution type, code the position: allowed, restricted, banned, or not addressed. From policy docs, contributing guidelines, etc.",
       "dimension": "scope",
       "dimension_label": "Scope",
       "namespace": "scope",
       "kind": "scope"
     }
-  ]
+  ],
+  "coding_schema": {
+    "dimensions": [
+      {
+        "id": "stance",
+        "label": "Stance",
+        "evidence_dimension": "stance",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Explicit",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "ban",
+                    "label": "Ban"
+                  },
+                  {
+                    "id": "discouraged",
+                    "label": "Discouraged"
+                  },
+                  {
+                    "id": "gate-restrict",
+                    "label": "Gate/restrict"
+                  },
+                  {
+                    "id": "permissive-with-conditions",
+                    "label": "Permissive with conditions"
+                  },
+                  {
+                    "id": "permissive",
+                    "label": "Permissive"
+                  },
+                  {
+                    "id": "no-policy",
+                    "label": "No policy"
+                  }
+                ],
+                "default": null
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Implicit",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "maintainers-use-ai-tools",
+                    "label": "Maintainers use of AI tools"
+                  },
+                  {
+                    "id": "outside-ai-assisted-accepted",
+                    "label": "External/outside AI-assisted work is accepted"
+                  },
+                  {
+                    "id": "outside-ai-assisted-turned-away",
+                    "label": "Outside AI-assisted work is turned away"
+                  },
+                  {
+                    "id": "defensive-instructions",
+                    "label": "Defensive instructions"
+                  },
+                  {
+                    "id": "no-signals",
+                    "label": "No signals"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "scope",
+        "label": "Scope",
+        "evidence_dimension": "scope",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "scope_map",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Scope",
+                "kind": "scope",
+                "options": [],
+                "contribution_types": [
+                  {
+                    "id": "code",
+                    "label": "Code",
+                    "yaml_key": "code"
+                  },
+                  {
+                    "id": "tests",
+                    "label": "Tests",
+                    "yaml_key": "tests"
+                  },
+                  {
+                    "id": "docs-and-text",
+                    "label": "Docs and text",
+                    "yaml_key": "docs_and_text"
+                  },
+                  {
+                    "id": "issues-and-pr-descriptions",
+                    "label": "Issues and PR descriptions",
+                    "yaml_key": "issues_and_pr_descriptions"
+                  },
+                  {
+                    "id": "review",
+                    "label": "Review",
+                    "yaml_key": "review"
+                  },
+                  {
+                    "id": "autonomous-agents",
+                    "label": "Autonomous agents",
+                    "yaml_key": "autonomous_agents"
+                  },
+                  {
+                    "id": "contribution-types-not-defined",
+                    "label": "Contribution types not defined",
+                    "yaml_key": "contribution_types_not_defined"
+                  }
+                ],
+                "positions": [
+                  {
+                    "id": "allowed",
+                    "label": "Allowed"
+                  },
+                  {
+                    "id": "restricted",
+                    "label": "Restricted"
+                  },
+                  {
+                    "id": "banned",
+                    "label": "Banned"
+                  },
+                  {
+                    "id": "not-addressed",
+                    "label": "Not Addressed"
+                  }
+                ],
+                "default_position": null,
+                "default": null
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "scope_map",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Scope",
+                "kind": "scope",
+                "options": [],
+                "contribution_types": [
+                  {
+                    "id": "code",
+                    "label": "Code",
+                    "yaml_key": "code"
+                  },
+                  {
+                    "id": "comments",
+                    "label": "Comments",
+                    "yaml_key": "comments"
+                  },
+                  {
+                    "id": "tests",
+                    "label": "Tests",
+                    "yaml_key": "tests"
+                  },
+                  {
+                    "id": "docs-and-text",
+                    "label": "Docs and text",
+                    "yaml_key": "docs_and_text"
+                  },
+                  {
+                    "id": "issues-and-pr-descriptions",
+                    "label": "Issues and PR descriptions",
+                    "yaml_key": "issues_and_pr_descriptions"
+                  },
+                  {
+                    "id": "review",
+                    "label": "Review",
+                    "yaml_key": "review"
+                  },
+                  {
+                    "id": "autonomous-agents",
+                    "label": "Autonomous agents",
+                    "yaml_key": "autonomous_agents"
+                  }
+                ],
+                "positions": [
+                  {
+                    "id": "seen",
+                    "label": "Seen"
+                  },
+                  {
+                    "id": "not-seen",
+                    "label": "Not Seen"
+                  }
+                ],
+                "default_position": null,
+                "default": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stated_rationale",
+        "label": "Stated Rationale",
+        "evidence_dimension": "stated_rationale",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Explicit",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "code-quality",
+                    "label": "Code quality"
+                  },
+                  {
+                    "id": "maintainer-and-reviewer-burden",
+                    "label": "Maintainer and reviewer burden"
+                  },
+                  {
+                    "id": "security",
+                    "label": "Security"
+                  },
+                  {
+                    "id": "licensing-and-copyright",
+                    "label": "Licensing and copyright"
+                  },
+                  {
+                    "id": "environmental",
+                    "label": "Environmental"
+                  },
+                  {
+                    "id": "social-and-ethical",
+                    "label": "Social and ethical (trust, transparency, community norms)"
+                  },
+                  {
+                    "id": "contributor-learning-and-skill-development",
+                    "label": "Contributor learning and skill development"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other (specify in free text)"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "scalar",
+            "fields": [
+              {
+                "id": "_",
+                "label": "Implicit",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "code-quality",
+                    "label": "Code quality"
+                  },
+                  {
+                    "id": "maintainer-and-reviewer-burden",
+                    "label": "Maintainer and reviewer burden"
+                  },
+                  {
+                    "id": "security",
+                    "label": "Security"
+                  },
+                  {
+                    "id": "licensing-and-copyright",
+                    "label": "Licensing and copyright"
+                  },
+                  {
+                    "id": "environmental",
+                    "label": "Environmental"
+                  },
+                  {
+                    "id": "social-and-ethical",
+                    "label": "Social and ethical (trust, transparency, community norms)"
+                  },
+                  {
+                    "id": "contributor-learning-and-skill-development",
+                    "label": "Contributor learning and skill development"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other (specify in free text)"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "guidance_on_use",
+        "label": "Guidance On Use",
+        "evidence_dimension": "guidance_level",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "level",
+                "label": "Level",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "restricts-only",
+                    "label": "Restricts only"
+                  },
+                  {
+                    "id": "some-guidance",
+                    "label": "Some guidance"
+                  },
+                  {
+                    "id": "substantive-guidance",
+                    "label": "Substantive guidance"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "types",
+                "label": "Types",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "scoping",
+                    "label": "Scoping (PR size limits, scoped tasks, issue-first)"
+                  },
+                  {
+                    "id": "design",
+                    "label": "Design (modularity, existing patterns, technical debt)"
+                  },
+                  {
+                    "id": "evaluation",
+                    "label": "Evaluation (understand, test, and explain output)"
+                  },
+                  {
+                    "id": "iteration",
+                    "label": "Iteration (human-AI cycles rather than one-shot)"
+                  },
+                  {
+                    "id": "learning",
+                    "label": "Learning (supports building skills or understanding)"
+                  }
+                ],
+                "default": []
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "level",
+                "label": "Level",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "restricts-only",
+                    "label": "Restricts only"
+                  },
+                  {
+                    "id": "some-guidance",
+                    "label": "Some guidance"
+                  },
+                  {
+                    "id": "substantive-guidance",
+                    "label": "Substantive guidance"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "types",
+                "label": "Types",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "scoping",
+                    "label": "Scoping (PR size limits, scoped tasks, issue-first)"
+                  },
+                  {
+                    "id": "design",
+                    "label": "Design (modularity, existing patterns, technical debt)"
+                  },
+                  {
+                    "id": "evaluation",
+                    "label": "Evaluation (understand, test, and explain output)"
+                  },
+                  {
+                    "id": "iteration",
+                    "label": "Iteration (human-AI cycles rather than one-shot)"
+                  },
+                  {
+                    "id": "learning",
+                    "label": "Learning (supports building skills or understanding)"
+                  }
+                ],
+                "default": []
+              },
+              {
+                "id": "notes",
+                "label": "Notes (files / sources)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "written_for",
+                "label": "Written for",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "not_ai_specific",
+                "label": "Not AI-specific contributing advice",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "accountability",
+        "label": "Accountability",
+        "evidence_dimension": "disclosure",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "human_responsibility",
+                "label": "Human Responsibility",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "yes",
+                    "label": "Yes \u2014 contributor is responsible for submitted work"
+                  },
+                  {
+                    "id": "no",
+                    "label": "No"
+                  },
+                  {
+                    "id": "not-stated",
+                    "label": "Not stated"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "disclosure",
+                "label": "Disclosure",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "none",
+                    "label": "None"
+                  },
+                  {
+                    "id": "recommended",
+                    "label": "Recommended"
+                  },
+                  {
+                    "id": "required",
+                    "label": "Required"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "disclosure_format",
+                "label": "Disclosure Format",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "label-or-tag",
+                    "label": "Label or tag"
+                  },
+                  {
+                    "id": "free-text",
+                    "label": "Free text"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other"
+                  }
+                ],
+                "default": []
+              },
+              {
+                "id": "enforcement",
+                "label": "Enforcement",
+                "kind": "multi",
+                "options": [
+                  {
+                    "id": "none-stated",
+                    "label": "None stated"
+                  },
+                  {
+                    "id": "pr-closed",
+                    "label": "PR closed"
+                  },
+                  {
+                    "id": "contributor-blocked",
+                    "label": "Contributor blocked"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other"
+                  }
+                ],
+                "default": []
+              },
+              {
+                "id": "new_contributors",
+                "label": "New Contributors",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "yes",
+                    "label": "Yes"
+                  },
+                  {
+                    "id": "no",
+                    "label": "No"
+                  },
+                  {
+                    "id": "not-stated",
+                    "label": "Not stated"
+                  }
+                ],
+                "default": null
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "disclosure_in_practice",
+                "label": "Disclosure In Practice",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "none-seen",
+                    "label": "None seen"
+                  },
+                  {
+                    "id": "tool-defaults-only",
+                    "label": "Tool defaults only"
+                  },
+                  {
+                    "id": "deliberate",
+                    "label": "Deliberate"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "notes",
+                "label": "Notes (responsibility / new contributors / enforcement in practice)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "context",
+        "label": "Context",
+        "evidence_dimension": "",
+        "layers": [
+          {
+            "id": "explicit",
+            "label": "Explicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "project_size",
+                "label": "Project size (contributors, dependents, or downloads \u2014 note measure)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "governance",
+                "label": "Governance",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "solo",
+                    "label": "Solo"
+                  },
+                  {
+                    "id": "community",
+                    "label": "Community"
+                  },
+                  {
+                    "id": "foundation-backed",
+                    "label": "Foundation Backed"
+                  },
+                  {
+                    "id": "corporate-backed",
+                    "label": "Corporate Backed"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "decision_process",
+                "label": "Decision process (enhancement proposals or voting, where documented)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "domain",
+                "label": "Domain (e.g. scientific Python, core Python, plus subdomain)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "policy_date",
+                "label": "Policy date and revision history",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "policy_location",
+                "label": "Policy location",
+                "kind": "single",
+                "options": [
+                  {
+                    "id": "CONTRIBUTING",
+                    "label": "Contributing"
+                  },
+                  {
+                    "id": "standalone-file",
+                    "label": "Standalone File"
+                  },
+                  {
+                    "id": "governance-doc",
+                    "label": "Governance Doc"
+                  },
+                  {
+                    "id": "other",
+                    "label": "Other"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          },
+          {
+            "id": "implicit",
+            "label": "Implicit",
+            "storage": "object",
+            "fields": [
+              {
+                "id": "contributors",
+                "label": "Contributors (count bot/AI accounts apart from people; note source)\n",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "who_decides",
+                "label": "Who decides in practice (mergers vs authors in packaging metadata)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "outside_activity",
+                "label": "Outside activity (issues/PRs from outside, merge vs close, latency)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "when_ai_began",
+                "label": "When AI use began (first agent file / AI co-authored commit vs policy date)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "ai_file_locations",
+                "label": "AI file locations (paths; how far a contributor must look)",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              },
+              {
+                "id": "notes",
+                "label": "Notes",
+                "kind": "text",
+                "options": [],
+                "default": ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "scope_implicit": {
+    "contribution_types": {
+      "code": "Code",
+      "comments": "Comments",
+      "tests": "Tests",
+      "docs-and-text": "Docs and text",
+      "issues-and-pr-descriptions": "Issues and PR descriptions",
+      "review": "Review",
+      "autonomous-agents": "Autonomous agents"
+    },
+    "positions": {
+      "seen": "Seen",
+      "not-seen": "Not Seen"
+    }
+  }
 }
