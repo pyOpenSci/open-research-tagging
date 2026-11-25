@@ -160,11 +160,15 @@ def test_coding_page_wires_copy_yaml():
     assert "project-meta" in html or "meta-slug" in html
     assert "meta-files" in html
     assert "meta-file-description" in html
+    assert "add-file" in html or "addFile" in html
     assert "Files (read-only)" not in html
     assert "whole" in html.lower() or "project.yaml" in html
     src = FORM_JS.read_text(encoding="utf-8")
     assert "emitCodingYaml" in src
     assert "emitProjectYaml" in src
+    coding_js = (REPO / "site" / "js" / "coding.js").read_text(encoding="utf-8")
+    assert "addFile" in coding_js
+    assert "removeFile" in coding_js
 
 
 def _run_js_emit(coding: dict) -> str:

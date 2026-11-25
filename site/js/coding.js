@@ -196,6 +196,25 @@
         this.copyStatus = "";
       },
 
+      addFile() {
+        if (!this.meta) return;
+        if (!Array.isArray(this.meta.files)) this.meta.files = [];
+        this.meta.files.push({
+          path: "",
+          description: "",
+          on_disk: false,
+        });
+        this.touchMeta();
+      },
+
+      removeFile(index) {
+        if (!this.meta || !Array.isArray(this.meta.files)) return;
+        const row = this.meta.files[index];
+        if (!row || row.on_disk) return;
+        this.meta.files.splice(index, 1);
+        this.touchMeta();
+      },
+
       async copyYaml() {
         const text = this.yamlPreview;
         if (!text) return;

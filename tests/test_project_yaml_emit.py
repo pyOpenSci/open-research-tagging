@@ -82,6 +82,24 @@ def test_empty_meta_defaults():
     assert set(meta["provenance"]) == set(PROVENANCE_KEYS)
 
 
+def test_emit_project_yaml_skips_empty_paths_and_ui_flags():
+    """14b: pending rows with blank path omitted; on_disk not written to YAML."""
+    text = emit_project_yaml(
+        slug="acme",
+        files=[
+            {"path": "keep.md", "description": "Keep", "on_disk": True},
+            {"path": "  ", "description": "Empty"},
+            {"path": "pending.md", "description": "Soon", "on_disk": False},
+        ],
+        codebook_path=CODEBOOK,
+    )
+    parsed = yaml.safe_load(text)
+    paths = [f["path"] for f in parsed["files"]]
+    assert paths == ["keep.md", "pending.md"]
+    assert "on_disk" not in parsed["files"][0]
+    assert "on_disk" not in text
+
+
 def test_emit_project_yaml_preserves_file_notes():
     text = emit_project_yaml(
         slug="acme",

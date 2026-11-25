@@ -27,6 +27,8 @@ PROVENANCE_KEYS: tuple[str, ...] = (
 
 # Preferred order for files: entries; other keys still passthrough after these.
 FILE_ENTRY_KEYS: tuple[str, ...] = ("path", "description", "notes")
+# Coding-view UI flags — never write into project.yaml.
+FILE_UI_KEYS: frozenset[str] = frozenset({"on_disk", "pending"})
 
 # Template placeholder — site rows substitute the slug (13g).
 PLACEHOLDER_DISPLAY_NAME = "Example Project"
@@ -119,7 +121,14 @@ def emit_project_yaml(
         lines.append(f"  {key}: {_scalar(meta['provenance'].get(key))}")
     lines.append("")
     lines.append("files:")
-    file_rows = meta["files"]
+    file_rows = [
+        row
+        for row in (meta["files"] or [])
+        if (
+            (isinstance(row, Mapping) and str(row.get("path") or "").strip())
+            or (not isinstance(row, Mapping) and str(row).strip())
+        )
+    ]
     if not file_rows:
         lines.append("  []")
     else:
@@ -127,12 +136,12 @@ def emit_project_yaml(
             if not isinstance(row, Mapping):
                 lines.append(f"  - path: {_scalar(row)}")
                 continue
-            lines.append(f"  - path: {_scalar(row.get('path'))}")
+            lines.append(f"  - path: {_scalar(str(row.get('path')).strip())}")
             for key in FILE_ENTRY_KEYS[1:]:
                 if key in row:
                     lines.append(f"    {key}: {_scalar(row.get(key))}")
             for extra_key, extra_val in row.items():
-                if extra_key in FILE_ENTRY_KEYS:
+                if extra_key in FILE_ENTRY_KEYS or extra_key in FILE_UI_KEYS:
                     continue
                 lines.append(f"    {extra_key}: {_scalar(extra_val)}")
     lines.append("")

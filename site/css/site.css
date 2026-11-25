@@ -663,6 +663,7 @@ body.tags-page .lede {
 .meta-file-path {
   display: block;
 }
+.meta-file-path-row,
 .meta-file-description-row {
   display: flex;
   flex-wrap: wrap;
@@ -671,6 +672,7 @@ body.tags-page .lede {
   font-size: 0.8rem;
   color: var(--muted);
 }
+.meta-file-path-row input,
 .meta-file-description-row input {
   flex: 1;
   min-width: 12rem;

@@ -288,8 +288,15 @@
     base.provenance = prov;
     if (Array.isArray(raw.files)) {
       base.files = raw.files.map(function (f) {
-        if (f && typeof f === "object") return Object.assign({}, f);
-        return { path: String(f) };
+        if (f && typeof f === "object") {
+          const row = Object.assign({}, f);
+          // Site rows are discovered on disk; client-added pending rows set on_disk false.
+          if (!Object.prototype.hasOwnProperty.call(row, "on_disk")) {
+            row.on_disk = true;
+          }
+          return row;
+        }
+        return { path: String(f), on_disk: true };
       });
     }
     return base;
@@ -308,11 +315,15 @@
     });
     lines.push("");
     lines.push("files:");
-    if (!m.files.length) {
+    const fileRows = (m.files || []).filter(function (row) {
+      const path = row && row.path != null ? String(row.path) : String(row);
+      return path.trim() !== "";
+    });
+    if (!fileRows.length) {
       lines.push("  []");
     } else {
-      m.files.forEach(function (row) {
-        const path = row && row.path != null ? row.path : row;
+      fileRows.forEach(function (row) {
+        const path = row && row.path != null ? String(row.path).trim() : String(row);
         lines.push("  - path: " + yamlScalar(path));
         if (row && typeof row === "object") {
           ["description", "notes"].forEach(function (key) {
@@ -321,7 +332,13 @@
             }
           });
           Object.keys(row).forEach(function (extra) {
-            if (extra === "path" || extra === "description" || extra === "notes") {
+            if (
+              extra === "path" ||
+              extra === "description" ||
+              extra === "notes" ||
+              extra === "on_disk" ||
+              extra === "pending"
+            ) {
               return;
             }
             lines.push("    " + extra + ": " + yamlScalar(row[extra]));
