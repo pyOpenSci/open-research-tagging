@@ -65,3 +65,13 @@ def test_readme_how_to_add_a_project():
     assert "pull request" in lower or " pr" in lower or "open a pr" in lower
     assert "files tab" in lower or "files-tab" in lower
     assert "COMMENTING.md" in text
+
+
+def test_readme_points_at_live_public_json():
+    """14d: collaborators can download live Pages JSON (not the fixture on main)."""
+    text = README.read_text(encoding="utf-8")
+    base = "https://www.pyopensci.org/open-research-tagging/data/"
+    assert f"{base}comments.json" in text
+    assert f"{base}projects.json" in text
+    assert f"{base}codebook.json" in text
+    assert "fixture" in text.lower()

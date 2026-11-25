@@ -84,6 +84,18 @@ cd site && python3 -m http.server 8000
 
 Committed `site/data/*.json` is an **offline fixture snapshot** for local preview. Public Pages gets **live** JSON built in Actions (not committed to `main`). Playwright uses a temp copy of `site/` filled from `raw_comments.fixture.json`. Details: ARCHITECTURE → *Fixture vs live site JSON*.
 
+### Live JSON for analysis
+
+For spreadsheet / script work, download the **live** files from Pages (not the fixture committed on `main`):
+
+| File | URL |
+| ---- | --- |
+| Comments | https://www.pyopensci.org/open-research-tagging/data/comments.json |
+| Projects | https://www.pyopensci.org/open-research-tagging/data/projects.json |
+| Codebook | https://www.pyopensci.org/open-research-tagging/data/codebook.json |
+
+These refresh when **Update comment data** or **Deploy Pages** runs. Until the pyOpenSci seed / smoke-test tags are retired, live `comments.json` still includes that demo tagging.
+
 ## Workflows
 
 

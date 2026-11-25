@@ -221,6 +221,14 @@ No `paths:` filter on tag-check yet; revisit if code-review `#…` noise on non-
 
 **Update comment data** / **Deploy Pages** regenerate live JSON in CI and deploy — the public site shows GitHub data; `main` keeps the fixture snapshot until a human regenerates it from the fixture on purpose. Playwright copies `site/` into a **temp directory**, regenerates fixture-shaped JSON there, and serves that tree (`site_under_test` / `site_base_url` in `tests/conftest.py`).
 
+**Public live URLs (14d):** collaborators analyzing tag distributions should fetch Pages, not `main`:
+
+- https://www.pyopensci.org/open-research-tagging/data/comments.json
+- https://www.pyopensci.org/open-research-tagging/data/projects.json
+- https://www.pyopensci.org/open-research-tagging/data/codebook.json
+
+README mirrors this under *Live JSON for analysis*. Seed / smoke-test tags remain in live comments until **14e**.
+
 With `projects/pyopensci/` present, fixture quotes usually resolve from local policy files (`paragraph` / `selection`) instead of `diff_hunk`.
 
 ## How we keep this document current
