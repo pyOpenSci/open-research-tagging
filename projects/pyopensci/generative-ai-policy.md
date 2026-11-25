@@ -24,6 +24,8 @@ In generating our Generative AI policy, we acknowledge some of the other policie
 
 ::::
 
+
+
 ## Generative AI and open source development
 
 We understand and support your use of Generative AI tools to improve software development workflows and to make your developer workflows more efficient. We want you to use them thoughtfully and effectively, and in ways that improve both the open source ecosystem and your development trajectory.
