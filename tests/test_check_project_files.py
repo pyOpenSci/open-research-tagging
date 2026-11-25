@@ -1,4 +1,4 @@
-"""14a: project.yaml files: must match folder membership."""
+"""14a/14c: project.yaml files: must match folder membership; CI surfaces."""
 
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ from open_research_tagging.check_project_files import (
     ProjectFilesMismatch,
     check_project_dir,
     check_projects_tree,
+    format_github_annotations,
+    format_step_summary,
     main,
 )
 
@@ -120,3 +122,58 @@ def test_cli_exits_zero_when_clean(tmp_path: Path, capsys):
     )
     main(["--projects-dir", str(tmp_path / "projects")])
     assert "OK:" in capsys.readouterr().out
+
+
+def test_format_github_annotations_point_at_project_yaml():
+    mismatch = ProjectFilesMismatch(
+        slug="acme",
+        yaml_path="/repo/projects/acme/project.yaml",
+        missing_on_disk=["gone.md"],
+        missing_in_yaml=["new.md"],
+    )
+    lines = format_github_annotations([mismatch])
+    assert len(lines) == 1
+    line = lines[0]
+    assert line.startswith("::error ")
+    assert "file=projects/acme/project.yaml" in line or "file=/repo/projects/acme/project.yaml" in line
+    assert "gone.md" in line
+    assert "new.md" in line
+    assert "\n" not in line  # workflow commands must be single-line
+
+
+def test_format_step_summary_lists_paths_in_markdown():
+    mismatch = ProjectFilesMismatch(
+        slug="acme",
+        yaml_path="projects/acme/project.yaml",
+        missing_on_disk=["gone.md"],
+        missing_in_yaml=["new.md"],
+    )
+    md = format_step_summary([mismatch])
+    assert "##" in md or "**" in md
+    assert "acme" in md
+    assert "gone.md" in md
+    assert "new.md" in md
+
+
+def test_cli_writes_step_summary_and_annotations_on_mismatch(
+    tmp_path: Path, capsys, monkeypatch
+):
+    _write_project(
+        tmp_path,
+        "acme",
+        files=[{"path": "missing.md"}],
+        disk_names=[],
+    )
+    summary = tmp_path / "summary.md"
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary))
+    with pytest.raises(SystemExit) as exc:
+        main(["--projects-dir", str(tmp_path / "projects")])
+    assert exc.value.code == 1
+    captured = capsys.readouterr()
+    combined = captured.out + captured.err
+    assert "::error" in combined
+    assert "missing.md" in combined
+    assert summary.is_file()
+    body = summary.read_text(encoding="utf-8")
+    assert "acme" in body
+    assert "missing.md" in body

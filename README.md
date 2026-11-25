@@ -89,7 +89,7 @@ Committed `site/data/*.json` is an **offline fixture snapshot** for local previe
 
 | Workflow                | When                                                            | What                                                                                |
 | ----------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| **Tests** (`test.yml`)  | Push to `main`, PRs                                             | `files:` ↔ folder check, then `pytest` (incl. Playwright)                           |
+| **Tests** (`test.yml`)  | Push to `main`, PRs                                             | **Project files ↔ YAML** job + **pytest** (Playwright); file mismatches annotate the PR |
 | **Check comment tags**  | Files-tab comment create/edit; PR open/sync                     | Soft bot reply on bad tags; PR scan hard-fails **malformed** only                   |
 | **Update comment data** | Daily cron + manual                                             | Fetch → process (incl. open-PR projects) → deploy Pages (**no** git commit of JSON) |
 | **Deploy Pages**        | `site/` / `projects/` / `codebook/` (etc.) on `main`, or manual | Rebuild live JSON in CI → publish `site/` (**no** git commit)                       |

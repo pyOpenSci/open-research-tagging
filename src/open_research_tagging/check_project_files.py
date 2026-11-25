@@ -1,11 +1,15 @@
-"""Check that project.yaml files: paths match the project folder (14a).
+"""Check that project.yaml files: paths match the project folder (14a / 14c).
 
 Maintainer / CI tool — not a researcher CLI. Exit non-zero on any mismatch.
+On failure, also emit GitHub Actions annotations and a step summary when
+``GITHUB_STEP_SUMMARY`` is set so the PR Checks UI shows the mismatch without
+opening the full job log.
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -109,6 +113,101 @@ def format_mismatches(mismatches: list[ProjectFilesMismatch]) -> str:
     return "\n".join(lines)
 
 
+def _repo_relative_yaml(yaml_path: str) -> str:
+    """Prefer repo-relative path for Actions annotations / summaries."""
+    path = Path(yaml_path)
+    try:
+        return str(path.resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        parts = path.parts
+        if "projects" in parts:
+            i = parts.index("projects")
+            return "/".join(parts[i:])
+        return str(path)
+
+
+def _workflow_escape_data(text: str) -> str:
+    """Escape the message body of a GitHub Actions workflow command."""
+    return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
+
+def _workflow_escape_property(text: str) -> str:
+    """Escape a ``key=value`` property (also escapes ``:`` and ``,``)."""
+    return (
+        _workflow_escape_data(text)
+        .replace(":", "%3A")
+        .replace(",", "%2C")
+    )
+
+
+def format_github_annotations(mismatches: list[ProjectFilesMismatch]) -> list[str]:
+    """``::error`` lines pointing at each mismatched project.yaml."""
+    lines: list[str] = []
+    for m in mismatches:
+        bits: list[str] = []
+        if m.missing_on_disk:
+            bits.append(
+                "listed in YAML but missing on disk: "
+                + ", ".join(m.missing_on_disk)
+            )
+        if m.missing_in_yaml:
+            bits.append(
+                "on disk but missing from YAML files: "
+                + ", ".join(m.missing_in_yaml)
+            )
+        message = f"{m.slug}: " + "; ".join(bits)
+        message += (
+            ". Fix: sync folder paths with files: (coding view Copy YAML)."
+        )
+        file_prop = _workflow_escape_property(_repo_relative_yaml(m.yaml_path))
+        title = _workflow_escape_property("project.yaml files: mismatch")
+        msg = _workflow_escape_data(message)
+        lines.append(f"::error file={file_prop},title={title}::{msg}")
+    return lines
+
+
+def format_step_summary(mismatches: list[ProjectFilesMismatch]) -> str:
+    """Markdown report for ``$GITHUB_STEP_SUMMARY``."""
+    lines: list[str] = [
+        "## project.yaml `files:` ↔ folder mismatch",
+        "",
+        "Every policy file under `projects/<slug>/` must appear under "
+        "`files:` in that project's `project.yaml` (and vice versa).",
+        "",
+    ]
+    for m in mismatches:
+        rel = _repo_relative_yaml(m.yaml_path)
+        lines.append(f"### `{m.slug}` (`{rel}`)")
+        lines.append("")
+        if m.missing_on_disk:
+            lines.append("**Listed in YAML but missing on disk:**")
+            for path in m.missing_on_disk:
+                lines.append(f"- `{path}`")
+            lines.append("")
+        if m.missing_in_yaml:
+            lines.append("**On disk but missing from YAML `files:`:**")
+            for path in m.missing_in_yaml:
+                lines.append(f"- `{path}`")
+            lines.append("")
+    lines.append(
+        "**Fix:** add/rename files on the PR to match paths, or update "
+        "`files:` via the coding view (**Copy YAML**). Sets must match exactly."
+    )
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _append_step_summary(text: str) -> None:
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not summary_path:
+        return
+    path = Path(summary_path)
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(text)
+        if not text.endswith("\n"):
+            fh.write("\n")
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -130,6 +229,9 @@ def main(argv: list[str] | None = None) -> None:
         print(f"OK: files: match folders under {projects_dir}")
         return
     print(format_mismatches(mismatches), file=sys.stderr)
+    for line in format_github_annotations(mismatches):
+        print(line)
+    _append_step_summary(format_step_summary(mismatches))
     raise SystemExit(1)
 
 
