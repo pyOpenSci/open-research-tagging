@@ -32,6 +32,15 @@ def test_tags_page_wires_search_and_staged_panel():
     assert "stagedToCopyText" in helpers
 
 
+def test_staged_panel_css_is_sticky():
+    """14e: Staged stays visible while the catalog scrolls (narrow column)."""
+    css = (SITE / "css" / "site.css").read_text(encoding="utf-8")
+    anchor = "body.tags-page .staged-panel"
+    assert anchor in css
+    block = css[css.index(anchor) : css.index(anchor) + 160]
+    assert "position: sticky" in block or "position:sticky" in block
+
+
 def _run_node(script: str) -> str:
     if not HELPERS_JS.is_file():
         pytest.fail(f"missing {HELPERS_JS}")

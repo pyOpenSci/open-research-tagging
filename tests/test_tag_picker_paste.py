@@ -71,3 +71,23 @@ def test_picker_stage_copy_preview_parses_as_review_comment(page, site_base_url)
     tags = parse_tags(body)
     assert [t["raw"] for t in tags] == lines
     assert collect_tag_warnings(body, tags, codebook) == []
+
+
+def test_staged_panel_stays_in_view_while_catalog_scrolls(page, site_base_url):
+    """14e: sticky staged panel remains near the top after scrolling the catalog."""
+    page.set_viewport_size({"width": 420, "height": 640})
+    page.goto(f"{site_base_url}/tags.html", wait_until="networkidle")
+    page.wait_for_selector(".tag-row")
+    page.wait_for_selector(".staged-panel")
+
+    catalog = page.locator(".tag-catalog")
+    assert catalog.count() == 1
+    # Tall enough page that scrolling would move a non-sticky staged panel away.
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(100)
+
+    top = page.locator(".staged-panel").evaluate(
+        "el => el.getBoundingClientRect().top"
+    )
+    # Stuck near the top of the viewport (allow a little chrome padding).
+    assert 0 <= top <= 80, f"staged panel top={top} after scroll (expected sticky)"

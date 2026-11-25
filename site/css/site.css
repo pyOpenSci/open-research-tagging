@@ -431,6 +431,12 @@ body.tags-page .lede {
   border: 1px solid var(--line);
   padding: 0.5rem 0.55rem 0.65rem;
 }
+/* 14e: keep Clear / staged list / Copy visible while the catalog scrolls */
+body.tags-page .staged-panel {
+  position: sticky;
+  top: 0.5rem;
+  z-index: 3;
+}
 .staged-list {
   list-style: none;
   margin: 0.35rem 0 0;

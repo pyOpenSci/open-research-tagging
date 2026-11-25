@@ -141,7 +141,7 @@ Shared chrome under `site/` (Alpine.js + DataTables from CDN). Local preview: `c
 |------|------|
 | `index.html` | Comment browser (filters, quotes, deep links) |
 | `projects.html` | Overall codes + evidence links into the browser |
-| `tags.html` | Passage **tag picker** (search / stage / Copy hashtags) |
+| `tags.html` | Passage **tag picker** (search / stage / Copy hashtags); staged panel sticky while the catalog scrolls (**14e**) |
 | `coding.html?project=<slug>` | Overall **coding view** (evidence + metadata + schema form + Copy full `project.yaml`) |
 
 **Comment browser URL params** (same shapes the projects join emits):
@@ -227,7 +227,7 @@ No `paths:` filter on tag-check yet; revisit if code-review `#…` noise on non-
 - https://www.pyopensci.org/open-research-tagging/data/projects.json
 - https://www.pyopensci.org/open-research-tagging/data/codebook.json
 
-README mirrors this under *Live JSON for analysis*. Seed / smoke-test tags remain in live comments until **14e**.
+README mirrors this under *Live JSON for analysis*. Seed / smoke-test tags remain in live comments until **14g**.
 
 With `projects/pyopensci/` present, fixture quotes usually resolve from local policy files (`paragraph` / `selection`) instead of `diff_hunk`.
 
